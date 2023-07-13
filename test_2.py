@@ -2,8 +2,13 @@
 import time
 from pirc522 import RFID
 import RPi.GPIO as GPIO
-from hashlib import md5
+from hashlib import md5, sha256
 import os
+
+import random
+import string
+
+random_str = lambda num: ''.join(random.choices(string.ascii_letters + string.digits, k=num))
 
 LED_GREEN = 36
 LED_RED   = 37
@@ -81,17 +86,22 @@ try:
             print(rfid_read_bytes(6))
             """
             
-            password = 'tsuden_id_XXXXXXXX'
-            password_hash_md5 = md5(password.encode()).digest()
-            _hash = toHex(list(password_hash_md5))
+            password = f'tsuden_{random_str(8)}'
+            password_hash = sha256(password.encode()).digest()
+            _hash = toHex(list(password_hash))
             print(f'Writing hashed-password... (password: "{password}")\n-> "{_hash}"')
-            rfid_write_bytes(4, password_hash_md5)
+            
+            #rfid_write_str(4, 'my_user_id')
+            rfid_write_bytes(5, password_hash[:16])
+            rfid_write_bytes(6, password_hash[16:])
             print('Done.\n' + '=' * 10)
-            _record = toHex(rfid_read_bytes(4))
+            
+            #user_id = rfid_read_str(4)
+            _record = toHex(rfid_read_bytes(5) + rfid_read_bytes(6))
             res = _record == _hash
-            print(f'  RFID Record     : {_record}')
-            print(f'  Calculated Hash : {_hash}\n')
-            print(f'  Result          : {res}\n' + '=' * 10)
+            print(f'  Hash        : {_hash}')
+            print(f'  RFID Record : {_record}\n')
+            print(f'  Result      : {res}\n' + '=' * 10)
             # We must stop crypto
             
             if res:
@@ -99,13 +109,13 @@ try:
                 GPIO.output(LED_RED  , False)
             
             util.deauth()
-            time.sleep(2)
+            time.sleep(1)
 
             GPIO.output(LED_GREEN, False)
             GPIO.output(LED_RED  , True)
             print("Available to start a new reading.")
 
 except KeyboardInterrupt:
-  print('interrupted!')
+  print('(interrupted)')
 finally:
   GPIO.cleanup()
