@@ -11,6 +11,7 @@ from pirc522 import RFID
 import RPi.GPIO as GPIO
 import questionary as qy
 from prettytable import PrettyTable as pt
+import keyboard
 
 DB_NAME = 'user.db'
 
@@ -28,7 +29,6 @@ def main():
     conn = sqlite3.connect(DB_NAME)
     cur = conn.cursor()
 
-    run = True
     rdr = RFID()
     util = rdr.util()
 
@@ -36,15 +36,6 @@ def main():
         init_db(conn, cur)
         #users = [v for v in cur.execute('SELECT * FROM Users')]
         #print(users)
-        def end_read(signal,frame):
-            global run
-            print("\nCtrl+C captured, ending read.")
-            run = False
-            rdr.cleanup()
-            sys.exit()
-
-        signal.signal(signal.SIGINT, end_read)
-
         print("Starting")
         
         def read_card():
@@ -53,13 +44,11 @@ def main():
 
                 (error, data) = rdr.request()
                 if not error:
-                    print('=' * 10)
-                    print("\nDetected: " + format(data, "02x"))
-
                     (error, uid) = rdr.anticoll()
                     if not error:
                         _uid = '-'.join(['{:02x}'.format(u) for u in uid])
                         users = [v for v in cur.execute(f'SELECT * FROM Users WHERE UserId = "{_uid}"')]
+                        print('=' * 10)
                         if len(users):
                             _, name = users[0][:2]
                             buzzer(2)
@@ -121,21 +110,36 @@ def main():
             return users[index]
         
         def rename_user():
-            u = _select_user()
-            print(u)
-            input('')
+            uid, name, _ = _select_user()
+            newname = qy.text(f'<ID: {uid}>\n  Input new username:', default=name).ask()
+            cur.execute(f'UPDATE Users SET UserName = "{newname}" WHERE UserId = "{uid}"')
+            conn.commit()
+            print('The user updated.')
+            led_green()
+            buzzer()
+        
+        def delete_user():
+            uid, name, _ = _select_user()
+            if confirm(f'Are you sure you want to delete the user "{name}"?'):
+                cur.execute(f'DELETE FROM Users WHERE UserId = "{uid}"')
+                conn.commit()
+                print('The user removed.')
+                led_green()
+                buzzer()
         
         # main action
-        while run:
+        while True:
             os.system('clear')
             opt = qy.select('Options', choices=[
                 qy.Choice(title='Register', value=0),
                 qy.Choice(title='Show Users', value=1),
-                qy.Choice(title='Exit', value=-1),
+                qy.Choice(title='Exit *', value=-1),
+                qy.Separator('______________'),
                 qy.Separator('-- (DANGER) --'),
                 qy.Choice(title='Rename User', value=2),
                 qy.Choice(title='Delete User', value=3),
             ]).ask()
+            
             if opt == -1:
                 break
             elif opt == 0:
@@ -144,6 +148,8 @@ def main():
                 show_users()
             elif opt == 2:
                 rename_user()
+            elif opt == 3:
+                delete_user()
             
     except Exception as e:
         t = traceback.format_exc()
@@ -152,6 +158,8 @@ def main():
         cur.close()
         conn.close()
         GPIO.cleanup()
+        rdr.cleanup()
+        sys.exit()
     
 #util.debug = True
 if __name__ == '__main__':
