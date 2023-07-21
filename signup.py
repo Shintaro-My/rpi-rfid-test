@@ -24,7 +24,7 @@ def confirm(txt):
 def main():
     init_gpio()
     led_red()
-    buzzer(3)
+    buzzer()
 
     conn = sqlite3.connect(DB_NAME)
     cur = conn.cursor()
