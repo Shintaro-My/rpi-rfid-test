@@ -113,7 +113,8 @@ def main():
             return users[index]
         
         def rename_user():
-            pass
+            u = _select_user()
+            print(u)
         
         # main action
         while run:
@@ -130,6 +131,8 @@ def main():
                 read_card()
             elif opt == 1:
                 show_users()
+            elif opt == 2:
+                rename_user()
             
     except Exception as e:
         print(e)
