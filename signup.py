@@ -150,6 +150,8 @@ def main():
                 rename_user()
             elif opt == 3:
                 delete_user()
+                
+            time.sleep(2)
             
     except Exception as e:
         t = traceback.format_exc()
