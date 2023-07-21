@@ -131,12 +131,14 @@ def main():
             opt = qy.select('Options', choices=[
                 qy.Choice(title='Register', value=0),
                 qy.Choice(title='Show Users', value=1),
-                qy.Separator(''),
+                qy.Choice(title='Exit', value=-1),
                 qy.Separator('-- (DANGER) --'),
                 qy.Choice(title='Rename User', value=2),
                 qy.Choice(title='Delete User', value=3),
             ]).ask()
-            if opt == 0:
+            if opt == -1:
+                break
+            elif opt == 0:
                 read_card()
             elif opt == 1:
                 show_users()
