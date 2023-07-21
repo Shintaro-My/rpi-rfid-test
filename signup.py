@@ -7,7 +7,8 @@ import os
 import sys
 import sqlite3
 from my_util import init_db, init_gpio, buzzer, led_green, led_red
-from pirc522 import RFID
+#from pirc522 import RFID
+from mfrc522_i2c import MFRC522
 import RPi.GPIO as GPIO
 import questionary as qy
 from prettytable import PrettyTable as pt
@@ -29,8 +30,14 @@ def main():
     conn = sqlite3.connect(DB_NAME)
     cur = conn.cursor()
 
-    rdr = RFID()
-    util = rdr.util()
+    #rdr = RFID()
+    #util = rdr.util()
+    i2cBus = 1
+    i2cAddress = 0x28
+    MFRC522Reader = MFRC522(i2cBus, i2cAddress)
+
+    version = MFRC522Reader.getReaderVersion()
+    print(f'MFRC522 Software Version: {version}')
 
     try:
         init_db(conn, cur)
@@ -40,12 +47,11 @@ def main():
         
         def read_card():
             while True:
-                rdr.wait_for_tag()
-
-                (error, data) = rdr.request()
-                if not error:
-                    (error, uid) = rdr.anticoll()
-                    if not error:
+                (status, backData, tagType) = MFRC522Reader.scan()
+                
+                if status == MFRC522Reader.MIFARE_OK:
+                    (status, uid, backBits) = MFRC522Reader.identify()
+                    if status == MFRC522Reader.MIFARE_OK:
                         _uid = '-'.join(['{:02x}'.format(u) for u in uid])
                         users = [v for v in cur.execute(f'SELECT * FROM Users WHERE UserId = "{_uid}"')]
                         print('=' * 10)
