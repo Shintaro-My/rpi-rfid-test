@@ -31,13 +31,13 @@ while run:
 
     (error, uid) = rdr.anticoll()
     if not error:
-        print(f"Card read UID: {', '.join([str(u) for u in uid])}")
+        print(f"Card read UID: {'-'.join([str(u) for u in uid])}")
 
         print("Setting tag")
         util.set_tag(uid)
         print("\nAuthorizing")
         #util.auth(rdr.auth_a, [0x12, 0x34, 0x56, 0x78, 0x96, 0x92])
-        util.auth(rdr.auth_a, [0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF])
+        util.auth(rdr.auth_b, [0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF])
         print("\nReading")
         #util.read_out(4)
         util.dump()
