@@ -87,23 +87,33 @@ def main():
                     time.sleep(1)
                     led_red()
                     
-        def show_users():
+        def _get_user_table():
             users = [v for v in cur.execute(f'SELECT * FROM Users')]
             t = pt()
             t.field_names = ['UserId', 'UserName', 'Note']
             [t.add_row(u) for u in users]
+            return t, users
+            
+        def show_users():
+            t, = _get_user_table()
             print(t.get_string())
             input('Continue to press Enter-key...')
                     
+        def _select_user():
+            t, users = _get_user_table()
+            choices = []
+            for i, r in enumerate(t):
+                r.header = False
+                a, b, c = r.get_string().split('\n')
+                choices += [qy.Separator(a), qy.Choice(title=b, value=i), qy.Separator(c)]
+            a, b, c = t.get_string().split('\n')[:3]
+            index = qy.select(f'test\n   {a}\n   {b}\n   {c}', choices=choices).ask()
+            os.system('clear')
+            print(f'')
+            return users[index]
+        
         def rename_user():
-            users = [v for v in cur.execute(f'SELECT * FROM Users')]
-            choices = [qy.Choice(title=f'{u[0]} ({u[1]})', value=i) for i, u in enumerate(users)]
-            t = pt()
-            t.field_names = ['UserId', 'UserName', 'Note']
-            [t.add_row(u) for u in users]
-            print(t.get_string())
-            input('Continue to press Enter-key...')
-
+            pass
         
         # main action
         while run:
