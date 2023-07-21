@@ -111,14 +111,12 @@ def main():
         def _select_user():
             t, users = _get_user_table()
             choices = []
-            for i, r in enumerate(t):
-                r.header = False
-                a, b, c = r.get_string().split('\n')
-                choices += [qy.Separator(a), qy.Choice(title=b, value=i), qy.Separator(c)]
-            a, b, c = t.get_string().split('\n')[:3]
+            for r in t: r.header = False
+            a, b, c, *ary = t.get_string().split('\n')
+            for i, l in enumerate(ary):
+                choices += [qy.Choice(title=l, value=i)]
             index = qy.select(f'test\n   {a}\n   {b}\n   {c}', choices=choices).ask()
             os.system('clear')
-            print(f'')
             return users[index]
         
         def rename_user():
