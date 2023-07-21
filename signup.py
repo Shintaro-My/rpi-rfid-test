@@ -112,9 +112,10 @@ def main():
             t, users = _get_user_table()
             choices = []
             for r in t: r.header = False
-            a, b, c, *ary = t.get_string().split('\n')
+            a, b, c, *ary, z = t.get_string().split('\n')
             for i, l in enumerate(ary):
                 choices += [qy.Choice(title=l, value=i)]
+            choices += [qy.Separator(z)]
             index = qy.select(f'test\n   {a}\n   {b}\n   {c}', choices=choices).ask()
             os.system('clear')
             return users[index]
