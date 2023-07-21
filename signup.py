@@ -61,7 +61,7 @@ def main():
                         _uid = '-'.join(['{:02x}'.format(u) for u in uid])
                         users = [v for v in cur.execute(f'SELECT * FROM Users WHERE UserId = "{_uid}"')]
                         if len(users):
-                            _, name = users[0]
+                            _, name = users[0][:2]
                             buzzer(2)
                             ex = qy.select(
                                 f'The ID "{_uid}" is arleady registered as the user "{name}".',
