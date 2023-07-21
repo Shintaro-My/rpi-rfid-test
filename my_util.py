@@ -15,6 +15,9 @@ def init_gpio():
     GPIO.setup(LED_RED  , GPIO.OUT)
     
 
+def led_all_off():
+    GPIO.output(LED_GREEN, False)
+    GPIO.output(LED_RED  , False)
 def led_green():
     GPIO.output(LED_GREEN, True )
     GPIO.output(LED_RED  , False)

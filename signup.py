@@ -6,7 +6,7 @@ import traceback
 import os
 import sys
 import sqlite3
-from my_util import init_db, init_gpio, buzzer, led_green, led_red
+from my_util import init_db, init_gpio, buzzer, led_green, led_red, led_all_off
 #from pirc522 import RFID
 from mfrc522_i2c import MFRC522
 import RPi.GPIO as GPIO
@@ -24,7 +24,6 @@ def confirm(txt):
 
 def main():
     init_gpio()
-    led_red()
     buzzer()
 
     conn = sqlite3.connect(DB_NAME)
@@ -56,6 +55,7 @@ def main():
                         users = [v for v in cur.execute(f'SELECT * FROM Users WHERE UserId = "{_uid}"')]
                         print('=' * 10)
                         if len(users):
+                            led_red()
                             _, name = users[0][:2]
                             buzzer(2)
                             ex = qy.select(
@@ -88,7 +88,7 @@ def main():
                             buzzer()
                             
                         time.sleep(1)
-                        led_red()
+                        led_all_off()
                         break
                     
         def _get_user_table():
@@ -135,6 +135,7 @@ def main():
         
         # main action
         while True:
+            led_all_off()
             os.system('clear')
             opt = qy.select('Options', choices=[
                 qy.Separator('--   MAIN   --'),
@@ -157,7 +158,7 @@ def main():
             elif opt == 3:
                 delete_user()
                 
-            time.sleep(2)
+            time.sleep(1)
             
     except Exception as e:
         t = traceback.format_exc()
