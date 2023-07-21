@@ -66,7 +66,7 @@ def main():
                             choices=['(Cancel)', 'Rename', 'Delete']
                         ).ask()
                         if ex == 'Rename':
-                            newname = qy.text('<ID: {_uid}>\n  Input new username:', default=name).ask()
+                            newname = qy.text(f'<ID: {_uid}>\n  Input new username:', default=name).ask()
                             cur.execute(f'UPDATE Users SET UserName = "{newname}" WHERE UserId = "{_uid}"')
                             conn.commit()
                             print('The user updated.')
@@ -82,7 +82,7 @@ def main():
                         buzzer(1)
                         name = ''
                         while name == '':
-                            name = qy.text('<ID: {_uid}>\n  Input username:').ask()
+                            name = qy.text(f'<ID: {_uid}>\n  Input username:').ask()
                         
                     time.sleep(1)
                     led_red()
