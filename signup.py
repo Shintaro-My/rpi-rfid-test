@@ -123,6 +123,7 @@ def main():
         def rename_user():
             u = _select_user()
             print(u)
+            input('')
         
         # main action
         while run:
