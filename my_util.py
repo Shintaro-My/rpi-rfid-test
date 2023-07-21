@@ -26,12 +26,14 @@ def led_red():
     GPIO.output(LED_RED  , True )
     
 
-def buzzer(n = 1):
+def buzzer(n = 1, fn1=lambda:1, fn2=lambda:1):
     for i in range(n):
         if i: time.sleep(BZ_INTERVAL)
         GPIO.output(BZ, True )
+        fn1()
         time.sleep(BZ_INTERVAL)
         GPIO.output(BZ, False)
+        fn2()
 
 
 def init_db(conn, cur):
