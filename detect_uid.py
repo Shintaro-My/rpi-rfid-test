@@ -11,6 +11,7 @@ import RPi.GPIO as GPIO
 
 DB_NAME = 'user.db'
 
+DURATION = 3
         
 
 def main():
@@ -61,7 +62,7 @@ def main():
                         print(f'Welcome, "{name}" <ID: {_uid}>!')
                         led_green()
                         buzzer()
-                        time.sleep(5)
+                        time.sleep(DURATION)
                     else:
                         led_red()
                         buzzer(2)
