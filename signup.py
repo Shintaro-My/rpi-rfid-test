@@ -47,51 +47,53 @@ def main():
         print("Starting")
         
         def read_card():
-            rdr.wait_for_tag()
+            while True:
+                rdr.wait_for_tag()
 
-            (error, data) = rdr.request()
-            if not error:
-                print('=' * 10)
-                print("\nDetected: " + format(data, "02x"))
-
-                (error, uid) = rdr.anticoll()
+                (error, data) = rdr.request()
                 if not error:
-                    _uid = '-'.join(['{:02x}'.format(u) for u in uid])
-                    users = [v for v in cur.execute(f'SELECT * FROM Users WHERE UserId = "{_uid}"')]
-                    if len(users):
-                        _, name = users[0]
-                        buzzer(2)
-                        ex = qy.select(
-                            f'The ID "{_uid}" is arleady registered as the user "{name}".',
-                            choices=['(Cancel)', 'Rename', 'Delete']
-                        ).ask()
-                        if ex == 'Rename':
-                            newname = qy.text(f'<ID: {_uid}>\n  Input new username:', default=name).ask()
-                            cur.execute(f'UPDATE Users SET UserName = "{newname}" WHERE UserId = "{_uid}"')
-                            conn.commit()
-                            print('The user updated.')
-                            led_green()
-                            buzzer()
-                        elif ex == 'Delete' and confirm(f'Are you sure you want to delete the user "{name}"?'):
-                            cur.execute(f'DELETE FROM Users WHERE UserId = "{_uid}"')
-                            conn.commit()
-                            print('The user removed.')
-                            led_green()
-                            buzzer()
-                    else:
-                        buzzer(1)
-                        name = ''
-                        while name == '':
-                            name = qy.text(f'<ID: {_uid}>\n  Input username:').ask()
+                    print('=' * 10)
+                    print("\nDetected: " + format(data, "02x"))
 
-                        cur.execute(f'INSERT INTO Users values("{_uid}", "{name}", "")')
-                        conn.commit()
-                        print('The user registered.')
-                        led_green()
-                        buzzer()
-                        
-                    time.sleep(1)
-                    led_red()
+                    (error, uid) = rdr.anticoll()
+                    if not error:
+                        _uid = '-'.join(['{:02x}'.format(u) for u in uid])
+                        users = [v for v in cur.execute(f'SELECT * FROM Users WHERE UserId = "{_uid}"')]
+                        if len(users):
+                            _, name = users[0]
+                            buzzer(2)
+                            ex = qy.select(
+                                f'The ID "{_uid}" is arleady registered as the user "{name}".',
+                                choices=['(Cancel)', 'Rename', 'Delete']
+                            ).ask()
+                            if ex == 'Rename':
+                                newname = qy.text(f'<ID: {_uid}>\n  Input new username:', default=name).ask()
+                                cur.execute(f'UPDATE Users SET UserName = "{newname}" WHERE UserId = "{_uid}"')
+                                conn.commit()
+                                print('The user updated.')
+                                led_green()
+                                buzzer()
+                            elif ex == 'Delete' and confirm(f'Are you sure you want to delete the user "{name}"?'):
+                                cur.execute(f'DELETE FROM Users WHERE UserId = "{_uid}"')
+                                conn.commit()
+                                print('The user removed.')
+                                led_green()
+                                buzzer()
+                        else:
+                            buzzer(1)
+                            name = ''
+                            while name == '':
+                                name = qy.text(f'<ID: {_uid}>\n  Input username:').ask()
+
+                            cur.execute(f'INSERT INTO Users values("{_uid}", "{name}", "")')
+                            conn.commit()
+                            print('The user registered.')
+                            led_green()
+                            buzzer()
+                            
+                        time.sleep(1)
+                        led_red()
+                        break
                     
         def _get_user_table():
             users = [v for v in cur.execute(f'SELECT * FROM Users')]
