@@ -64,7 +64,7 @@ def main():
                         buzzer()
                         time.sleep(DURATION)
                     else:
-                        buzzer(2, led_red, led_red)
+                        buzzer(2, led_red, led_all_off)
                         led_red()
                         print('[!] Invalid User.')
                     time.sleep(1)
