@@ -95,7 +95,7 @@ def main():
             return t, users
             
         def show_users():
-            t, = _get_user_table()
+            t, _ = _get_user_table()
             print(t.get_string())
             input('Continue to press Enter-key...')
                     
