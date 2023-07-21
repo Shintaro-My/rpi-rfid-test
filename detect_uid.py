@@ -52,7 +52,7 @@ def main():
                     print(f"ID: {_uid}")
                     users = [v for v in cur.execute(f'SELECT * FROM Users WHERE UserId = "{_uid}"')]
                     if len(users):
-                        _, name = users[0]
+                        _, name = users[0][:2]
                         print(f'Welcome, "{name}" <ID: {_uid}>!')
                         led_green()
                         buzzer()
