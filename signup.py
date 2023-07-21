@@ -83,6 +83,12 @@ def main():
                         name = ''
                         while name == '':
                             name = qy.text(f'<ID: {_uid}>\n  Input username:').ask()
+
+                        cur.execute(f'INSERT INTO Users values("{_uid}", "{name}", "")')
+                        conn.commit()
+                        print('The user registered.')
+                        led_green()
+                        buzzer()
                         
                     time.sleep(1)
                     led_red()
