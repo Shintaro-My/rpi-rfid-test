@@ -137,10 +137,10 @@ def main():
         while True:
             os.system('clear')
             opt = qy.select('Options', choices=[
+                qy.Separator('--   MAIN   --'),
                 qy.Choice(title='Register', value=0),
                 qy.Choice(title='Show Users', value=1),
                 qy.Choice(title='Exit *', value=-1),
-                qy.Separator('______________'),
                 qy.Separator('-- (DANGER) --'),
                 qy.Choice(title='Rename User', value=2),
                 qy.Choice(title='Delete User', value=3),
@@ -166,7 +166,7 @@ def main():
         cur.close()
         conn.close()
         GPIO.cleanup()
-        rdr.cleanup()
+        #rdr.cleanup()
         sys.exit()
     
 #util.debug = True
