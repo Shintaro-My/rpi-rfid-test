@@ -56,7 +56,6 @@ def main():
                 if status == MFRC522Reader.MIFARE_OK:
                     _uid = '-'.join(['{:02x}'.format(u) for u in uid])
                     print(f"ID: {_uid}")
-                    print(backBits)
                     users = [v for v in cur.execute(f'SELECT * FROM Users WHERE UserId = "{_uid}"')]
                     if len(users):
                         _, name = users[0][:2]
