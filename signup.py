@@ -2,6 +2,7 @@
 
 import signal
 import time
+import traceback
 import os
 import sys
 import sqlite3
@@ -143,7 +144,8 @@ def main():
                 rename_user()
             
     except Exception as e:
-        print(e)
+        t = traceback.format_exc()
+        print(t)
     finally:
         cur.close()
         conn.close()
