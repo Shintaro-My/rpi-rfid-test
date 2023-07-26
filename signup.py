@@ -39,7 +39,7 @@ def main():
         print("Starting")
         
         def read_card():
-            print('[Ctrl + C] to abort...')
+            print('Press [Ctrl + C] to abort...')
             while True:
                 try:
                     (status, backData, tagType) = MFRC522Reader.scan()
@@ -101,7 +101,7 @@ def main():
         def show_users():
             t, _ = _get_user_table()
             print(t.get_string())
-            input('Continue to press Enter-key...')
+            input('Press Enter-key to continue...')
                     
         def _select_user():
             t, users = _get_user_table()
