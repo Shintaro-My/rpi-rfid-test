@@ -7,6 +7,7 @@ DB_NAME = 'user.db'
 BZ_INTERVAL = 0.075
 
 BZ        = 11
+RELAY     = 15
 LED_GREEN = 36
 LED_RED   = 37
 
@@ -14,9 +15,12 @@ def init_gpio():
     GPIO.setmode(GPIO.BOARD)
     GPIO.setwarnings(False)
     GPIO.setup(BZ       , GPIO.OUT)
+    GPIO.setup(RELAY    , GPIO.OUT)
     GPIO.setup(LED_GREEN, GPIO.OUT)
     GPIO.setup(LED_RED  , GPIO.OUT)
-    
+
+def relay(bln):
+    GPIO.output(RELAY    , bln)
 
 def led_all_off():
     GPIO.output(LED_GREEN, False)

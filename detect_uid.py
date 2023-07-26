@@ -4,7 +4,7 @@ import signal
 import time
 import sys
 import sqlite3
-from my_util import init_db, init_gpio, buzzer, led_green, led_red, led_all_off, DB_NAME
+from my_util import init_db, init_gpio, buzzer, led_green, led_red, led_all_off, DB_NAME, relay
 #from pirc522 import RFID
 from mfrc522_i2c import MFRC522
 import RPi.GPIO as GPIO
@@ -57,9 +57,11 @@ def main():
                     if len(users):
                         _, name = users[0][:2]
                         print(f'Welcome, "{name}" <ID: {_uid}>!')
+                        relay(True)
                         led_green()
                         buzzer()
                         time.sleep(DURATION)
+                        relay(False)
                     else:
                         buzzer(2, led_red, led_all_off)
                         led_red()
