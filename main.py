@@ -30,4 +30,5 @@ def main():
     return True
 
 if __name__ == '__main__':
+    detect_uid.main()
     main()
