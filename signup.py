@@ -40,51 +40,56 @@ def main():
         
         def read_card():
             while True:
-                (status, backData, tagType) = MFRC522Reader.scan()
-                print(status)
-                
-                if status == MFRC522Reader.MIFARE_OK:
-                    (status, uid, backBits) = MFRC522Reader.identify()
+                try:
+                    (status, backData, tagType) = MFRC522Reader.scan()
+                    print(status)
+                    
                     if status == MFRC522Reader.MIFARE_OK:
-                        _uid = '-'.join(['{:02x}'.format(u) for u in uid])
-                        users = [v for v in cur.execute(f'SELECT * FROM Users WHERE UserId = "{_uid}"')]
-                        print('=' * 10)
-                        if len(users):
-                            led_red()
-                            _, name = users[0][:2]
-                            buzzer(2)
-                            ex = qy.select(
-                                f'The ID "{_uid}" is arleady registered as the user "{name}".',
-                                choices=['(Cancel)', 'Rename', 'Delete']
-                            ).ask()
-                            if ex == 'Rename':
-                                newname = qy.text(f'<ID: {_uid}>\n  Input new username:', default=name).ask()
-                                cur.execute(f'UPDATE Users SET UserName = "{newname}" WHERE UserId = "{_uid}"')
-                                conn.commit()
-                                print('The user updated.')
-                                led_green()
-                                buzzer()
-                            elif ex == 'Delete' and confirm(f'Are you sure you want to delete the user "{name}"?'):
-                                cur.execute(f'DELETE FROM Users WHERE UserId = "{_uid}"')
-                                conn.commit()
-                                print('The user removed.')
-                                led_green()
-                                buzzer()
-                        else:
-                            buzzer(1)
-                            name = ''
-                            while name == '':
-                                name = qy.text(f'<ID: {_uid}>\n  Input username:').ask()
+                        (status, uid, backBits) = MFRC522Reader.identify()
+                        if status == MFRC522Reader.MIFARE_OK:
+                            _uid = '-'.join(['{:02x}'.format(u) for u in uid])
+                            users = [v for v in cur.execute(f'SELECT * FROM Users WHERE UserId = "{_uid}"')]
+                            print('=' * 10)
+                            if len(users):
+                                led_red()
+                                _, name = users[0][:2]
+                                buzzer(2)
+                                ex = qy.select(
+                                    f'The ID "{_uid}" is arleady registered as the user "{name}".',
+                                    choices=['(Cancel)', 'Rename', 'Delete']
+                                ).ask()
+                                if ex == 'Rename':
+                                    newname = qy.text(f'<ID: {_uid}>\n  Input new username:', default=name).ask()
+                                    cur.execute(f'UPDATE Users SET UserName = "{newname}" WHERE UserId = "{_uid}"')
+                                    conn.commit()
+                                    print('The user updated.')
+                                    led_green()
+                                    buzzer()
+                                elif ex == 'Delete' and confirm(f'Are you sure you want to delete the user "{name}"?'):
+                                    cur.execute(f'DELETE FROM Users WHERE UserId = "{_uid}"')
+                                    conn.commit()
+                                    print('The user removed.')
+                                    led_green()
+                                    buzzer()
+                            else:
+                                buzzer(1)
+                                name = ''
+                                while name == '':
+                                    name = qy.text(f'<ID: {_uid}>\n  Input username:').ask()
 
-                            cur.execute(f'INSERT INTO Users values("{_uid}", "{name}", "")')
-                            conn.commit()
-                            print('The user registered.')
-                            led_green()
-                            buzzer()
-                            
-                        time.sleep(1)
-                        led_all_off()
-                        break
+                                cur.execute(f'INSERT INTO Users values("{_uid}", "{name}", "")')
+                                conn.commit()
+                                print('The user registered.')
+                                led_green()
+                                buzzer()
+                                
+                            time.sleep(1)
+                            led_all_off()
+                            break
+                except KeyboardInterrupt:
+                    print('abort')
+                    break
+            return True
                     
         def _get_user_table():
             users = [v for v in cur.execute(f'SELECT * FROM Users')]
@@ -163,7 +168,8 @@ def main():
         conn.close()
         GPIO.cleanup()
         #rdr.cleanup()
-        sys.exit()
+        #sys.exit()
+        return True
     
 #util.debug = True
 if __name__ == '__main__':
