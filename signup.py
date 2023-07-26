@@ -39,10 +39,10 @@ def main():
         print("Starting")
         
         def read_card():
+            print('[Ctrl + C] to abort...')
             while True:
                 try:
                     (status, backData, tagType) = MFRC522Reader.scan()
-                    print(status)
                     
                     if status == MFRC522Reader.MIFARE_OK:
                         (status, uid, backBits) = MFRC522Reader.identify()
