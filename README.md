@@ -13,4 +13,5 @@
 * ここまでの説明はあくまで考察の域を出ないものであるので、使用する前に記録領域の全読み出しをするべき。
 
 # 自動起動
-
+*  `/home/pi/.config/lxsession/LXDE-pi/autostart`に、`lxterminal -e [app_dir]/autostart.sh`を追記する。
+  * 事前にシェルスクリプトは`chmod 755 [app_dir]/autostart.sh`で実行権限を渡しておく。
