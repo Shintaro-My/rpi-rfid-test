@@ -4,16 +4,13 @@ import signal
 import time
 import sys
 import sqlite3
-from my_util import init_db, init_gpio, buzzer, led_green, led_red, led_all_off
+from my_util import init_db, init_gpio, buzzer, led_green, led_red, led_all_off, DB_NAME
 #from pirc522 import RFID
 from mfrc522_i2c import MFRC522
 import RPi.GPIO as GPIO
 
-DB_NAME = 'user.db'
-
 DURATION = 3
         
-
 def main():
     init_gpio()
     led_red()
@@ -74,6 +71,7 @@ def main():
         cur.close()
         conn.close()
         GPIO.cleanup()
+        return True
     
 #util.debug = True
 if __name__ == '__main__':

@@ -6,7 +6,7 @@ import traceback
 import os
 import sys
 import sqlite3
-from my_util import init_db, init_gpio, buzzer, led_green, led_red, led_all_off
+from my_util import init_db, init_gpio, buzzer, led_green, led_red, led_all_off, confirm, DB_NAME
 #from pirc522 import RFID
 from mfrc522_i2c import MFRC522
 import RPi.GPIO as GPIO
@@ -14,13 +14,7 @@ import questionary as qy
 from prettytable import PrettyTable as pt
 import keyboard
 
-DB_NAME = 'user.db'
 
-def confirm(txt):
-    return qy.select(txt, choices=[
-        qy.Choice(title='No', value=False),
-        qy.Choice(title='Yes', value=True)
-    ]).ask()
 
 def main():
     init_gpio()
@@ -47,6 +41,7 @@ def main():
         def read_card():
             while True:
                 (status, backData, tagType) = MFRC522Reader.scan()
+                print(status)
                 
                 if status == MFRC522Reader.MIFARE_OK:
                     (status, uid, backBits) = MFRC522Reader.identify()

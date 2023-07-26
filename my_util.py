@@ -1,5 +1,8 @@
 import time
 import RPi.GPIO as GPIO
+import questionary as qy
+
+DB_NAME = 'user.db'
 
 BZ_INTERVAL = 0.075
 
@@ -47,3 +50,11 @@ def init_db(conn, cur):
         """.strip()
     )
     conn.commit()
+    
+    
+
+def confirm(txt):
+    return qy.select(txt, choices=[
+        qy.Choice(title='No', value=False),
+        qy.Choice(title='Yes', value=True)
+    ]).ask()
