@@ -24,8 +24,9 @@ def main():
                 signup.main()
                 
         except KeyboardInterrupt:
-            print('Bye!')
-    
+            break
+        
+    print('Bye!')
     return True
 
 if __name__ == '__main__':
