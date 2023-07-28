@@ -2,9 +2,12 @@ from http.server import HTTPServer, BaseHTTPRequestHandler
 from urllib.parse import parse_qs, urlparse
 import json
 import os
+import traceback
 import re
 import magic # python-magic
 import socket
+import sqlite3
+from my_util import init_db, DB_NAME
 
 IP = socket.gethostbyname(socket.gethostname())
 current_dir = ''
@@ -59,16 +62,39 @@ def _getMimeFromExt(path):
 
 def _Page_GET(self: _MyHandler, path, query):
     data = {'status': 'ok'}
+    status = 200
     
     if path == '/':
-        status = 200
         try:
             data['body'] = {}
         except Exception as e:
             data['status'] = 'err'
-            data['body'] = str(e)
+            t = traceback.format_exc()
+            print(t)
+            data['body'] = t
             status = 500
         return (True, status, json.dumps(data))
+    
+    elif path == '/users':
+        conn = sqlite3.connect(DB_NAME)
+        cur = conn.cursor()
+        try:
+            init_db(conn, cur)
+            sql = 'SELECT * FROM Users'
+            if 'id' in query:
+                sql = f'SELECT * FROM Users WHERE UserId = {query["id"][0]}'
+            data['body'] = [v for v in cur.execute(sql)]
+        except Exception as e:
+            data['status'] = 'err'
+            t = traceback.format_exc()
+            print(t)
+            data['body'] = t
+            status = 500
+        finally:
+            cur.close()
+            conn.close()
+            return (True, status, json.dumps(data))
+        
     else:
         return (False, 404, None)
     
