@@ -8,6 +8,7 @@
       :headers="headers"
       :items="items"
       :loading="loading"
+      alternating
     >
     </EasyDataTable>
     
@@ -23,8 +24,8 @@ defineProps<{
   msg: string
 }>()
 const headers: Header[] = [
-  { text: 'UserId', value: 'UserId' },
-  { text: 'LastUpdate', value: 'LastUpdate' }
+  { text: 'UserId', value: 'UserId', sortable: true },
+  { text: 'LastUpdate', value: 'LastUpdate', sortable: true }
 ]
 const itemsSelected: Ref<Item[]> = ref([]);
 const items: Ref<Item[]> = ref([]);
@@ -42,7 +43,7 @@ const fmt = (ary: list, ...label: string[]) => {
 }
 const update = async () => {
   loading.value = true;
-  const req = await fetch('/users');
+  const req = await fetch('/anonymous');
   if (req.status != 200) {
     return false;
   }

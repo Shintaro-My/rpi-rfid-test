@@ -8,9 +8,40 @@
       :headers="headers"
       :items="items"
       :loading="loading"
+      alternating
     >
+      <template #item-operation="item">
+        <div class="operation-wrapper">
+          <div><a @click="editItem(item)">Edit</a></div>
+          <div><a @click="deleteItem(item)">Delete</a></div>
+        </div>
+      </template>
+      <template #expand="item">
+        <div>
+          {{item.Note}}
+        </div>
+      </template>
     </EasyDataTable>
     
+    <div v-if="edit_visible">
+      <h3>Edit {{ editingItem.UserId }}:</h3>
+      <div>
+        <div>UserName:<input type="text" v-model="editingItem.UserName" /></div>
+        <div>Note:<input type="text" v-model="editingItem.Note" /></div>
+      </div>
+      <div class="btns">
+        <button>OK</button>
+        <button @click="close_edit()"></button>
+      </div>
+    </div>
+    
+    <div v-if="delete_visible">
+      <h3>Delete "{{ deletingItem.UserId }}"?</h3>
+      <div class="btns">
+        <button>OK</button>
+        <button @click="close_delete()"></button>
+      </div>
+    </div>
 
   </div>
 </template>
@@ -23,14 +54,20 @@ defineProps<{
   msg: string
 }>()
 const headers: Header[] = [
-  { text: 'UserId', value: 'UserId' },
-  { text: 'UserName', value: 'UserName' },
-  { text: 'Note', value: 'Note' }
+  { text: 'UserName', value: 'UserName', sortable: true },
+  { text: 'UserId', value: 'UserId', sortable: true },
+  { text: '_', value: 'operation' }
 ]
 const itemsSelected: Ref<Item[]> = ref([]);
 const items: Ref<Item[]> = ref([]);
 
 const loading: Ref<boolean> = ref(false);
+  
+const edit_visible: Ref<boolean> = ref(false);
+const delete_visible: Ref<boolean> = ref(false);
+
+const field = ['UserId', 'UserName', 'Note'];
+
 
 type list = (string | number)[];
 const fmt = (ary: list, ...label: string[]) => {
@@ -49,10 +86,37 @@ const update = async () => {
   }
   const json = await req.json()
   const user = json.body;
-  items.value = user.map((v: list) => fmt(v, 'UserId', 'UserName', 'Note'));
+  items.value = user.map((v: list) => fmt(v, ...field));
   loading.value = false;
   return true;
 }
+const editingItem = reactive({
+  UserId: '',
+  UserName: '',
+  Note: ''
+});
+const editItem = (item: Item) => {
+  const { UserId, UserName, Note } = item;
+  editingItem.UserId = UserId;
+  editingItem.UserName = UserName;
+  editingItem.Note = Note;
+  edit_visible.value = true;
+}
+const close_edit = () => {
+  edit_visible.value = false;
+}
+
+const deletingItem = reactive({
+  UserId: ''
+});
+const deleteItem = (item: Item) => {
+  deletingItem.UserId = item.UserId;
+  delete_visible.value = true;
+}
+const close_delete = () => {
+  delete_visible.value = false;
+}
+
 update();
 
 </script>
