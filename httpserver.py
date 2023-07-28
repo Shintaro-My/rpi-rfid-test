@@ -24,6 +24,8 @@ class _MyHandler(BaseHTTPRequestHandler):
         path = parsed_path.path
         query = parse_qs(parsed_path.query)
         
+        print(query)
+        
         isMatch, status, txt = _Page_GET(self, path, query)
         if isMatch:
             self.send_response(status)
@@ -84,7 +86,9 @@ def _Page_GET(self: _MyHandler, path, query):
             init_db(conn, cur)
             sql = 'SELECT * FROM Users'
             if 'id' in query:
-                sql = f'SELECT * FROM Users WHERE UserId = {query["id"][0]}'
+                uid, _ = query["id"]
+                print(uid)
+                sql = f'SELECT * FROM Users WHERE UserId = {uid}'
             data['body'] = [v for v in cur.execute(sql)]
         except Exception as e:
             data['status'] = 'err'
