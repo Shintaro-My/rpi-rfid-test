@@ -86,8 +86,7 @@ def _Page_GET(self: _MyHandler, path, query):
             init_db(conn, cur)
             sql = 'SELECT * FROM Users'
             if 'id' in query:
-                uid, _ = query["id"]
-                print(uid)
+                uid, = query["id"]
                 sql = f'SELECT * FROM Users WHERE UserId = {uid}'
             data['body'] = [v for v in cur.execute(sql)]
         except Exception as e:
