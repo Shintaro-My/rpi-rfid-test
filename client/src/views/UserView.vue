@@ -3,23 +3,14 @@
 
     <EasyDataTable
       show-index
-      v-model:items-selected="user_itemsSelected"
+      v-model:items-selected="itemsSelected"
       buttons-pagination
-      :headers="user_headers"
-      :items="user_items"
+      :headers="headers"
+      :items="items"
       :loading="loading"
     >
     </EasyDataTable>
     
-    <EasyDataTable
-      show-index
-      v-model:items-selected="anonymous_itemsSelected"
-      buttons-pagination
-      :headers="anonymous_headers"
-      :items="anonymous_items"
-      :loading="loading"
-    >
-    </EasyDataTable>
 
   </div>
 </template>
@@ -31,20 +22,13 @@ import type { Header, Item } from "vue3-easy-data-table";
 defineProps<{
   msg: string
 }>()
-const user_headers: Header[] = [
+const headers: Header[] = [
   { text: 'UserId', value: 'UserId' },
   { text: 'UserName', value: 'UserName' },
   { text: 'Note', value: 'Note' }
 ]
-const user_itemsSelected: Ref<Item[]> = ref([]);
-const user_items: Ref<Item[]> = ref([]);
-
-const anonymous_headers: Header[] = [
-  { text: 'UserId', value: 'UserId' },
-  { text: 'LastaUpdate', value: 'LastaUpdate' }
-]
-const anonymous_itemsSelected: Ref<Item[]> = ref([]);
-const anonymous_items: Ref<Item[]> = ref([]);
+const itemsSelected: Ref<Item[]> = ref([]);
+const items: Ref<Item[]> = ref([]);
 
 const loading: Ref<boolean> = ref(false);
 
@@ -55,19 +39,18 @@ const fmt = (ary: list, ...label: string[]) => {
     const key = label[i]
     obj[key] = ary[i]
   }
+  return obj;
 }
 const update = async () => {
   loading.value = true;
-  const reqs = await Promise.all(['/users', '/anonymous'].map(u => fetch(u)));
-  if (reqs.find(r => r.status != 200)) {
+  const req = await fetch('/users');
+  if (req.status != 200) {
     return false;
   }
-  const json = await Promise.all(reqs.map(r => r.json()));
-  const [user, anonymous] = json.map(v => v.body);
-  user_items.value = user.map((v: list) => fmt(v, 'UserId', 'UserName', 'Note'));
-  anonymous_items.value = anonymous.map((v: list) => fmt(v, 'UserId', 'LastUpdate'));
+  const json = await req.json()
+  const user = json.body;
+  items.value = user.map((v: list) => fmt(v, 'UserId', 'UserName', 'Note'));
   loading.value = false;
-  console.log(user_items);
   return true;
 }
 update();
