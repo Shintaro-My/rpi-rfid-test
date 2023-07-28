@@ -179,7 +179,6 @@ h3 {
   right: 0;
   margin: auto;
   max-width: 400px;
-  min-height: 230px;
   padding: 0.75em 1em;
   z-index: 3;
 }
