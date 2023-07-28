@@ -69,6 +69,7 @@ const update = async () => {
   loading.value = false;
   return true;
 }
+await update();
 
 </script>
 
