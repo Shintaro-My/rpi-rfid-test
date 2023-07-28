@@ -61,7 +61,7 @@ def main():
                     if len(users):
                         cur.execute(
                             f"""
-                            UPDATE User SET LastSeen=datetime('now', '+9 hours') WHERE UserId="{_uid}"
+                            UPDATE Users SET LastSeen=datetime('now', '+9 hours') WHERE UserId="{_uid}"
                             """.strip()
                         )
                         conn.commit()
