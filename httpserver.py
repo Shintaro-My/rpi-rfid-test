@@ -206,6 +206,7 @@ def _Page_DELETE(self: _MyHandler, path, query):
         try:
             uid, = query["id"]
             cur.execute(f'DELETE FROM Users WHERE UserId = "{uid}"')
+            conn.commit()
         except Exception as e:
             data['status'] = 'err'
             t = traceback.format_exc()
@@ -222,6 +223,7 @@ def _Page_DELETE(self: _MyHandler, path, query):
         try:
             uid, = query["id"]
             cur.execute(f'DELETE FROM Anonymous WHERE UserId = "{uid}"')
+            conn.commit()
         except Exception as e:
             data['status'] = 'err'
             t = traceback.format_exc()
