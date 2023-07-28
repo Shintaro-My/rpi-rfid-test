@@ -74,6 +74,7 @@ def main():
                             DO UPDATE SET LastUpdate=datetime('now', '+9 hours')
                             """.strip()
                         )
+                        conn.commit()
                         
                     time.sleep(1)
     except Exception as e:
