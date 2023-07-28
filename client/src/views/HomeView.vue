@@ -67,9 +67,10 @@ const update = async () => {
   user_items.value = user.map((v: list) => fmt(v, 'UserId', 'UserName', 'Note'));
   anonymous_items.value = anonymous.map((v: list) => fmt(v, 'UserId', 'LastUpdate'));
   loading.value = false;
+  console.log(user_items);
   return true;
 }
-await update();
+update();
 
 </script>
 
