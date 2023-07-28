@@ -107,8 +107,9 @@ const editItem = (item: Item) => {
   edit_visible.value = true;
 }
 const _edit = async () => {
-  loading.value = true;
   const { UserId, UserName, Note } = editingItem;
+  if (!UserName) return alert('ユーザー名は空欄にできません')
+  loading.value = true;
   const req = await fetch('/users', {
     method: 'POST',
     headers: {
