@@ -19,6 +19,22 @@ class _MyHandler(BaseHTTPRequestHandler):
         self.send_header('Access-Control-Allow-Origin', '*')
         BaseHTTPRequestHandler.end_headers(self)
         
+    def do_DELETE(self):
+        parsed_path = urlparse(self.path)
+        path = parsed_path.path
+        query = parse_qs(parsed_path.query)
+        
+        print(query)
+        
+        isMatch, status, txt = _Page_DELETE(self, path, query)
+        if isMatch:
+            self.send_response(status)
+            self.send_header('Content-type', 'application/json')
+            self.end_headers()
+            self.wfile.write(txt.encode("utf-8"))
+        else:
+            self.send_error(404)
+            
     def do_GET(self):
         parsed_path = urlparse(self.path)
         path = parsed_path.path
@@ -47,6 +63,27 @@ class _MyHandler(BaseHTTPRequestHandler):
                     return
             except IOError:
                 self.send_error(404)
+        
+    def do_POST(self):
+        parsed_path = urlparse(self.path)
+        path = parsed_path.path
+        query = parse_qs(parsed_path.query)
+        
+        print(query)
+        
+        content_length = int(self.headers['content-length'])
+        _body = self.rfile.read(content_length).decode('utf-8')
+        body = json.loads(_body)
+        print(body)
+        
+        isMatch, status, txt = _Page_POST(self, path, query, body)
+        if isMatch:
+            self.send_response(status)
+            self.send_header('Content-type', 'application/json')
+            self.end_headers()
+            self.wfile.write(txt.encode("utf-8"))
+        else:
+            self.send_error(404)
             
 
 class Server:
@@ -100,9 +137,103 @@ def _Page_GET(self: _MyHandler, path, query):
             conn.close()
             return (True, status, json.dumps(data))
         
+    elif path == '/anonymous':
+        conn = sqlite3.connect(DB_NAME)
+        cur = conn.cursor()
+        try:
+            init_db(conn, cur)
+            sql = 'SELECT * FROM Anonymous'
+            if 'id' in query:
+                uid, = query["id"]
+                sql += f' WHERE UserId = "{uid}"'
+            data['body'] = [v for v in cur.execute(sql)]
+        except Exception as e:
+            data['status'] = 'err'
+            t = traceback.format_exc()
+            print(t)
+            data['body'] = t
+            status = 500
+        finally:
+            cur.close()
+            conn.close()
+            return (True, status, json.dumps(data))
+        
     else:
         return (False, 404, None)
     
+    
+def _Page_POST(self: _MyHandler, path, query, body: dict={}):
+    data = {'status': 'ok'}
+    status = 200
+    
+    if path == '/users':
+        conn = sqlite3.connect(DB_NAME)
+        cur = conn.cursor()
+        try:
+            init_db(conn, cur)
+            uid, uname, note = (body.get(k) for k in ('UserId', 'UserName', 'Note'))
+            cur.execute(
+                f"""
+                INSERT INTO Users (UserId, UserName, Note)
+                VALUES (\"{uid}\", \"{uname}\", \"{note}\")
+                ON CONFLICT(UserId)
+                DO UPDATE SET UserName=\"{uname}\", Note=\"{note}\"
+                """.strip()
+            )
+            conn.commit()
+        except Exception as e:
+            data['status'] = 'err'
+            t = traceback.format_exc()
+            print(t)
+            data['body'] = t
+            status = 500
+        finally:
+            cur.close()
+            conn.close()
+            return (True, status, json.dumps(data))
+        
+    else:
+        return (False, 404, None)
+    
+    
+def _Page_DELETE(self: _MyHandler, path, query):
+    data = {'status': 'ok'}
+    status = 200
+    
+    if path == '/users' and 'id' in query:
+        conn = sqlite3.connect(DB_NAME)
+        cur = conn.cursor()
+        try:
+            uid, = query["id"]
+            cur.execute(f'DELETE FROM Users WHERE UserId = "{uid}"')
+        except Exception as e:
+            data['status'] = 'err'
+            t = traceback.format_exc()
+            print(t)
+            data['body'] = t
+            status = 500
+        finally:
+            cur.close()
+            conn.close()
+            return (True, status, json.dumps(data))
+    elif path == '/anonymous' and 'id' in query:
+        conn = sqlite3.connect(DB_NAME)
+        cur = conn.cursor()
+        try:
+            uid, = query["id"]
+            cur.execute(f'DELETE FROM Anonymous WHERE UserId = "{uid}"')
+        except Exception as e:
+            data['status'] = 'err'
+            t = traceback.format_exc()
+            print(t)
+            data['body'] = t
+            status = 500
+        finally:
+            cur.close()
+            conn.close()
+            return (True, status, json.dumps(data))
+    else:
+        return (False, 404, None)
     
     
 if __name__ == '__main__':
