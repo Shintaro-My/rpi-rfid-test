@@ -98,6 +98,8 @@ class Server:
 def _getMimeFromExt(path):
     if path.endswith('.css'):
         return 'text/css'
+    elif path.endswith('.js'):
+        return 'text/javascript'
     return None
     
 
