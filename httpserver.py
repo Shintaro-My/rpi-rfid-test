@@ -8,8 +8,10 @@ import magic # python-magic
 import socket
 import sqlite3
 from my_util import init_db, DB_NAME
+import ipget
 
-IP = socket.gethostbyname(socket.gethostname())
+#IP = socket.gethostbyname(socket.gethostname())
+IP = ipget.ipget().ipaddr('wlan0')
 current_dir = ''
 
 class _MyHandler(BaseHTTPRequestHandler):
