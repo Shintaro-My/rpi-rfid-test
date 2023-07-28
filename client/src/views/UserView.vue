@@ -25,6 +25,8 @@
         </div>
       </template>
     </EasyDataTable>
+
+    <a @click="deleteMulti()" v-if="itemsSelected.length">{{ itemsSelected.length }} 件のアイテムを削除</a>
     
     <div v-if="edit_visible" class="darkbox">
       <h3>Edit "<pre class="inline">{{ editingItem.UserId }}</pre>":</h3>
@@ -144,6 +146,21 @@ const _delete = async () => {
   loading.value = true;
   const { UserId } = deletingItem;
   const req = await fetch(`/users?id=${UserId}`, {
+    method: 'DELETE'
+  });
+  if (req.status != 200) {
+    alert('Communication failed.')
+    return false;
+  }
+  close_delete();
+  await update();
+}
+
+
+const deleteMulti = async () => {
+  loading.value = true;
+  const uids = itemsSelected.value.map(v => v.UserId);
+  const req = await fetch(`/users?id=${uids.join(',')}`, {
     method: 'DELETE'
   });
   if (req.status != 200) {

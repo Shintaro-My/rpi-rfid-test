@@ -206,8 +206,9 @@ def _Page_DELETE(self: _MyHandler, path, query):
         conn = sqlite3.connect(DB_NAME)
         cur = conn.cursor()
         try:
-            uid, = query["id"]
-            cur.execute(f'DELETE FROM Users WHERE UserId = "{uid}"')
+            uids, = query["id"]
+            uids = [f'UserId = "{uid}"' for uid in uids.split(',')]
+            cur.execute(f'DELETE FROM Users WHERE {" OR ".join(uids)}')
             conn.commit()
         except Exception as e:
             data['status'] = 'err'
@@ -223,8 +224,9 @@ def _Page_DELETE(self: _MyHandler, path, query):
         conn = sqlite3.connect(DB_NAME)
         cur = conn.cursor()
         try:
-            uid, = query["id"]
-            cur.execute(f'DELETE FROM Anonymous WHERE UserId = "{uid}"')
+            uids, = query["id"]
+            uids = [f'UserId = "{uid}"' for uid in uids.split(',')]
+            cur.execute(f'DELETE FROM Anonymous WHERE {" OR ".join(uids)}')
             conn.commit()
         except Exception as e:
             data['status'] = 'err'
