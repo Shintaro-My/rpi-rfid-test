@@ -239,7 +239,7 @@ def _Page_DELETE(self: _MyHandler, path, query):
     
     
 if __name__ == '__main__':
-    server = Server()
+    server = Server(12345)
     while True:
         try:
             server.listen()

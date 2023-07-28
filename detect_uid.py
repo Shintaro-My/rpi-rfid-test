@@ -16,8 +16,6 @@ def main():
     led_red()
     buzzer()
 
-    conn = sqlite3.connect(DB_NAME)
-    cur = conn.cursor()
 
     run = True
     #rdr = RFID()
@@ -30,8 +28,12 @@ def main():
     version = MFRC522Reader.getReaderVersion()
     print(f'MFRC522 Software Version: {version}')
 
+    conn = sqlite3.connect(DB_NAME)
+    cur = conn.cursor()
     try:
         init_db(conn, cur)
+        cur.close()
+        conn.close()
         #users = [v for v in cur.execute('SELECT * FROM Users')]
         #print(users)
         def end_read(signal,frame):
@@ -53,8 +55,12 @@ def main():
                 if status == MFRC522Reader.MIFARE_OK:
                     _uid = '-'.join(['{:02x}'.format(u) for u in uid])
                     print(f"ID: {_uid}")
+                    conn = sqlite3.connect(DB_NAME)
+                    cur = conn.cursor()
                     users = [v for v in cur.execute(f'SELECT * FROM Users WHERE UserId = "{_uid}"')]
                     if len(users):
+                        cur.close()
+                        conn.close()
                         _, name = users[0][:2]
                         print(f'Welcome, "{name}" <ID: {_uid}>!')
                         relay(True)
@@ -75,6 +81,8 @@ def main():
                             """.strip()
                         )
                         conn.commit()
+                        cur.close()
+                        conn.close()
                         
                     time.sleep(1)
     except Exception as e:
