@@ -23,23 +23,23 @@
       </template>
     </EasyDataTable>
     
-    <div v-if="edit_visible">
-      <h3>Edit {{ editingItem.UserId }}:</h3>
+    <div v-if="edit_visible" class="darkbox">
+      <h3>Edit "<pre>{{ editingItem.UserId }}</pre>":</h3>
       <div>
         <div>UserName:<input type="text" v-model="editingItem.UserName" /></div>
         <div>Note:<input type="text" v-model="editingItem.Note" /></div>
       </div>
       <div class="btns">
-        <button>OK</button>
-        <button @click="close_edit()"></button>
+        <button @click="_edit()">OK</button>
+        <button @click="close_edit()">Cancel</button>
       </div>
     </div>
     
     <div v-if="delete_visible">
       <h3>Delete "{{ deletingItem.UserId }}"?</h3>
       <div class="btns">
-        <button>OK</button>
-        <button @click="close_delete()"></button>
+        <button @click="_delete()">OK</button>
+        <button @click="close_delete()">Cancel</button>
       </div>
     </div>
 
@@ -82,6 +82,7 @@ const update = async () => {
   loading.value = true;
   const req = await fetch('/users');
   if (req.status != 200) {
+    alert('Communication failed.')
     return false;
   }
   const json = await req.json()
@@ -105,6 +106,22 @@ const editItem = (item: Item) => {
 const close_edit = () => {
   edit_visible.value = false;
 }
+const _edit = async () => {
+  loading.value = true;
+  const { UserId, UserName, Note } = editingItem;
+  const req = await fetch('/users', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({ UserId, UserName, Note })
+  });
+  if (req.status != 200) {
+    alert('Communication failed.')
+    return false;
+  }
+  await update();
+}
 
 const deletingItem = reactive({
   UserId: ''
@@ -115,6 +132,18 @@ const deleteItem = (item: Item) => {
 }
 const close_delete = () => {
   delete_visible.value = false;
+}
+const _delete = async () => {
+  loading.value = true;
+  const { UserId } = deletingItem;
+  const req = await fetch(`/users?id=${UserId}`, {
+    method: 'DELETE'
+  });
+  if (req.status != 200) {
+    alert('Communication failed.')
+    return false;
+  }
+  await update();
 }
 
 update();
@@ -133,12 +162,19 @@ h1 {
 h3 {
   font-size: 1.2rem;
 }
-
-.greetings h1,
-.greetings h3 {
-  text-align: center;
+.darkbox {
+  background: rgba(43, 43, 43, .9);
+  border-radius: 0.35em;
+  color: #fff;
+  position: fixed;
+  top: 25%;
+  left: 0;
+  right: 0;
+  margin: auto;
+  max-width: 400px;
+  padding: 0.75em 1em;
+  z-index: 2;
 }
-
 @media (min-width: 1024px) {
   .greetings h1,
   .greetings h3 {
