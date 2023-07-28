@@ -71,7 +71,7 @@ const loading: Ref<boolean> = ref(false);
 const edit_visible: Ref<boolean> = ref(false);
 const delete_visible: Ref<boolean> = ref(false);
 
-const field = ['UserId', 'UserName', 'Note'];
+const field = ['UserId', 'UserName', 'Note', 'CreatedAt', 'LastSeen'];
 
 
 type list = (string | number)[];
@@ -158,6 +158,7 @@ const _delete = async () => {
 
 
 const deleteMulti = async () => {
+  if (!confirm('本当に削除しますか？')) return;
   loading.value = true;
   const uids = itemsSelected.value.map(v => v.UserId);
   const req = await fetch(`/users?id=${uids.join(',')}`, {

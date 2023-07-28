@@ -176,8 +176,8 @@ def _Page_POST(self: _MyHandler, path, query, body: dict={}):
             uid, uname, note = (body.get(k) for k in ('UserId', 'UserName', 'Note'))
             cur.execute(
                 f"""
-                INSERT INTO Users (UserId, UserName, Note)
-                VALUES (\"{uid}\", \"{uname}\", \"{note}\")
+                INSERT INTO Users (UserId, UserName, Note, CreatedAt, LastSeen)
+                VALUES (\"{uid}\", \"{uname}\", \"{note}\", datetime('now', '+9 hours'), datetime('now', '+9 hours'))
                 ON CONFLICT(UserId)
                 DO UPDATE SET UserName=\"{uname}\", Note=\"{note}\"
                 """.strip()

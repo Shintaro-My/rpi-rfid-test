@@ -47,9 +47,11 @@ def init_db(conn, cur):
     cur.execute(
         """
         CREATE TABLE IF NOT EXISTS Users(
-            UserId   TEXT PRIMARY KEY,
-            UserName TEXT NOT NULL,
-            Note     TEXT
+            UserId    TEXT PRIMARY KEY,
+            UserName  TEXT NOT NULL,
+            Note      TEXT,
+            CreatedAt DATETIME NOT NULL,
+            LastSeen  DATETIME
         )
         """.strip()
     )

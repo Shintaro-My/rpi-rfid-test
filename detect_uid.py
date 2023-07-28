@@ -59,6 +59,12 @@ def main():
                     cur = conn.cursor()
                     users = [v for v in cur.execute(f'SELECT * FROM Users WHERE UserId = "{_uid}"')]
                     if len(users):
+                        cur.execute(
+                            f"""
+                            UPDATE User SET LastSeen=datetime('now', '+9 hours') WHERE UserId="{_uid}"
+                            """.strip()
+                        )
+                        conn.commit()
                         cur.close()
                         conn.close()
                         _, name = users[0][:2]
