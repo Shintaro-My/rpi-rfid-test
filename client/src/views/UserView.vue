@@ -19,17 +19,19 @@
         </div>
       </template>
       <template #expand="item">
-        <div>
-          <span class="bold">備考:</span>
-          <div>{{item.Note}}</div>
-        </div>
-        <div>
-          <span class="bold">登録日:</span>
-          {{ item.CreatedAt }}
-        </div>
-        <div>
-          <span class="bold">最終履歴:</span>
-          {{ item.LastSeen }}
+        <div class="memo">
+          <div>
+            <span class="bold">登録日:</span>
+            {{ item.CreatedAt }}
+          </div>
+          <div>
+            <span class="bold">最終履歴:</span>
+            {{ item.LastSeen }}
+          </div>
+          <div>
+            <span class="bold">備考:</span>
+            <div>{{item.Note}}</div>
+          </div>
         </div>
         
       </template>
@@ -196,6 +198,12 @@ h1 {
 
 h3 {
   font-size: 1.2rem;
+}
+.memo {
+  padding: .5em;
+}
+.bold {
+  font-weight: bold;
 }
 .darkbox {
   background: rgba(43, 43, 43, .9);
