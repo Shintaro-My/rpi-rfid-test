@@ -35,6 +35,10 @@ input[type="text"]:focus {
   outline: 0;
   box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
 }
+
+.inline {
+  display: inline;
+}
 @media (hover: hover) {
   a:hover {
     background-color: hsla(160, 100%, 37%, 0.2);

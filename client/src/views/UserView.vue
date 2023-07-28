@@ -1,6 +1,8 @@
 <template>
   <div class="wrap">
 
+    <h1>登録ユーザー</h1>
+
     <EasyDataTable
       show-index
       v-model:items-selected="itemsSelected"
@@ -12,8 +14,8 @@
     >
       <template #item-operation="item">
         <div class="operation-wrapper">
-          <div><a @click="editItem(item)">Edit</a></div>
-          <div><a @click="deleteItem(item)">Delete</a></div>
+          <div><a @click="editItem(item)">編集</a></div>
+          <div><a @click="deleteItem(item)">削除</a></div>
         </div>
       </template>
       <template #expand="item">
@@ -31,7 +33,7 @@
         <div>Note:<input type="text" v-model="editingItem.Note" /></div>
       </div>
       <div class="btns">
-        <button @click="_edit()">OK</button>
+        <button @click="_edit()">Save</button>
         <button @click="close_edit()">Cancel</button>
       </div>
     </div>
@@ -39,7 +41,7 @@
     <div v-if="delete_visible" class="darkbox">
       <h3>Delete "{{ deletingItem.UserId }}"?</h3>
       <div class="btns">
-        <button @click="_delete()">OK</button>
+        <button @click="_delete()">Delete</button>
         <button @click="close_delete()">Cancel</button>
       </div>
     </div>
@@ -177,11 +179,15 @@ h3 {
   right: 0;
   margin: auto;
   max-width: 400px;
+  min-height: 230px;
   padding: 0.75em 1em;
   z-index: 3;
 }
-.inline {
-  display: inline;
+.btns {
+  display: flex;
+  height: 3em;
+  justify-content: space-evenly;
+  padding: 1em 0 0;
 }
 @media (min-width: 1024px) {
   .greetings h1,

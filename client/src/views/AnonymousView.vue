@@ -1,6 +1,8 @@
 <template>
   <div class="wrap">
 
+    <h1>未登録ID</h1>
+
     <EasyDataTable
       show-index
       v-model:items-selected="itemsSelected"
@@ -12,8 +14,8 @@
     >
       <template #item-operation="item">
         <div class="operation-wrapper">
-          <div><a @click="editItem(item)">Add as user</a></div>
-          <div><a @click="deleteItem(item)">Delete</a></div>
+          <div><a @click="editItem(item)">ユーザーに追加</a></div>
+          <div><a @click="deleteItem(item)">削除</a></div>
         </div>
       </template>
     </EasyDataTable>
@@ -25,7 +27,7 @@
         <div>Note:<input type="text" v-model="editingItem.Note" /></div>
       </div>
       <div class="btns">
-        <button @click="_edit()">OK</button>
+        <button @click="_edit()">Save</button>
         <button @click="close_edit()">Cancel</button>
       </div>
     </div>
@@ -33,7 +35,7 @@
     <div v-if="delete_visible" class="darkbox">
       <h3>Delete "{{ deletingItem.UserId }}"?</h3>
       <div class="btns">
-        <button @click="_delete()">OK</button>
+        <button @click="_delete()">Delete</button>
         <button @click="close_delete()">Cancel</button>
       </div>
     </div>
@@ -118,6 +120,7 @@ const _edit = async () => {
     alert('Communication failed.')
     return false;
   }
+  await _delete(UserId);
   close_edit();
   await update();
 }
@@ -129,9 +132,10 @@ const deleteItem = (item: Item) => {
   deletingItem.UserId = item.UserId;
   delete_visible.value = true;
 }
-const _delete = async () => {
+const _delete = async (uid: (string | null) = null) => {
   loading.value = true;
-  const { UserId } = deletingItem;
+  let { UserId } = deletingItem;
+  if (uid) UserId = uid;
   const req = await fetch(`/anonymous?id=${UserId}`, {
     method: 'DELETE'
   });
@@ -165,6 +169,26 @@ h3 {
   text-align: center;
 }
 
+.darkbox {
+  background: rgba(43, 43, 43, .9);
+  border-radius: 0.35em;
+  color: #fff;
+  position: fixed;
+  top: 25%;
+  left: 0;
+  right: 0;
+  margin: auto;
+  max-width: 400px;
+  min-height: 230px;
+  padding: 0.75em 1em;
+  z-index: 3;
+}
+.btns {
+  display: flex;
+  height: 3em;
+  justify-content: space-evenly;
+  padding: 1em 0 0;
+}
 @media (min-width: 1024px) {
   .greetings h1,
   .greetings h3 {
