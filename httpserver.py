@@ -11,7 +11,7 @@ from my_util import init_db, DB_NAME
 import ipget
 
 #IP = socket.gethostbyname(socket.gethostname())
-IP = ipget.ipget().ipaddr('wlan0')
+IP, _ = ipget.ipget().ipaddr('wlan0').split('/')
 current_dir = ''
 
 class _MyHandler(BaseHTTPRequestHandler):
