@@ -20,9 +20,18 @@
       </template>
       <template #expand="item">
         <div>
-          <b>Note:</b>
+          <span class="bold">備考:</span>
           <div>{{item.Note}}</div>
         </div>
+        <div>
+          <span class="bold">登録日:</span>
+          {{ item.CreatedAt }}
+        </div>
+        <div>
+          <span class="bold">最終履歴:</span>
+          {{ item.LastSeen }}
+        </div>
+        
       </template>
     </EasyDataTable>
 
