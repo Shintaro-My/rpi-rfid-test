@@ -66,6 +66,15 @@ def main():
                         buzzer(2, led_red, led_all_off)
                         led_red()
                         print('[!] Invalid User.')
+                        cur.execute(
+                            f"""
+                            INSERT INTO Anonymous (UserId, LastUpdate)
+                            VALUES (\"{_uid}\", datetime('now', '+9 hours'))
+                            ON CONFLICT(UserId)
+                            DO UPDATE SET LastUpdate=datetime('now', '+9 hours')
+                            """.strip()
+                        )
+                        
                     time.sleep(1)
     except Exception as e:
         print(e)

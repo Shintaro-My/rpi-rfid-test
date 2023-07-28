@@ -53,6 +53,14 @@ def init_db(conn, cur):
         )
         """.strip()
     )
+    cur.execute(
+        """
+        CREATE TABLE IF NOT EXISTS Anonymous(
+            UserId     TEXT PRIMARY KEY,
+            LastUpdate DATETIME NOT NULL
+        )
+        """.strip()
+    )
     conn.commit()
     
     
