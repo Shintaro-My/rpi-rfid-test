@@ -18,13 +18,14 @@
       </template>
       <template #expand="item">
         <div>
-          {{item.Note}}
+          <b>Note:</b>
+          <div>{{item.Note}}</div>
         </div>
       </template>
     </EasyDataTable>
     
     <div v-if="edit_visible" class="darkbox">
-      <h3>Edit "<pre>{{ editingItem.UserId }}</pre>":</h3>
+      <h3>Edit "<pre class="inline">{{ editingItem.UserId }}</pre>":</h3>
       <div>
         <div>UserName:<input type="text" v-model="editingItem.UserName" /></div>
         <div>Note:<input type="text" v-model="editingItem.Note" /></div>
@@ -35,7 +36,7 @@
       </div>
     </div>
     
-    <div v-if="delete_visible">
+    <div v-if="delete_visible" class="darkbox">
       <h3>Delete "{{ deletingItem.UserId }}"?</h3>
       <div class="btns">
         <button @click="_delete()">OK</button>
@@ -91,6 +92,14 @@ const update = async () => {
   loading.value = false;
   return true;
 }
+
+const close_edit = () => {
+  edit_visible.value = false;
+}
+const close_delete = () => {
+  delete_visible.value = false;
+}
+
 const editingItem = reactive({
   UserId: '',
   UserName: '',
@@ -102,9 +111,6 @@ const editItem = (item: Item) => {
   editingItem.UserName = UserName;
   editingItem.Note = Note;
   edit_visible.value = true;
-}
-const close_edit = () => {
-  edit_visible.value = false;
 }
 const _edit = async () => {
   loading.value = true;
@@ -120,6 +126,7 @@ const _edit = async () => {
     alert('Communication failed.')
     return false;
   }
+  close_edit();
   await update();
 }
 
@@ -129,9 +136,6 @@ const deletingItem = reactive({
 const deleteItem = (item: Item) => {
   deletingItem.UserId = item.UserId;
   delete_visible.value = true;
-}
-const close_delete = () => {
-  delete_visible.value = false;
 }
 const _delete = async () => {
   loading.value = true;
@@ -143,6 +147,7 @@ const _delete = async () => {
     alert('Communication failed.')
     return false;
   }
+  close_delete();
   await update();
 }
 
@@ -173,7 +178,10 @@ h3 {
   margin: auto;
   max-width: 400px;
   padding: 0.75em 1em;
-  z-index: 2;
+  z-index: 3;
+}
+.inline {
+  display: inline;
 }
 @media (min-width: 1024px) {
   .greetings h1,
