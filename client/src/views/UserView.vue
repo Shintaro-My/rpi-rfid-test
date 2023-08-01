@@ -3,6 +3,8 @@
 
     <h1>登録ユーザー</h1>
 
+    <a @click="update()">最新の情報に更新する</a>
+
     <EasyDataTable
       show-index
       v-model:items-selected="itemsSelected"
@@ -21,7 +23,7 @@
       <template #expand="item">
         <div class="memo">
           <div>
-            <span class="bold">登録日:</span>
+            <span class="bold">登録日　:</span>
             {{ item.CreatedAt }}
           </div>
           <div>
@@ -29,8 +31,8 @@
             {{ item.LastSeen }}
           </div>
           <div>
-            <span class="bold">備考:</span>
-            <div>{{item.Note}}</div>
+            <span class="bold">備考　　:</span>
+            {{ item.Note }}
           </div>
         </div>
         

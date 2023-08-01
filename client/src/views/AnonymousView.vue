@@ -3,6 +3,8 @@
 
     <h1>未登録ID</h1>
 
+    <a @click="update()">最新の情報に更新する</a>
+    
     <EasyDataTable
       show-index
       v-model:items-selected="itemsSelected"

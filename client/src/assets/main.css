@@ -8,6 +8,10 @@
   font-weight: normal;
 }
 
+a {
+  cursor: pointer;
+}
+
 a,
 .green {
   text-decoration: none;
