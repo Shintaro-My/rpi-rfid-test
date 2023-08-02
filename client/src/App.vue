@@ -12,8 +12,8 @@ import { RouterLink, RouterView } from 'vue-router'
     
     <div class="wrapper">
       <nav>
-        <RouterLink to="/users">Users</RouterLink>
-        <RouterLink to="/anonymous">Anonymous</RouterLink>
+        <RouterLink to="/users">登録ユーザー</RouterLink>
+        <RouterLink to="/anonymous">未登録ID</RouterLink>
       </nav>
     </div>
   </header>
