@@ -23,15 +23,15 @@
       <template #expand="item">
         <div class="memo">
           <div>
-            <span class="bold">登録日:</span>
+            <span class="bold">登録日</span>
             {{ item.CreatedAt }}
           </div>
           <div>
-            <span class="bold">最終履歴:</span>
+            <span class="bold">最終履歴</span>
             {{ item.LastSeen }}
           </div>
           <div>
-            <span class="bold">備考:</span>
+            <span class="bold">備考</span>
             {{ item.Note }}
           </div>
         </div>
@@ -208,7 +208,7 @@ h3 {
   display: inline-flex;
   justify-content: space-between;
   font-weight: 700;
-  width: 4.5em;
+  width: 5.2em;
 }
 .bold::after {
   content: ':';
