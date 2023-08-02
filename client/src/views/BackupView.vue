@@ -20,12 +20,12 @@
       </template>
       <template #expand="item">
         <div class="memo">
-          <ul>
-            <li v-for="v in (item?.children || [])">
+          <div class="tbl">
+            <template v-for="v in (item?.children || [])">
               <span class="bold">{{ v.name }}</span>
-              <span>{{ v.mountpoint ? `"${v.mountpoint}"` : 'null' }}</span>
-            </li>
-          </ul>
+              <span class="code">{{ v.mountpoint ? `"${v.mountpoint}"` : 'null' }}</span>
+            </template>
+          </div>
         </div>
         
       </template>
@@ -128,16 +128,18 @@ h3 {
 .memo {
   padding: .5em;
 }
+.tbl {
+  display: grid;
+  grid-template-columns: auto 1fr;
+}
 .bold {
-  display: inline-flex;
-  justify-content: space-between;
   font-weight: 700;
-  width: 5.2em;
 }
 .bold::after {
   content: ':';
   font-weight: 700;
 }
+
 .darkbox {
   background: rgba(43, 43, 43, .9);
   border-radius: 0.35em;
