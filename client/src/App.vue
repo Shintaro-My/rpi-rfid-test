@@ -33,15 +33,16 @@ header {
 }
 
 .t_logo_wrap {
-  height: 130px;
-  width: 130px;
+  height: 150px;
+  width: 150px;
 }
 
 .t_logo {
   --g_top: #4b50f4;
   --g_bottom: #77e1ae;
-  background: #fff;
-  background: linear-gradient(180deg,var(--g_top),var(--g_bottom) 64%,#fff 65% 100%);
+  --g_default: #47a;
+  background: var(--g_default);
+  background: linear-gradient(180deg,var(--g_top),var(--g_bottom) 64%,var(--g_default) 65% 100%);
   height: 100%;
   mask-image: url(@/assets/tsuden_logo_large_anim.svg);
   mask-repeat: no-repeat;
