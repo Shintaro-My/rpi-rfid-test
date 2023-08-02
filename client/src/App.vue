@@ -38,9 +38,9 @@ header {
 }
 
 .t_logo {
-  --g_top: #4b50f4;
-  --g_bottom: #77e1ae;
-  --g_default: #47a;
+  --g_top: #42b883;
+  --g_bottom: #42b883;
+  --g_default: #364a5f;
   background: var(--g_default);
   background: linear-gradient(180deg,var(--g_top),var(--g_bottom) 64%,var(--g_default) 65% 100%);
   height: 100%;

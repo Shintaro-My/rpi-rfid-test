@@ -23,7 +23,7 @@
       <template #expand="item">
         <div class="memo">
           <div>
-            <span class="bold">登録日　:</span>
+            <span class="bold">登録日:</span>
             {{ item.CreatedAt }}
           </div>
           <div>
@@ -31,7 +31,7 @@
             {{ item.LastSeen }}
           </div>
           <div>
-            <span class="bold">備考　　:</span>
+            <span class="bold">備考:</span>
             {{ item.Note }}
           </div>
         </div>
@@ -205,7 +205,14 @@ h3 {
   padding: .5em;
 }
 .bold {
-  font-weight: bold;
+  display: inline-flex;
+  justify-content: space-between;
+  font-weight: 700;
+  width: 4.5em;
+}
+.bold::after {
+  content: ':';
+  font-weight: 700;
 }
 .darkbox {
   background: rgba(43, 43, 43, .9);
