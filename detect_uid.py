@@ -10,7 +10,7 @@ from mfrc522_i2c import MFRC522
 import RPi.GPIO as GPIO
 
 DURATION = 3
-        
+
 def main():
     init_gpio()
     led_red()
@@ -47,6 +47,8 @@ def main():
 
         while run:
             led_all_off()
+            relay(False)
+            
             (status, backData, tagType) = MFRC522Reader.scan()
             
             if status == MFRC522Reader.MIFARE_OK:
@@ -73,7 +75,6 @@ def main():
                         led_green()
                         buzzer()
                         time.sleep(DURATION)
-                        relay(False)
                     else:
                         buzzer(2, led_red, led_all_off)
                         led_red()
