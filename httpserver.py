@@ -8,7 +8,12 @@ import magic # python-magic
 import socket
 import sqlite3
 from my_util import init_db, DB_NAME
+import sd_copier
 import ipget
+
+
+
+SERVER_PAUSE = False
 
 #IP = socket.gethostbyname(socket.gethostname())
 IP, _ = ipget.ipget().ipaddr('wlan0').split('/')
@@ -92,9 +97,11 @@ class Server:
         self.httpd = HTTPServer((host, port), _MyHandler)
         print(f'serving at http://{host}:{port}')
     def listen(self):
-        self.httpd.handle_request()
+        if SERVER_PAUSE:
+            time.sleep(.1)
+        else:
+            self.httpd.handle_request()
         
-
 def _getMimeFromExt(path):
     if path.endswith('.css'):
         return 'text/css'
@@ -110,6 +117,18 @@ def _Page_GET(self: _MyHandler, path, query):
     if path == '/':
         try:
             data['body'] = {}
+        except Exception as e:
+            data['status'] = 'err'
+            t = traceback.format_exc()
+            print(t)
+            data['body'] = t
+            status = 500
+        return (True, status, json.dumps(data))
+    
+    elif path == '/lsblk':
+        try:
+            lsblk = sd_copier.lsblk()
+            data['body'] = lsblk
         except Exception as e:
             data['status'] = 'err'
             t = traceback.format_exc()
