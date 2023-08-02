@@ -7,7 +7,7 @@ import { RouterLink, RouterView } from 'vue-router'
     <!--<img alt="Vue logo" class="logo" src="@/assets/logo.svg" width="125" height="125" />-->
 
     <div class="t_logo_wrap">
-      <div class="t_logo" style="--logo: url('@/assets/tsuden_logo_large_anim.svg');"></div>
+      <div class="t_logo" style="--logo: url('/assets/tsuden_logo_large_anim.svg');"></div>
     </div>
     
     <div class="wrapper">
@@ -33,6 +33,7 @@ header {
 }
 
 .t_logo_wrap {
+  height: 130px;
   width: 130px;
 }
 
