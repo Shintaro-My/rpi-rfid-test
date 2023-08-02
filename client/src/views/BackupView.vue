@@ -1,7 +1,7 @@
 <template>
   <div class="wrap">
 
-    <h1>バックアップ</h1>
+    <h1>バックアップ（作成中）</h1>
 
     <a @click="update()">最新の情報に更新する</a>
 
