@@ -244,7 +244,7 @@ def _Page_DELETE(self: _MyHandler, path, query):
     
 if __name__ == '__main__':
     import time
-    time.sleep(3)
+    time.sleep(.5)
     server = Server(12345)
     while True:
         try:
