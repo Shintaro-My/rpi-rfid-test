@@ -20,7 +20,7 @@
       </template>
       <template #item-operation="item">
         <div class="operation-wrapper">
-          <div v-if="item.mountpoint == ''"><a @click="selectItem(item)">...</a></div>
+          <div v-if="item.mountpoint == ''"><a @click="selectItem(item)">選択</a></div>
         </div>
       </template>
       <template #expand="item">
@@ -37,7 +37,6 @@
         
       </template>
     </EasyDataTable>
-    <p>※ ストレージ「mmcblk0」は、Raspberry Pi OSが格納されたSDカードであることが多いです。</p>
     
     <div v-if="backup_visible" class="darkbox">
       <h3>Copy to "{{ selectedDisk.name }}"?</h3>
