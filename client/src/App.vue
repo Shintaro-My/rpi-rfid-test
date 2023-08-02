@@ -7,7 +7,7 @@ import { RouterLink, RouterView } from 'vue-router'
     <!--<img alt="Vue logo" class="logo" src="@/assets/logo.svg" width="125" height="125" />-->
 
     <div class="t_logo_wrap">
-      <div class="t_logo" style="--logo: url(@/assets/tsuden_logo_large_anim.svg);"></div>
+      <div class="t_logo"></div>
     </div>
     
     <div class="wrapper">
@@ -43,13 +43,9 @@ header {
   background: #fff;
   background: linear-gradient(180deg,var(--g_top),var(--g_bottom) 64%,#fff 65% 100%);
   height: 100%;
-  -webkit-mask-image: var(--logo);
-  mask-image: var(--logo);
-  -webkit-mask-repeat: no-repeat;
+  mask-image: url(@/assets/tsuden_logo_large_anim.svg);
   mask-repeat: no-repeat;
-  -webkit-mask-position: center;
   mask-position: center;
-  -webkit-mask-size: 72%;
   mask-size: 72%;
 }
 
