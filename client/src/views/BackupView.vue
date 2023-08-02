@@ -23,7 +23,9 @@
           <div class="tbl">
             <template v-for="v in (item?.children || [])">
               <span class="bold">{{ v.name }}</span>
-              <span class="code">{{ v.mountpoint ? `"${v.mountpoint}"` : 'null' }}</span>
+              <span>
+                <span class="code">{{ v.mountpoint ? `"${v.mountpoint}"` : 'null' }}</span>
+              </span>
             </template>
           </div>
         </div>
@@ -139,7 +141,13 @@ h3 {
   content: ':';
   font-weight: 700;
 }
-
+.code {
+  background: #ddd;
+  color: #555;
+  font-family: 'Courier New', Courier, monospace;
+  margin: .1em;
+  padding: .25em;
+}
 .darkbox {
   background: rgba(43, 43, 43, .9);
   border-radius: 0.35em;
