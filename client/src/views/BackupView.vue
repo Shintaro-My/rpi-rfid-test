@@ -3,8 +3,8 @@
 
     <h1>バックアップ（作成中）</h1>
 
+    <h3>接続中のストレージ</h3>
     <a @click="update()">最新の情報に更新する</a>
-
     <EasyDataTable
       show-index
       buttons-pagination
@@ -13,9 +13,14 @@
       :loading="loading"
       alternating
     >
+      <template #item-mountpoint="item">
+        <span class="code" v-for="v in item.mountpoint.split(',').filter((s: string) => s)">
+          {{ v }}
+        </span>
+      </template>
       <template #item-operation="item">
         <div class="operation-wrapper">
-          <div><a @click="selectItem(item)">...</a></div>
+          <div v-if="item.mountpoint == ''"><a @click="selectItem(item)">...</a></div>
         </div>
       </template>
       <template #expand="item">
@@ -32,6 +37,7 @@
         
       </template>
     </EasyDataTable>
+    <p>※ ストレージ「mmcblk0」は、Raspberry Pi OSが格納されたSDカードであることが多いです。</p>
     
     <div v-if="backup_visible" class="darkbox">
       <h3>Copy to "{{ selectedDisk.name }}"?</h3>
@@ -78,6 +84,9 @@ const update = async () => {
   }
   const json = await req.json()
   const disks: Disk[] = json.body;
+  for (const v of disks) {
+    v.mountpoint = (v.children || []).map(c => c.mountpoint).filter(s => s).join(',');
+  }
   items.value = disks;
   loading.value = false;
   return true;
@@ -134,6 +143,10 @@ h3 {
   display: grid;
   grid-template-columns: auto 1fr;
 }
+.tbl > span {
+    display: inline-flex;
+    align-items: center;
+}
 .bold {
   font-weight: 700;
 }
@@ -144,9 +157,13 @@ h3 {
 .code {
   background: #ddd;
   color: #555;
-  font-family: 'Courier New', Courier, monospace;
-  margin: .1em;
+  display: inline-flex;
+  font-family: Courier New,Courier,monospace;
+  font-weight: bold;
+  margin: .1em .5em;
   padding: .25em;
+  border: 1px dashed;
+  border-radius: 0.25em;
 }
 .darkbox {
   background: rgba(43, 43, 43, .9);
