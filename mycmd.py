@@ -2,6 +2,7 @@ import json
 import subprocess
 import time
 
+import sys
 import asyncio
 import websockets
  
@@ -51,20 +52,36 @@ def start_streaming(handler):
     handler.wfile.close()
     
     
+async def cmd_promise_with_websocket(websocket, program):
+    proc = await asyncio.create_subprocess_exec(
+        *program,
+        stdout=asyncio.subprocess.PIPE,
+        stderr=asyncio.subprocess.PIPE
+    )
+
+    while True:
+        if proc.stdout.at_eof() and proc.stderr.at_eof():
+            break
+        
+        stdout = (await proc.stdout.readline()).decode()
+        if stdout:
+            print(f'[stdout] {stdout}', end='', flush=True)
+            await websocket.send(stdout)
+            
+        stderr = (await proc.stderr.readline()).decode()
+        if stderr:
+            print(f'[sdterr] {stderr}', end='', flush=True, file=sys.stderr)
+            await websocket.send(stderr)
+
+        await asyncio.sleep(0.1)
+    await proc.communicate()
     
     
     
 WS_CONTINUE = True
-
  
 async def ws_main(host, port, disk):
     print(disk)
-    proc = subprocess.Popen(
-        'sudo apt-get update',
-        shell=True,
-        stdout=subprocess.PIPE,
-        stderr=subprocess.STDOUT
-    )
 
     async def ws_handler(websocket):
         global WS_CONTINUE
@@ -74,15 +91,7 @@ async def ws_main(host, port, disk):
             await websocket.send(str(time.time()))
             time.sleep(1)
         """
-        while True:
-            line = proc.stdout.readline()
-            if line:
-                txt = line.decode('UTF-8', 'replace')
-                print(txt)
-                await websocket.send(txt)
-                await asyncio.sleep(0.01)
-            elif proc.poll() is not None:
-                break
+        await cmd_promise_with_websocket(websocket, ['sudo', 'apt-get', 'update'])
         WS_CONTINUE = False
         
     async with websockets.serve(ws_handler, host, port):
