@@ -63,8 +63,9 @@ async def cmd_promise_with_websocket(websocket, cmd):
     while True:
         stdout = proc.stdout.readline()
         if stdout:
-            print(f'[stdout] {stdout}', end='', flush=True)
-            await websocket.send(stdout)
+            txt = stdout.decode('UTF-8', 'replace')
+            print(f'[stdout] {txt}', end='', flush=True)
+            await websocket.send(txt)
         elif proc.poll() is not None:
             break
         time.sleep(.1)
