@@ -1,7 +1,7 @@
 echo 'started.'
-sleep 5
+sleep 2
 echo 'in progress.'
-sleep 5
+sleep 2
 echo 'in progress.'
-sleep 5
+sleep 2
 echo 'finished.'
