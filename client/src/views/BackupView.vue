@@ -48,9 +48,10 @@
 
     <button @click="get_stream()">test</button>
     <div class="cmd_block">
-      <div v-for="line in server_stdout">
+      <div class="stdout_line" v-for="line in server_stdout">
         {{ line }}
       </div>
+      <div ref="scrollAnchor"></div>
     </div>
 
   </div>
@@ -68,6 +69,11 @@ interface Disk {
   name: string,
   mountpoint: null | string,
   children?: Disk[]
+}
+
+const scrollAnchor: Ref<HTMLDivElement | null> = ref(null);
+const scrollCmdBottom = () => {
+  scrollAnchor.value?.scrollIntoView({ behavior: 'smooth' });
 }
 
 const headers: Header[] = [
@@ -93,10 +99,12 @@ const get_stream = async () => {
     server_stdout.value = [];
   };
   ws.onmessage = e => {
-    server_stdout.value = [e.data, ...server_stdout.value];
+    server_stdout.value = [...server_stdout.value, e.data];
+    scrollCmdBottom();
   }
   ws.onclose = e => {
-    server_stdout.value = ['(END)', ...server_stdout.value];
+    server_stdout.value = [...server_stdout.value, '(END)'];
+    scrollCmdBottom();
   }
 }
 
