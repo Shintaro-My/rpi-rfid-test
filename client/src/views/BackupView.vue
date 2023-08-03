@@ -20,7 +20,9 @@
       </template>
       <template #item-operation="item">
         <div class="operation-wrapper">
-          <div v-if="item.mountpoint == ''"><a @click="selectItem(item)">選択</a></div>
+          <div v-if="!isBaseMount(item.mountpoint)">
+            <a @click="selectItem(item)">選択</a>
+          </div>
         </div>
       </template>
       <template #expand="item">
@@ -116,7 +118,8 @@ const get_stream = async () => {
   }
 }
 
-const splitter = (str: string) => str.split(',').filter((s: string) => s).map((s: string) => `"${s}"`)
+const splitter = (str: string) => str.split(',').filter((s: string) => s).map((s: string) => `"${s}"`);
+const isBaseMount = (str: string) => splitter(str).find(v => -1 < ['"/"', '"/boot"'].indexOf(v));
 const update = async () => {
   loading.value = true;
   const req = await fetch('/lsblk');
