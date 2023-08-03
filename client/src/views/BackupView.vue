@@ -14,7 +14,7 @@
       alternating
     >
       <template #item-mountpoint="item">
-        <span class="code" v-for="v in item.mountpoint.split(',').filter((s: string) => s)">
+        <span class="code" v-for="v in splitter(item.mountpoint)">
           {{ v }}
         </span>
       </template>
@@ -46,7 +46,9 @@
       </div>
     </div>
 
-    <button @click="get_stream()">test</button>
+    <div class="btns">
+      <button @click="get_stream()" v-bind:disabled="ws_active">test</button>
+    </div>
     <div class="cmd_block">
       <div class="stdout_line" v-for="line in server_stdout">
         {{ line }}
@@ -114,6 +116,7 @@ const get_stream = async () => {
   }
 }
 
+const splitter = (str: string) => str.split(',').filter((s: string) => s).map((s: string) => `"${s}"`)
 const update = async () => {
   loading.value = true;
   const req = await fetch('/lsblk');
