@@ -71,8 +71,11 @@ interface Disk {
   children?: Disk[]
 }
 
+const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+
 const scrollAnchor: Ref<HTMLDivElement | null> = ref(null);
-const scrollCmdBottom = () => {
+const scrollCmdBottom = async () => {
+  await sleep(100);
   scrollAnchor.value?.scrollIntoView({ behavior: 'smooth', block: 'end' });
 }
 
