@@ -223,17 +223,16 @@ h3 {
   border-radius: 0.35em;
   color: #333;
   font-family: Courier New,Courier,monospace;
-  max-height: 350px;
+  height: 11em;
   margin: 0.5em 0;
   overflow: auto;
   padding: 0.5em 1em;
 }
-.endline::before {
-  content: '|';
-  font-weight: bold;
-}
+
 .endline.active::before {
   animation: blink 1s linear infinite;
+  content: '|';
+  font-weight: bold;
 }
 @keyframes blink {
   0%,10% {
