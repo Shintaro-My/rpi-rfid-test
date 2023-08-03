@@ -83,18 +83,15 @@ const backup_visible: Ref<boolean> = ref(false);
 
 const server_stdout: Ref<string[]> = ref([]);
 const get_stream = async () => {
+  console.log('click!')
   server_stdout.value = [];
   const esrc = new EventSource('/stream');
+  esrc.onopen = console.log;
   esrc.onmessage = e => {
     const { value: v } = server_stdout;
     server_stdout.value = [e.data, ...v];
     console.log(e, `msg: "${e.data}"`)
   }
-  esrc.addEventListener('ping', e => {
-    const { value: v } = server_stdout;
-    server_stdout.value = [e.data, ...v];
-    console.log(e, `ping: "${e.data}"`)
-  })
 }
 
 const update = async () => {
