@@ -8,7 +8,7 @@ import magic # python-magic
 import socket
 import sqlite3
 from my_util import init_db, DB_NAME
-import sd_copier
+import mycmd
 import ipget
 
 
@@ -46,6 +46,9 @@ class _MyHandler(BaseHTTPRequestHandler):
         query = parse_qs(parsed_path.query)
         
         print(query)
+        
+        if path == '/stream':
+            return mycmd.start_streaming(self)
         
         isMatch, status, txt = _Page_GET(self, path, query)
         if isMatch:
@@ -127,7 +130,7 @@ def _Page_GET(self: _MyHandler, path, query):
     
     elif path == '/lsblk':
         try:
-            lsblk = sd_copier.lsblk()
+            lsblk = mycmd.lsblk()
             data['body'] = lsblk
         except Exception as e:
             data['status'] = 'err'

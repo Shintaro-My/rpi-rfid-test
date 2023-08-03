@@ -46,6 +46,13 @@
       </div>
     </div>
 
+    <button @click="get_stream()">test</button>
+    <div class="cmd_block">
+      <div v-for="line in server_stdout">
+        {{ line }}
+      </div>
+    </div>
+
   </div>
 </template>
 
@@ -73,6 +80,17 @@ const items: Ref<Item[]> = ref([]);
 const loading: Ref<boolean> = ref(false);
 
 const backup_visible: Ref<boolean> = ref(false);
+
+const server_stdout: Ref<string[]> = ref([]);
+const get_stream = async () => {
+  server_stdout.value = [];
+  const esrc = new EventSource('/stream');
+  esrc.onmessage = e => {
+    const { value: v } = server_stdout;
+    server_stdout.value = [e.data, ...v];
+    console.log(`"${e.data}"`)
+  }
+}
 
 const update = async () => {
   loading.value = true;
