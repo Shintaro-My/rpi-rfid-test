@@ -40,7 +40,7 @@ class _MyHandler(BaseHTTPRequestHandler):
         else:
             self.send_error(404)
             
-    async def do_GET(self):
+    def do_GET(self):
         global SERVER_PAUSE
         parsed_path = urlparse(self.path)
         path = parsed_path.path
@@ -57,7 +57,9 @@ class _MyHandler(BaseHTTPRequestHandler):
             self.end_headers()
             self.wfile.write(f'ws://{IP}:{port}')
             SERVER_PAUSE = True
-            await ws
+            while True:
+                if not ws.cr_running:
+                    break
             SERVER_PAUSE = False
             return
         ######## EX ########
