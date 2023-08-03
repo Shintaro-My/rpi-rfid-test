@@ -201,6 +201,7 @@ h3 {
   border-radius: 0.35em;
   color: #333;
   font-family: Courier New,Courier,monospace;
+  font-size: .75em;
   height: 11em;
   margin: 0.5em 0;
   overflow: auto;
