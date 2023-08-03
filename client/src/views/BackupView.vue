@@ -231,7 +231,7 @@ h3 {
 
 .endline.active::before {
   animation: blink 1s linear infinite;
-  content: '|';
+  content: '█';
   font-weight: bold;
 }
 @keyframes blink {

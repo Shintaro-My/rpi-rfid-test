@@ -60,7 +60,7 @@ async def ws_handler(websocket):
     global WS_CONTINUE
     #name = await websocket.recv()
     for _ in range(15):
-        await websocket.send('a')
+        await websocket.send(str(time.time()))
         time.sleep(1)
     WS_CONTINUE = False
  
