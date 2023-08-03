@@ -47,8 +47,8 @@
       </button>
     </div>
     <div class="cmd_block">
-      <div class="stdout_line" v-for="line in server_stdout">
-        {{ line }}
+      <div class="stdout_line" :class="obj.type" v-for="obj in server_stdout">
+        {{ obj.data }}
       </div>
       <div class="endline" v-bind:class="{ active: ws_active }" ref="scrollAnchor"></div>
     </div>
@@ -72,11 +72,7 @@ interface Disk {
 
 const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
-const scrollAnchor: Ref<HTMLDivElement | null> = ref(null);
-const scrollCmdBottom = async () => {
-  await sleep(100);
-  scrollAnchor.value?.scrollIntoView({ behavior: 'smooth', block: 'end' });
-}
+
 
 const headers: Header[] = [
   { text: 'name', value: 'name', sortable: true },
@@ -87,8 +83,18 @@ const items: Ref<Item[]> = ref([]);
 
 const loading: Ref<boolean> = ref(false);
 
+const scrollAnchor: Ref<HTMLDivElement | null> = ref(null);
+const scrollCmdBottom = async () => {
+  await sleep(100);
+  scrollAnchor.value?.scrollIntoView({ behavior: 'smooth', block: 'end' });
+};
+
+interface StdOut {
+  data: string,
+  type: string
+}
 const ws_active: Ref<boolean> = ref(false);
-const server_stdout: Ref<string[]> = ref([]);
+const server_stdout: Ref<StdOut[]> = ref([]);
 const get_stream = async () => {
   if (!selectedDisk.name) return alert('保存先が選択されていません。');
   const req = await fetch(`/backup?disk=${selectedDisk.name}`, {method: 'PUT'});
@@ -101,11 +107,12 @@ const get_stream = async () => {
     ws_active.value = true;
   };
   ws.onmessage = e => {
-    server_stdout.value = [...server_stdout.value, e.data];
+    const obj = JSON.parse(e.data);
+    server_stdout.value = [...server_stdout.value, obj];
     scrollCmdBottom();
   }
   ws.onclose = e => {
-    server_stdout.value = [...server_stdout.value, '(END)'];
+    server_stdout.value = [...server_stdout.value, {data: '(END)', type: 'none'}];
     scrollCmdBottom();
     ws_active.value = false;
   }

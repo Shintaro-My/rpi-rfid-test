@@ -65,7 +65,7 @@ async def cmd_promise_with_websocket(websocket, cmd):
         if stdout:
             txt = stdout.decode('UTF-8', 'replace')
             print(f'[stdout] {txt}', end='', flush=True)
-            await websocket.send(txt)
+            await websocket.send(json.dumps({'data': txt, 'type': 'stdout'}))
         elif proc.poll() is not None:
             break
         time.sleep(.1)
@@ -84,8 +84,7 @@ async def ws_main(host, port, disk):
         """
         command = ['sh', './test.sh']
         # command = ['sudo', 'rpi-clone', disk, '-U']
-        await websocket.send('$ ' + ' '.join(command))
-        await websocket.send('')
+        await websocket.send(json.dumps({'data': " ".join(command), 'type': 'cmd'}))
         await cmd_promise_with_websocket(websocket, command)
         WS_CONTINUE = False
         
