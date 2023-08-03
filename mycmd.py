@@ -53,7 +53,7 @@ def start_streaming(handler):
     
     
 async def cmd_promise_with_websocket(websocket, program):
-    proc = await asyncio.create_subprocess_exec(
+    proc = subprocess.Popen(
         *program,
         stdout=asyncio.subprocess.PIPE,
         stderr=asyncio.subprocess.PIPE
@@ -91,7 +91,7 @@ async def ws_main(host, port, disk):
             await websocket.send(str(time.time()))
             time.sleep(1)
         """
-        await cmd_promise_with_websocket(websocket, ['sudo', 'apt-get', 'update'])
+        await cmd_promise_with_websocket(websocket, ['sh', './test.sh'])
         WS_CONTINUE = False
         
     async with websockets.serve(ws_handler, host, port):
