@@ -27,6 +27,7 @@
       </template>
       <template #expand="item">
         <div class="memo">
+          <span class="bold">パーティション</span>
           <div class="tbl">
             <template v-for="v in (item?.children || [])">
               <span class="bold">{{ v.name }}</span>
@@ -112,7 +113,7 @@ const get_stream = async () => {
     scrollCmdBottom();
   }
   ws.onclose = e => {
-    server_stdout.value = [...server_stdout.value, {data: '(END)', type: 'none'}];
+    server_stdout.value = [...server_stdout.value, {data: '[END]', type: 'none'}];
     scrollCmdBottom();
     ws_active.value = false;
   }
@@ -232,7 +233,7 @@ h3 {
   font-weight: bold;
 }
 .stdout_line.none {
-  color: #555;
+  color: #666;
 }
 .endline.active::before {
   animation: blink 1s linear infinite;
