@@ -288,7 +288,7 @@ if __name__ == '__main__':
         try:
             if WS_ENABLE:
                 print('######## WS START ########')
-                mycmd.ws_init(IP, WS_PORT)
+                mycmd.ws_init(IP, WS_PORT, WS_ENABLE)
                 WS_ENABLE = False
                 print('######## WS CLOSE ########')
             else:

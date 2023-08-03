@@ -57,13 +57,29 @@ def start_streaming(handler):
 WS_CONTINUE = True
 
  
-async def ws_main(host, port):
+async def ws_main(host, port, disk):
+    print(disk)
+    proc = subprocess.Popen(
+        'sudo apt update',
+        shell=True,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.STDOUT
+    )
+
     async def ws_handler(websocket):
         global WS_CONTINUE
         #name = await websocket.recv()
+        """
         for _ in range(15):
             await websocket.send(str(time.time()))
             time.sleep(1)
+        """
+        while True:
+            line = proc.stdout.readline()
+            if line:
+                await websocket.send(line.decode('UTF-8'))
+            elif proc.poll() is not None:
+                break
         WS_CONTINUE = False
         
     async with websockets.serve(ws_handler, host, port):
@@ -73,11 +89,11 @@ async def ws_main(host, port):
             else:
                 break
             
-def ws_init(host, port):
+def ws_init(host, port, disk):
     global WS_CONTINUE
     WS_CONTINUE = True
     asyncio.set_event_loop(asyncio.new_event_loop())
     loop = asyncio.get_event_loop()
-    loop.run_until_complete(ws_main(host, port))
+    loop.run_until_complete(ws_main(host, port, disk))
     loop.close()
     return
