@@ -206,7 +206,7 @@ h3 {
   background: #eee;
   border: 1px dashed;
   border-radius: 0.35em;
-  color: #333;
+  color: #000;
   font-family: Courier New,Courier,monospace;
   font-size: .75em;
   height: 11em;
@@ -215,13 +215,24 @@ h3 {
   padding: 0.5em 1em;
 }
 .stdout_line.cmd {
+  background: #fff;
+  border-radius: 0.35em;
+  box-shadow: 1px 1px 2px #bbb;
   font-style: italic;
+  margin: 0.5em 0;
+  padding: 0.35em 0.75em;
 }
 .stdout_line.cmd::before {
   content: '$ ';
   color: #601;
   font-style: normal;
   font-weight: bold;
+}
+.stdout_line.stdout {
+  font-weight: bold;
+}
+.stdout_line.none {
+  color: #555;
 }
 .endline.active::before {
   animation: blink 1s linear infinite;
