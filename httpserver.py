@@ -12,7 +12,8 @@ import mycmd
 import ipget
 
 
-
+WS_PORT   = 11111
+WS_ENABLE = False
 SERVER_PAUSE = False
 
 #IP = socket.gethostbyname(socket.gethostname())
@@ -41,7 +42,7 @@ class _MyHandler(BaseHTTPRequestHandler):
             self.send_error(404)
             
     def do_GET(self):
-        global SERVER_PAUSE
+        global WS_ENABLE
         parsed_path = urlparse(self.path)
         path = parsed_path.path
         query = parse_qs(parsed_path.query)
@@ -50,15 +51,11 @@ class _MyHandler(BaseHTTPRequestHandler):
         
         ######## EX ########
         if path == '/stream':
-            port = 11111
             self.send_response(200)
             self.send_header('Content-type', 'text/plain')
             self.end_headers()
-            self.wfile.write(f'ws://{IP}:{port}'.encode("utf-8"))
-            SERVER_PAUSE = True
-            print('######## WS ########')
-            mycmd.ws_init(IP, port)
-            SERVER_PAUSE = False
+            self.wfile.write(f'ws://{IP}:{WS_PORT}'.encode("utf-8"))
+            WS_ENABLE = True
             return
         ######## EX ########
         
@@ -283,9 +280,12 @@ if __name__ == '__main__':
     server = Server(12345)
     while True:
         try:
-            if SERVER_PAUSE:
-                continue
-            server.listen()
+            if WS_ENABLE:
+                print('######## WS ########')
+                mycmd.ws_init(IP, WS_PORT)
+                WS_ENABLE = False
+            else:
+                server.listen()
         except KeyboardInterrupt:
             print('\nAbort.')
             break
