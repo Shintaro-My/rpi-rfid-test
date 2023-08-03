@@ -52,7 +52,7 @@ class _MyHandler(BaseHTTPRequestHandler):
         if path == '/stream':
             port = 11111
             ws = mycmd.ws_init(IP, port)
-            self.send_response(status)
+            self.send_response(200)
             self.send_header('Content-type', 'text/plain')
             self.end_headers()
             self.wfile.write(f'ws://{IP}:{port}')
