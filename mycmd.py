@@ -56,15 +56,16 @@ def start_streaming(handler):
     
 WS_CONTINUE = True
 
-async def ws_handler(websocket):
-    global WS_CONTINUE
-    #name = await websocket.recv()
-    for _ in range(15):
-        await websocket.send(str(time.time()))
-        time.sleep(1)
-    WS_CONTINUE = False
  
 async def ws_main(host, port):
+    async def ws_handler(websocket):
+        global WS_CONTINUE
+        #name = await websocket.recv()
+        for _ in range(15):
+            await websocket.send(str(time.time()))
+            time.sleep(1)
+        WS_CONTINUE = False
+        
     async with websockets.serve(ws_handler, host, port):
         while True:
             if WS_CONTINUE:

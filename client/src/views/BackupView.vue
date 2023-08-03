@@ -40,16 +40,11 @@
       </template>
     </EasyDataTable>
     
-    <div v-if="backup_visible" class="darkbox">
-      <h3>Copy to "{{ selectedDisk.name }}"?</h3>
-      <div class="btns">
-        <button @click="_copy()">Copy</button>
-        <button @click="close_backup()">Cancel</button>
-      </div>
-    </div>
 
     <div class="btns">
-      <button @click="get_stream()" v-bind:disabled="ws_active">バックアップ</button>
+      <button @click="get_stream()" v-bind:disabled="ws_active || !selectedDisk.name">
+        {{ selectedDisk.name ? `"${selectedDisk.name}"にバックアップ` : '選択されていません' }}
+      </button>
     </div>
     <div class="cmd_block">
       <div class="stdout_line" v-for="line in server_stdout">
@@ -91,8 +86,6 @@ const headers: Header[] = [
 const items: Ref<Item[]> = ref([]);
 
 const loading: Ref<boolean> = ref(false);
-
-const backup_visible: Ref<boolean> = ref(false);
 
 const ws_active: Ref<boolean> = ref(false);
 const server_stdout: Ref<string[]> = ref([]);
@@ -137,32 +130,11 @@ const update = async () => {
   return true;
 }
 
-const close_backup = () => {
-  backup_visible.value = false;
-}
-
 const selectedDisk = reactive({
   name: ''
 });
 const selectItem = (item: Item) => {
   selectedDisk.name = item.name;
-  backup_visible.value = true;
-}
-const _copy = async () => {
-  loading.value = true;
-  const { name } = selectedDisk;
-  alert(name);
-  /*
-  const req = await fetch(`/users?id=${UserId}`, {
-    method: 'DELETE'
-  });
-  if (req.status != 200) {
-    alert('Communication failed.')
-    return false;
-  }
-  */
-  close_backup();
-  await update();
 }
 
 update();
