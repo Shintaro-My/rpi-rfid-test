@@ -73,7 +73,7 @@ async def cmd_promise_with_websocket(websocket, program):
             print(f'[sdterr] {stderr}', end='', flush=True, file=sys.stderr)
             await websocket.send(stderr)
 
-        await asyncio.sleep(0.1)
+        await asyncio.sleep(0.01)
     await proc.communicate()
     
     
@@ -97,7 +97,7 @@ async def ws_main(host, port, disk):
     async with websockets.serve(ws_handler, host, port):
         while True:
             if WS_CONTINUE:
-                await asyncio.sleep(0.1)
+                await asyncio.sleep(1)
             else:
                 break
             
