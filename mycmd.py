@@ -29,7 +29,7 @@ def lsblk():
 
 def start_streaming(handler):
     handler.send_response(200)
-    handler.send_header('Connection', 'Keep-Alive')
+    #handler.send_header('Connection', 'Keep-Alive')
     handler.send_header('Content-Type', 'text/event-stream')
     handler.end_headers()
     
@@ -43,3 +43,5 @@ def start_streaming(handler):
         handler.wfile.write(b'\r\n')
         handler.wfile.flush()
         time.sleep(1)
+        
+    handler.wfile.close()
