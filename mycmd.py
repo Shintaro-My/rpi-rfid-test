@@ -59,7 +59,7 @@ WS_CONTINUE = True
 async def ws_handler(websocket):
     global WS_CONTINUE
     #name = await websocket.recv()
-    for _ in range(60):
+    for _ in range(15):
         await websocket.send('a')
         time.sleep(1)
     WS_CONTINUE = False
@@ -67,7 +67,9 @@ async def ws_handler(websocket):
 async def ws_main(host, port):
     async with websockets.serve(ws_handler, host, port):
         while True:
-            if not WS_CONTINUE:
+            if WS_CONTINUE:
+                await asyncio.sleep(0.1)
+            else:
                 break
             
 def ws_init(host, port):
