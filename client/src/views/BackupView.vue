@@ -203,6 +203,15 @@ h3 {
   padding: 0.75em 1em;
   z-index: 3;
 }
+.cmd_block {
+  background: #eee;
+  border: 1px dashed;
+  border-radius: 0.35em;
+  color: #333;
+  font-family: Courier New,Courier,monospace;
+  margin: 0.5em 0;
+  padding: 0.5em 1em;
+}
 .btns {
   display: flex;
   height: 3em;

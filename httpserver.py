@@ -281,9 +281,10 @@ if __name__ == '__main__':
     while True:
         try:
             if WS_ENABLE:
-                print('######## WS ########')
+                print('######## WS START ########')
                 mycmd.ws_init(IP, WS_PORT)
                 WS_ENABLE = False
+                print('######## WS CLOSE ########')
             else:
                 server.listen()
         except KeyboardInterrupt:
