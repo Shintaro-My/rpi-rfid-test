@@ -52,10 +52,10 @@ def start_streaming(handler):
     handler.wfile.close()
     
     
-async def cmd_promise_with_websocket(websocket, program):
+async def cmd_promise_with_websocket(websocket, cmd):
     # await asyncio.create_subprocess_exec
     proc = subprocess.Popen(
-        *program,
+        cmd,
         stdout=asyncio.subprocess.PIPE,
         stderr=asyncio.subprocess.STDOUT
     )
