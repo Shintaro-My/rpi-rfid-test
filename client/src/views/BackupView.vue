@@ -217,7 +217,9 @@ h3 {
   border-radius: 0.35em;
   color: #333;
   font-family: Courier New,Courier,monospace;
+  max-height: 350px;
   margin: 0.5em 0;
+  overflow: auto;
   padding: 0.5em 1em;
 }
 .btns {
