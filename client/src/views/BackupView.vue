@@ -88,8 +88,13 @@ const get_stream = async () => {
   esrc.onmessage = e => {
     const { value: v } = server_stdout;
     server_stdout.value = [e.data, ...v];
-    console.log(`"${e.data}"`)
+    console.log(e, `msg: "${e.data}"`)
   }
+  esrc.addEventListener('ping', e => {
+    const { value: v } = server_stdout;
+    server_stdout.value = [e.data, ...v];
+    console.log(e, `ping: "${e.data}"`)
+  })
 }
 
 const update = async () => {

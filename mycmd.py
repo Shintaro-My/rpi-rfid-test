@@ -33,9 +33,11 @@ def start_streaming(handler):
     handler.send_header('Content-Type', 'text/event-stream')
     handler.end_headers()
     
-    
     for _ in range(10):
         value = str(time.time()).encode('UTF-8')
+        handler.wfile.write(b'name: ')
+        handler.wfile.write(b'stream')
+        handler.wfile.write(b'\r\n')
         handler.wfile.write(b'data: ')
         handler.wfile.write(value)
         handler.wfile.write(b'\r\n')
