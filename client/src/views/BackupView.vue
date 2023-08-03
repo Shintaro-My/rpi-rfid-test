@@ -214,7 +214,15 @@ h3 {
   overflow: auto;
   padding: 0.5em 1em;
 }
-
+.stdout_line.cmd {
+  font-style: italic;
+}
+.stdout_line.cmd::before {
+  content: '$ ';
+  color: #601;
+  font-style: normal;
+  font-weight: bold;
+}
 .endline.active::before {
   animation: blink 1s linear infinite;
   content: '█';
