@@ -53,28 +53,21 @@ def start_streaming(handler):
     
     
 async def cmd_promise_with_websocket(websocket, program):
-    proc = await asyncio.create_subprocess_exec(
+    # await asyncio.create_subprocess_exec
+    proc = subprocess.Popen(
         *program,
         stdout=asyncio.subprocess.PIPE,
-        stderr=asyncio.subprocess.PIPE
+        stderr=asyncio.subprocess.STDOUT
     )
 
     while True:
-        if proc.stdout.at_eof() and proc.stderr.at_eof():
-            break
-        
-        stdout = (await proc.stdout.readline()).decode()
+        stdout = proc.stdout.readline()
         if stdout:
             print(f'[stdout] {stdout}', end='', flush=True)
             await websocket.send(stdout)
-            
-        stderr = (await proc.stderr.readline()).decode()
-        if stderr:
-            print(f'[sdterr] {stderr}', end='', flush=True, file=sys.stderr)
-            await websocket.send(stderr)
-
-        await asyncio.sleep(1)
-    await proc.communicate()
+        elif proc.poll() is not None:
+            break
+        time.sleep(.1)
     
     
     
