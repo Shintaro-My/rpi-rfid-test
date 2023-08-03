@@ -82,8 +82,11 @@ async def ws_main(host, port, disk):
             await websocket.send(str(time.time()))
             time.sleep(1)
         """
-        # ['sudo', 'rpi-clone', disk, '-U']
-        await cmd_promise_with_websocket(websocket, ['sh', './test.sh'])
+        command = ['sh', './test.sh']
+        # command = ['sudo', 'rpi-clone', disk, '-U']
+        await websocket.send('$ ' + ' '.join(command))
+        await websocket.send('')
+        await cmd_promise_with_websocket(websocket, command)
         WS_CONTINUE = False
         
     async with websockets.serve(ws_handler, host, port):
