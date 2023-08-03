@@ -51,15 +51,12 @@ class _MyHandler(BaseHTTPRequestHandler):
         ######## EX ########
         if path == '/stream':
             port = 11111
-            ws = mycmd.ws_init(IP, port)
             self.send_response(200)
             self.send_header('Content-type', 'text/plain')
             self.end_headers()
             self.wfile.write(f'ws://{IP}:{port}'.encode("utf-8"))
             SERVER_PAUSE = True
-            while True:
-                if not ws.cr_running:
-                    break
+            mycmd.ws_init(IP, port)
             SERVER_PAUSE = False
             return
         ######## EX ########

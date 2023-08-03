@@ -73,4 +73,7 @@ async def ws_main(host, port):
 def ws_init(host, port):
     global WS_CONTINUE
     WS_CONTINUE = True
-    return ws_main(host, port)
+    loop = asyncio.get_event_loop()
+    loop.run_until_complete(ws_main(host, port))
+    loop.close()
+    return
