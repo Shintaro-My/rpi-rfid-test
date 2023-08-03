@@ -2,6 +2,10 @@ import json
 import subprocess
 import time
 
+import asyncio
+import websockets
+ 
+
 _cmd = lambda c: subprocess.run(
     c.split(), 
     capture_output=True,
@@ -29,7 +33,7 @@ def lsblk():
 
 def start_streaming(handler):
     handler.send_response(200)
-    #handler.send_header('Connection', 'Keep-Alive')
+    handler.send_header('Connection', 'Keep-Alive')
     handler.send_header('Content-Type', 'text/event-stream')
     handler.end_headers()
     
@@ -45,3 +49,28 @@ def start_streaming(handler):
         time.sleep(1)
         
     handler.wfile.close()
+    
+    
+    
+    
+    
+WS_CONTINUE = True
+
+async def ws_handler(websocket):
+    global WS_CONTINUE
+    #name = await websocket.recv()
+    for _ in range(60):
+        await websocket.send('a')
+        time.sleep(1)
+    WS_CONTINUE = False
+ 
+async def ws_main(host, port):
+    async with websockets.serve(ws_handler, host, port):
+        while True:
+            if not WS_CONTINUE:
+                break
+            
+def ws_init(host, port):
+    global WS_CONTINUE
+    WS_CONTINUE = True
+    return ws_main(host, port)

@@ -84,13 +84,17 @@ const backup_visible: Ref<boolean> = ref(false);
 const server_stdout: Ref<string[]> = ref([]);
 const get_stream = async () => {
   console.log('click!')
-  server_stdout.value = [];
-  const esrc = new EventSource('/stream');
-  esrc.onopen = console.log;
-  esrc.onmessage = e => {
-    const { value: v } = server_stdout;
-    server_stdout.value = [e.data, ...v];
-    console.log(e, `msg: "${e.data}"`)
+  const req = await fetch('/stream');
+  const url = await req.text();
+  const ws = new WebSocket(url);
+  ws.onopen = e => {
+    server_stdout.value = [];
+  };
+  ws.onmessage = e => {
+    server_stdout.value = [e.data, ...server_stdout.value];
+  }
+  ws.onclose = e => {
+    server_stdout.value = ['(END)', ...server_stdout.value];
   }
 }
 

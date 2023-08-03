@@ -40,15 +40,27 @@ class _MyHandler(BaseHTTPRequestHandler):
         else:
             self.send_error(404)
             
-    def do_GET(self):
+    async def do_GET(self):
+        global SERVER_PAUSE
         parsed_path = urlparse(self.path)
         path = parsed_path.path
         query = parse_qs(parsed_path.query)
         
         print(query)
         
+        ######## EX ########
         if path == '/stream':
-            return mycmd.start_streaming(self)
+            port = 11111
+            ws = mycmd.ws_init(IP, port)
+            self.send_response(status)
+            self.send_header('Content-type', 'text/plain')
+            self.end_headers()
+            self.wfile.write(f'ws://{IP}:{port}')
+            SERVER_PAUSE = True
+            await ws
+            SERVER_PAUSE = False
+            return
+        ######## EX ########
         
         isMatch, status, txt = _Page_GET(self, path, query)
         if isMatch:
@@ -127,6 +139,7 @@ def _Page_GET(self: _MyHandler, path, query):
             data['body'] = t
             status = 500
         return (True, status, json.dumps(data))
+    
     
     elif path == '/lsblk':
         try:
@@ -270,6 +283,8 @@ if __name__ == '__main__':
     server = Server(12345)
     while True:
         try:
+            if SERVER_PAUSE:
+                continue
             server.listen()
         except KeyboardInterrupt:
             print('\nAbort.')
