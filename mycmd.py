@@ -77,7 +77,9 @@ async def ws_main(host, port, disk):
         while True:
             line = proc.stdout.readline()
             if line:
-                await websocket.send(line.decode('UTF-8'))
+                txt = line.decode('UTF-8', 'replace')
+                await websocket.send(txt)
+                print(txt)
             elif proc.poll() is not None:
                 break
         WS_CONTINUE = False
