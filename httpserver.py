@@ -56,6 +56,7 @@ class _MyHandler(BaseHTTPRequestHandler):
             self.end_headers()
             self.wfile.write(f'ws://{IP}:{port}'.encode("utf-8"))
             SERVER_PAUSE = True
+            print('######## WS ########')
             mycmd.ws_init(IP, port)
             SERVER_PAUSE = False
             return

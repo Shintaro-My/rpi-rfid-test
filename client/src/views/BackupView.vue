@@ -87,7 +87,9 @@ const get_stream = async () => {
   const req = await fetch('/stream');
   const url = await req.text();
   const ws = new WebSocket(url);
+  console.log(url, ws);
   ws.onopen = e => {
+    console.log(e);
     server_stdout.value = [];
   };
   ws.onmessage = e => {
