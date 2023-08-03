@@ -60,7 +60,7 @@ WS_CONTINUE = True
 async def ws_main(host, port, disk):
     print(disk)
     proc = subprocess.Popen(
-        'sudo apt update',
+        'sudo apt-get update',
         shell=True,
         stdout=subprocess.PIPE,
         stderr=subprocess.STDOUT
@@ -78,8 +78,9 @@ async def ws_main(host, port, disk):
             line = proc.stdout.readline()
             if line:
                 txt = line.decode('UTF-8', 'replace')
-                await websocket.send(txt)
                 print(txt)
+                await websocket.send(txt)
+                await asyncio.sleep(0.01)
             elif proc.poll() is not None:
                 break
         WS_CONTINUE = False
