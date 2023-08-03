@@ -42,22 +42,11 @@ class _MyHandler(BaseHTTPRequestHandler):
             self.send_error(404)
             
     def do_GET(self):
-        global WS_ENABLE
         parsed_path = urlparse(self.path)
         path = parsed_path.path
         query = parse_qs(parsed_path.query)
         
         print(query)
-        
-        ######## EX ########
-        if path == '/stream':
-            self.send_response(200)
-            self.send_header('Content-type', 'text/plain')
-            self.end_headers()
-            self.wfile.write(f'ws://{IP}:{WS_PORT}'.encode("utf-8"))
-            WS_ENABLE = True
-            return
-        ######## EX ########
         
         isMatch, status, txt = _Page_GET(self, path, query)
         if isMatch:
@@ -102,6 +91,23 @@ class _MyHandler(BaseHTTPRequestHandler):
         else:
             self.send_error(404)
             
+    def do_PUT(self):
+        global WS_ENABLE
+        parsed_path = urlparse(self.path)
+        path = parsed_path.path
+        query = parse_qs(parsed_path.query)
+        
+        print(query)
+        
+        ######## EX ########
+        if path == '/backup' and 'disk' in query:
+            self.send_response(200)
+            self.send_header('Content-type', 'text/plain')
+            self.end_headers()
+            self.wfile.write(f'ws://{IP}:{WS_PORT}'.encode("utf-8"))
+            WS_ENABLE, = query['disk']
+            return
+        ######## EX ########
 
 class Server:
     def __init__(self, port=8080) -> None:

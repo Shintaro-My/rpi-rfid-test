@@ -1,7 +1,7 @@
 <template>
   <div class="wrap">
 
-    <h1>バックアップ（作成中）</h1>
+    <h1>バックアップ</h1>
 
     <h3>接続中のストレージ</h3>
     <a @click="update()">最新の情報に更新する</a>
@@ -47,7 +47,7 @@
     </div>
 
     <div class="btns">
-      <button @click="get_stream()" v-bind:disabled="ws_active">test</button>
+      <button @click="get_stream()" v-bind:disabled="ws_active">バックアップ</button>
     </div>
     <div class="cmd_block">
       <div class="stdout_line" v-for="line in server_stdout">
@@ -95,8 +95,8 @@ const backup_visible: Ref<boolean> = ref(false);
 const ws_active: Ref<boolean> = ref(false);
 const server_stdout: Ref<string[]> = ref([]);
 const get_stream = async () => {
-  console.log('click!')
-  const req = await fetch('/stream');
+  if (!selectedDisk.name) return alert('保存先が選択されていません。');
+  const req = await fetch(`/backup?disk=${selectedDisk.name}`, {method: 'PUT'});
   const url = await req.text();
   const ws = new WebSocket(url);
   console.log(url, ws);
