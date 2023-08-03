@@ -70,8 +70,6 @@ async def cmd_promise_with_websocket(websocket, cmd):
             break
         time.sleep(.1)
     
-    
-    
 WS_CONTINUE = True
  
 async def ws_main(host, port, disk):
@@ -85,7 +83,7 @@ async def ws_main(host, port, disk):
             await websocket.send(str(time.time()))
             time.sleep(1)
         """
-        await cmd_promise_with_websocket(websocket, ['sh', './test.sh'])
+        await cmd_promise_with_websocket(websocket, ['sudo', 'apt-get', 'update'])
         WS_CONTINUE = False
         
     async with websockets.serve(ws_handler, host, port):
