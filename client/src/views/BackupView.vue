@@ -51,7 +51,7 @@
       <div class="stdout_line" v-for="line in server_stdout">
         {{ line }}
       </div>
-      <div ref="scrollAnchor"></div>
+      <div class="endline" v-bind:class="{ active: ws_active }" ref="scrollAnchor"></div>
     </div>
 
   </div>
@@ -73,7 +73,7 @@ interface Disk {
 
 const scrollAnchor: Ref<HTMLDivElement | null> = ref(null);
 const scrollCmdBottom = () => {
-  scrollAnchor.value?.scrollIntoView({ behavior: 'smooth' });
+  scrollAnchor.value?.scrollIntoView({ behavior: 'smooth', block: 'end' });
 }
 
 const headers: Header[] = [
@@ -87,6 +87,7 @@ const loading: Ref<boolean> = ref(false);
 
 const backup_visible: Ref<boolean> = ref(false);
 
+const ws_active: Ref<boolean> = ref(false);
 const server_stdout: Ref<string[]> = ref([]);
 const get_stream = async () => {
   console.log('click!')
@@ -97,6 +98,7 @@ const get_stream = async () => {
   ws.onopen = e => {
     console.log(e);
     server_stdout.value = [];
+    ws_active.value = true;
   };
   ws.onmessage = e => {
     server_stdout.value = [...server_stdout.value, e.data];
@@ -105,6 +107,7 @@ const get_stream = async () => {
   ws.onclose = e => {
     server_stdout.value = [...server_stdout.value, '(END)'];
     scrollCmdBottom();
+    ws_active.value = false;
   }
 }
 
@@ -221,6 +224,24 @@ h3 {
   margin: 0.5em 0;
   overflow: auto;
   padding: 0.5em 1em;
+}
+.endline::before {
+  content: '|';
+  font-weight: bold;
+}
+.endline.active::before {
+  animation: blink 1s linear infinite;
+}
+@keyframes blink {
+  0%,10% {
+    opacity: 1;
+  }
+  40%,60% {
+    opacity: 0;
+  }
+  90%,100% {
+    opacity: 1;
+  }
 }
 .btns {
   display: flex;
