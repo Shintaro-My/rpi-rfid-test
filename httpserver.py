@@ -17,10 +17,9 @@ import ipget
 IP, _ = ipget.ipget().ipaddr('wlan0').split('/')
 current_dir = ''
 
-CHANGE_DISABLE = False
-WS_ENABLE = False
-WS_PORT   = 11111
-WS_SERVER = mycmd.WSServer(IP, WS_PORT)
+# CHANGE_DISABLE = False
+BACKUP_TARGET = False
+CMD_THREAD = None
 SERVER_PAUSE = False
 
 
@@ -96,31 +95,44 @@ class _MyHandler(BaseHTTPRequestHandler):
             self.send_error(404)
             
     def do_PUT(self):
-        global WS_ENABLE
+        global BACKUP_TARGET, CMD_THREAD
         parsed_path = urlparse(self.path)
         path = parsed_path.path
         query = parse_qs(parsed_path.query)
         
         print(query)
         
-        if CHANGE_DISABLE:
-            txt = json.dumps({'status': 'err', 'data': 'Update in progress...'})
-            self.send_response(403)
+        ######## EX ########
+        if path == '/backup' and 'disk' in query:
+            if CMD_THREAD:
+                if CMD_THREAD.is_alive():
+                    txt = json.dumps({'status': 'err', 'body': 'Backup in progress...'})
+                    self.send_response(401)
+                    self.send_header('Content-type', 'application/json')
+                    self.end_headers()
+                    self.wfile.write(txt.encode("utf-8"))
+                    return
+                else:
+                    CMD_THREAD.join()
+                    CMD_THREAD = None
+            BACKUP_TARGET, = query['disk']
+            command = ['sh', './test.sh']
+            CMD_THREAD = threading.Thread(
+                target=mycmd.cmd_realtime,
+                args=(command,),
+                daemon=True
+            )
+            CMD_THREAD.run()
+            txt = json.dumps({'status': 'ok', 'body': f'Backup starting: {BACKUP_TARGET}'})
+            self.send_response(200)
             self.send_header('Content-type', 'application/json')
             self.end_headers()
             self.wfile.write(txt.encode("utf-8"))
             return
-        
-        ######## EX ########
-        if path == '/backup' and 'disk' in query:
-            self.send_response(200)
-            self.send_header('Content-type', 'text/plain')
-            self.end_headers()
-            self.wfile.write(f'ws://{IP}:{WS_PORT}'.encode("utf-8"))
-            WS_ENABLE, = query['disk']
-            return
         ######## EX ########
 
+        self.send_error(404)
+            
 class Server:
     def __init__(self, port=8080) -> None:
         host = IP
@@ -154,8 +166,20 @@ def _Page_GET(self: _MyHandler, path, query):
             data['body'] = t
             status = 500
         return (True, status, json.dumps(data))
-    
-    
+
+    elif path == '/backup':
+        if CMD_THREAD:
+            if CMD_THREAD.is_alive():
+                data['status'] = 'await'
+                data['body'] = 'Backup in progress...'
+                status = 401
+                return (True, status, json.dumps(data))
+            else:
+                CMD_THREAD.join()
+                CMD_THREAD = None
+            data['body'] = True
+            return (True, status, json.dumps(data))
+                
     elif path == '/lsblk':
         try:
             lsblk = mycmd.lsblk()
@@ -218,10 +242,6 @@ def _Page_POST(self: _MyHandler, path, query, body: dict={}):
     data = {'status': 'ok'}
     status = 200
     
-    if CHANGE_DISABLE:
-        data['status'] = 'err'
-        data['body'] = 'Update in progress...'
-        return (True, 403, json.dumps(data))
     
     if path == '/users':
         conn = sqlite3.connect(DB_NAME)
@@ -256,11 +276,6 @@ def _Page_POST(self: _MyHandler, path, query, body: dict={}):
 def _Page_DELETE(self: _MyHandler, path, query):
     data = {'status': 'ok'}
     status = 200
-    
-    if CHANGE_DISABLE:
-        data['status'] = 'err'
-        data['body'] = 'Update in progress...'
-        return (True, 403, json.dumps(data))
     
     if path == '/users' and 'id' in query:
         conn = sqlite3.connect(DB_NAME)
@@ -306,45 +321,14 @@ if __name__ == '__main__':
     import time
     import threading
     time.sleep(.5)
-    cmd_thread = None
     server = Server(12345)
-    command = ['sh', './test.sh']
     # mycmd.cmd_with_websocket(WS_SERVER, [])
-    
-    def WSThread():
-        while True:
-            WS_SERVER.handle_request()
-    
-    ws_thread = threading.Thread(
-        target=WSThread,
-        daemon=True
-    )
-    ws_thread.run()       
+   
     
     while True:
         try:
-            if WS_ENABLE:
-                #WS_SERVER.handle_request()
-                CHANGE_DISABLE = True
-                cmd_thread = threading.Thread(
-                    target=mycmd.cmd_with_websocket,
-                    args=(WS_SERVER, command),
-                    daemon=True
-                )
-                cmd_thread.start()
-                WS_ENABLE = False
-            elif cmd_thread and cmd_thread.is_alive():
-                print('!!! -1')
-                cmd_thread.join()
-                print('!!! -2')
-                time.sleep(.25)
-                cmd_thread = None
-                CHANGE_DISABLE = False
-            else:
-                server.listen()
-            
+            server.listen()
         except KeyboardInterrupt:
             print('\nAbort.')
             break
     
-    ws_thread.join()

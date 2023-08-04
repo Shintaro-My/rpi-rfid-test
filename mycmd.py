@@ -14,7 +14,7 @@ _cmd = lambda c: subprocess.run(
     text=True
 )
 
-def _cmd_realtime(cmd):
+def cmd_realtime(cmd):
     process = subprocess.Popen(
         cmd,
         shell=True,
@@ -24,7 +24,7 @@ def _cmd_realtime(cmd):
     while True:
         line = process.stdout.readline()
         if line:
-            yield line
+            print(f'[stdout]: {line}')
         elif process.poll() is not None:
             break
 

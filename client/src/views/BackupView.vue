@@ -48,8 +48,8 @@
       </button>
     </div>
     <div class="cmd_block">
-      <div class="stdout_line" :class="obj.type" v-for="obj in server_stdout">
-        {{ obj.data }}
+      <div class="stdout_line" v-for="line in server_stdout">
+        {{ line }}
       </div>
       <div class="endline" v-bind:class="{ active: ws_active }" ref="scrollAnchor"></div>
     </div>
@@ -95,11 +95,50 @@ interface StdOut {
   type: string
 }
 const ws_active: Ref<boolean> = ref(false);
-const server_stdout: Ref<StdOut[]> = ref([]);
+const server_stdout: Ref<string[]> = ref([]);
+const backupChecker = async () => {
+  while (true) {
+    await sleep(1000);
+    const { status } = await fetch('/backup');
+    if (status == 401) {
+      server_stdout.value = [...server_stdout.value, 'Backup in progress...'];
+    }
+    else if (status == 200) {
+      server_stdout.value = [...server_stdout.value, 'Ready.'];
+      break;
+    }
+    else {
+      server_stdout.value = [...server_stdout.value, 'Communication failed.'];
+      break;
+    }
+  }
+}
 const get_stream = async () => {
   if (!selectedDisk.name) return alert('保存先が選択されていません。');
+  const check = await fetch('/backup');
+  if (check.status != 200) {
+    if (check.status == 401) {
+      alert('バックアップが既に進行中です。');
+      return false;
+    }
+    alert('Communication failed.')
+    return false;
+  }
+
   const req = await fetch(`/backup?disk=${selectedDisk.name}`, {method: 'PUT'});
-  const url = await req.text();
+  if (req.status != 200) {
+    if (req.status == 401) {
+      alert('バックアップが既に進行中です。');
+      return false;
+    }
+    alert('Communication failed.')
+    return false;
+  }
+  const { body } = await req.json();
+  server_stdout.value = [body];
+
+  await backupChecker();
+  /*
   const ws = new WebSocket(url);
   console.log(url, ws);
   ws.onopen = e => {
@@ -117,6 +156,7 @@ const get_stream = async () => {
     scrollCmdBottom();
     ws_active.value = false;
   }
+  */
 }
 
 const splitter = (str: string) => str.split(',').filter((s: string) => s).map((s: string) => `"${s}"`);
@@ -146,6 +186,7 @@ const selectItem = (item: Item) => {
 }
 
 update();
+backupChecker();
 
 </script>
 
@@ -210,6 +251,7 @@ h3 {
   color: #000;
   font-family: Courier New,Courier,monospace;
   font-size: .75em;
+  font-weight: bold;
   height: 11em;
   margin: 0.5em 0;
   overflow: auto;
