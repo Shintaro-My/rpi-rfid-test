@@ -124,8 +124,9 @@ class _MyHandler(BaseHTTPRequestHandler):
                 args=(command,),
                 daemon=True
             )
-            CMD_THREAD.run()
             print('C')
+            CMD_THREAD.run()
+            print('D')
             txt = json.dumps({'status': 'ok', 'body': f'Backup starting: {BACKUP_TARGET}'})
             self.send_response(200)
             self.send_header('Content-type', 'application/json')
