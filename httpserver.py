@@ -326,7 +326,9 @@ if __name__ == '__main__':
                 if thread.is_alive():
                     WS_SERVER.handle_request()
                 else:
+                    print('!!! -1')
                     thread.join()
+                    print('!!! -2')
                     time.sleep(.25)
                     thread = None
                     CHANGE_DISABLE = False
