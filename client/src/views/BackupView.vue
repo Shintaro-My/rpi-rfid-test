@@ -73,7 +73,15 @@ interface Disk {
 
 const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
-
+const time_format = Intl.DateTimeFormat("ja-JP", {
+  hour: "2-digit",
+  minute: "2-digit",
+  year: "numeric",
+  month: "2-digit",
+  day: "2-digit",
+  second: "2-digit",
+  hour12: false,
+});
 
 const headers: Header[] = [
   { text: 'name', value: 'name', sortable: true },
@@ -110,16 +118,16 @@ const backupChecker = async () => {
       break;
     }
     if (status == 401) {
-      server_stdout.value = [...server_stdout.value, 'Backup in progress...'];
+      server_stdout.value = [...server_stdout.value, `${time_format.format(new Date())}: Backup in progress...`];
       scrollCmdBottom();
     }
     else if (status == 200) {
-      server_stdout.value = [...server_stdout.value, 'Ready.'];
+      server_stdout.value = [...server_stdout.value, `${time_format.format(new Date())}: Ready.`];
       scrollCmdBottom();
       break;
     }
     else {
-      server_stdout.value = [...server_stdout.value, 'Communication failed.'];
+      server_stdout.value = [...server_stdout.value, `${time_format.format(new Date())}: Communication failed.`];
       scrollCmdBottom();
       break;
     }
