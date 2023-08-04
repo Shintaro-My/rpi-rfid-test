@@ -128,4 +128,5 @@ def cmd_with_websocket(wsserver: WebsocketServer, cmd):
             print(f'[stdout] {txt}', end='', flush=True)
             wsserver.send_message_to_all(json.dumps({'data': txt, 'type': 'stdout'}))
         elif proc.poll() is not None:
+            print('done')
             break
