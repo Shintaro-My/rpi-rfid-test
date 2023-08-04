@@ -313,6 +313,7 @@ if __name__ == '__main__':
     while True:
         try:
             if WS_ENABLE:
+                WS_SERVER.handle_request()
                 CHANGE_DISABLE = True
                 thread = threading.Thread(
                     target=mycmd.cmd_with_websocket,
@@ -321,12 +322,15 @@ if __name__ == '__main__':
                 thread.start()
                 WS_ENABLE = False
             
-            if thread and not thread.is_alive():
+            elif thread and not thread.is_alive():
                 thread = None
                 CHANGE_DISABLE = False
+                WS_SERVER.handle_request()
             
-            server.listen()
-            WS_SERVER.handle_request()
+            elif CHANGE_DISABLE:
+                WS_SERVER.handle_request()
+            else:
+                server.listen()
             
         except KeyboardInterrupt:
             print('\nAbort.')
