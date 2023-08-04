@@ -323,6 +323,7 @@ if __name__ == '__main__':
                 WS_ENABLE = False
             
             elif thread and not thread.is_alive():
+                thread.join()
                 thread = None
                 CHANGE_DISABLE = False
                 WS_SERVER.handle_request()

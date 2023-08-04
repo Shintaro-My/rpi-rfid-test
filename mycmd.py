@@ -130,3 +130,4 @@ def cmd_with_websocket(wsserver: WebsocketServer, cmd):
         elif proc.poll() is not None:
             print('done')
             break
+    return True
