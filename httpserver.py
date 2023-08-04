@@ -321,7 +321,8 @@ if __name__ == '__main__':
                 )
                 thread.start()
                 WS_ENABLE = False
-            
+            elif thread:
+                print(thread.is_alive())
             elif thread and not thread.is_alive():
                 thread.join()
                 thread = None
