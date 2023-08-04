@@ -98,17 +98,20 @@ const ws_active: Ref<boolean> = ref(false);
 const server_stdout: Ref<string[]> = ref([]);
 const backupChecker = async () => {
   while (true) {
-    await sleep(1000);
+    await sleep(2500);
     const { status } = await fetch('/backup');
     if (status == 401) {
       server_stdout.value = [...server_stdout.value, 'Backup in progress...'];
+      scrollCmdBottom();
     }
     else if (status == 200) {
       server_stdout.value = [...server_stdout.value, 'Ready.'];
+      scrollCmdBottom();
       break;
     }
     else {
       server_stdout.value = [...server_stdout.value, 'Communication failed.'];
+      scrollCmdBottom();
       break;
     }
   }
