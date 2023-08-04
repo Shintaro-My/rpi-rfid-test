@@ -53,6 +53,7 @@
       </div>
       <div class="endline" v-bind:class="{ active: ws_active }" ref="scrollAnchor"></div>
     </div>
+    <p>※ バックアップはテスト動作の際には約25分かかりました。</p>
 
   </div>
 </template>
@@ -131,7 +132,6 @@ const backupChecker = async () => {
       scrollCmdBottom();
       break;
     }
-
   }
 }
 const get_stream = async () => {
