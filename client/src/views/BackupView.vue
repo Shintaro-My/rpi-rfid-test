@@ -53,7 +53,6 @@
       </div>
       <div class="endline" v-bind:class="{ active: ws_active }" ref="scrollAnchor"></div>
     </div>
-    <p>※ バックアップはテスト動作の際には約25分かかりました。</p>
 
   </div>
 </template>
@@ -77,9 +76,6 @@ const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 const time_format = Intl.DateTimeFormat("ja-JP", {
   hour: "2-digit",
   minute: "2-digit",
-  year: "numeric",
-  month: "2-digit",
-  day: "2-digit",
   second: "2-digit",
   hour12: false,
 });
