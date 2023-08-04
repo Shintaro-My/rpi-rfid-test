@@ -306,40 +306,45 @@ if __name__ == '__main__':
     import time
     import threading
     time.sleep(.5)
-    thread = None
+    cmd_thread = None
     server = Server(12345)
     command = ['sh', './test.sh']
     # mycmd.cmd_with_websocket(WS_SERVER, [])
+    
+    def WSThread():
+        while True:
+            WS_SERVER.handle_request()
+    
+    ws_thread = threading.Thread(
+        target=WSThread,
+        daemon=True
+    )
+    ws_thread.run()       
+    
     while True:
         try:
-            print(thread)
             if WS_ENABLE:
-                WS_SERVER.handle_request()
+                #WS_SERVER.handle_request()
                 CHANGE_DISABLE = True
-                thread = threading.Thread(
+                cmd_thread = threading.Thread(
                     target=mycmd.cmd_with_websocket,
                     args=(WS_SERVER, command),
                     daemon=True
                 )
-                thread.start()
+                cmd_thread.start()
                 WS_ENABLE = False
-            elif thread is not None:
-                if thread.is_alive():
-                    #print(thread.is_alive())
-                    WS_SERVER.handle_request()
-                else:
-                    print('!!! -1')
-                    thread.join()
-                    print('!!! -2')
-                    time.sleep(.25)
-                    thread = None
-                    CHANGE_DISABLE = False
-            
-            elif CHANGE_DISABLE:
-                WS_SERVER.handle_request()
+            elif cmd_thread and cmd_thread.is_alive():
+                print('!!! -1')
+                cmd_thread.join()
+                print('!!! -2')
+                time.sleep(.25)
+                cmd_thread = None
+                CHANGE_DISABLE = False
             else:
                 server.listen()
             
         except KeyboardInterrupt:
             print('\nAbort.')
             break
+    
+    ws_thread.join()
