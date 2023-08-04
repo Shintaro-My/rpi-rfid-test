@@ -104,6 +104,7 @@ class _MyHandler(BaseHTTPRequestHandler):
         
         ######## EX ########
         if path == '/backup' and 'disk' in query:
+            print('A')
             if CMD_THREAD:
                 if CMD_THREAD.is_alive():
                     txt = json.dumps({'status': 'err', 'body': 'Backup in progress...'})
@@ -115,6 +116,7 @@ class _MyHandler(BaseHTTPRequestHandler):
                 else:
                     CMD_THREAD.join()
                     CMD_THREAD = None
+            print('B')
             BACKUP_TARGET, = query['disk']
             command = ['sh', './test.sh']
             CMD_THREAD = threading.Thread(
@@ -123,6 +125,7 @@ class _MyHandler(BaseHTTPRequestHandler):
                 daemon=True
             )
             CMD_THREAD.run()
+            print('C')
             txt = json.dumps({'status': 'ok', 'body': f'Backup starting: {BACKUP_TARGET}'})
             self.send_response(200)
             self.send_header('Content-type', 'application/json')
