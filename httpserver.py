@@ -322,9 +322,9 @@ if __name__ == '__main__':
                 )
                 thread.start()
                 WS_ENABLE = False
-            elif thread:
+            elif thread is not None:
                 if thread.is_alive():
-                    print(thread.is_alive())
+                    #print(thread.is_alive())
                     WS_SERVER.handle_request()
                 else:
                     print('!!! -1')
