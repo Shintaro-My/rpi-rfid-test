@@ -317,17 +317,19 @@ if __name__ == '__main__':
                 CHANGE_DISABLE = True
                 thread = threading.Thread(
                     target=mycmd.cmd_with_websocket,
-                    args=(WS_SERVER, command)
+                    args=(WS_SERVER, command),
+                    daemon=True
                 )
                 thread.start()
                 WS_ENABLE = False
             elif thread:
-                print(thread.is_alive())
-            elif thread and not thread.is_alive():
-                thread.join()
-                thread = None
-                CHANGE_DISABLE = False
-                WS_SERVER.handle_request()
+                if thread.is_alive():
+                    WS_SERVER.handle_request()
+                else:
+                    thread.join()
+                    time.sleep(.25)
+                    thread = None
+                    CHANGE_DISABLE = False
             
             elif CHANGE_DISABLE:
                 WS_SERVER.handle_request()
