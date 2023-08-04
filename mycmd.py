@@ -5,7 +5,8 @@ import time
 import sys
 import asyncio
 import websockets
- 
+from websocket_server import WebsocketServer
+
 
 _cmd = lambda c: subprocess.run(
     c.split(), 
@@ -103,3 +104,28 @@ def ws_init(host, port, disk):
     loop.run_until_complete(ws_main(host, port, disk))
     loop.close()
     return
+
+
+
+def WSServer(host, port, handler=lambda client, server, message: client):
+    ws = WebsocketServer(host, port)
+    ws.set_fn_new_client(lambda client, server: print(f'NEW CONNECTION: {client["id"]}'))
+    ws.set_fn_client_left(lambda client, server: print(f'DISCONNECTION: {client["id"]}'))
+    ws.set_fn_message_received(handler)
+    return ws
+
+def cmd_with_websocket(wsserver: WebsocketServer, cmd):
+    # await asyncio.create_subprocess_exec
+    proc = subprocess.Popen(
+        cmd,
+        stdout=asyncio.subprocess.PIPE,
+        stderr=asyncio.subprocess.STDOUT
+    )
+    while True:
+        stdout = proc.stdout.readline()
+        if stdout:
+            txt = stdout.decode('UTF-8', 'replace')
+            print(f'[stdout] {txt}', end='', flush=True)
+            wsserver.send_message_to_all(json.dumps({'data': txt, 'type': 'stdout'}))
+        elif proc.poll() is not None:
+            break
