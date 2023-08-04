@@ -153,6 +153,7 @@ def _getMimeFromExt(path):
     
 
 def _Page_GET(self: _MyHandler, path, query):
+    global CMD_THREAD
     data = {'status': 'ok'}
     status = 200
     
