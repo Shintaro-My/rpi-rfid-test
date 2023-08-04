@@ -235,8 +235,7 @@ def _Page_GET(self: _MyHandler, path, query):
             conn.close()
             return (True, status, json.dumps(data))
         
-    else:
-        return (False, 404, None)
+    return (False, 404, None)
     
     
 def _Page_POST(self: _MyHandler, path, query, body: dict={}):        
