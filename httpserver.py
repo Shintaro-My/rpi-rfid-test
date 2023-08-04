@@ -178,8 +178,8 @@ def _Page_GET(self: _MyHandler, path, query):
             else:
                 CMD_THREAD.join()
                 CMD_THREAD = None
-            data['body'] = True
-            return (True, status, json.dumps(data))
+        data['body'] = True
+        return (True, status, json.dumps(data))
                 
     elif path == '/lsblk':
         try:
