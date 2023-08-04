@@ -116,7 +116,8 @@ class _MyHandler(BaseHTTPRequestHandler):
                     CMD_THREAD.join()
                     CMD_THREAD = None
             BACKUP_TARGET, = query['disk']
-            command = ['sh', './test.sh']
+            #command = ['sh', './test.sh']
+            command = ['sudo', 'rpi-clone', BACKUP_TARGET, '-U']
             CMD_THREAD = threading.Thread(
                 target=mycmd.cmd_realtime,
                 args=(command,),

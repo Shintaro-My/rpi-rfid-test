@@ -101,6 +101,7 @@ const backupChecker = async () => {
   while (true) {
     if (first) {
       first = false;
+      await sleep(100);
     } else {
       await sleep(2500);
     }
