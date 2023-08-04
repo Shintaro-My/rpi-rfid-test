@@ -17,7 +17,6 @@ _cmd = lambda c: subprocess.run(
 def cmd_realtime(cmd):
     process = subprocess.Popen(
         cmd,
-        shell=True,
         stdout=subprocess.PIPE,
         stderr=subprocess.STDOUT
     )
