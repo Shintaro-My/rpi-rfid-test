@@ -105,25 +105,24 @@ const backupChecker = async () => {
       await sleep(2500);
     }
     const { status } = await fetch('/backup');
-    try {
-      if (status == 401) {
-        server_stdout.value = [...server_stdout.value, 'Backup in progress...'];
-        scrollCmdBottom();
-      }
-      else if (status == 200) {
-        server_stdout.value = [...server_stdout.value, 'Ready.'];
-        scrollCmdBottom();
-        break;
-      }
-      else {
-        server_stdout.value = [...server_stdout.value, 'Communication failed.'];
-        scrollCmdBottom();
-        break;
-      }
-    } catch (e) {
-      console.log(e);
+    if (!scrollAnchor.value) {
       break;
     }
+    if (status == 401) {
+      server_stdout.value = [...server_stdout.value, 'Backup in progress...'];
+      scrollCmdBottom();
+    }
+    else if (status == 200) {
+      server_stdout.value = [...server_stdout.value, 'Ready.'];
+      scrollCmdBottom();
+      break;
+    }
+    else {
+      server_stdout.value = [...server_stdout.value, 'Communication failed.'];
+      scrollCmdBottom();
+      break;
+    }
+
   }
 }
 const get_stream = async () => {
