@@ -97,8 +97,14 @@ interface StdOut {
 const ws_active: Ref<boolean> = ref(false);
 const server_stdout: Ref<string[]> = ref([]);
 const backupChecker = async () => {
+  let first = true;
   while (true) {
-    await sleep(2500);
+    if (!scrollAnchor.value) break;
+    if (first) {
+      first = false;
+    } else {
+      await sleep(2500);
+    }
     const { status } = await fetch('/backup');
     if (status == 401) {
       server_stdout.value = [...server_stdout.value, 'Backup in progress...'];
