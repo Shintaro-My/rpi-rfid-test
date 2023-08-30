@@ -2,6 +2,7 @@ from http.server import HTTPServer, BaseHTTPRequestHandler
 from urllib.parse import parse_qs, urlparse
 import json
 import os
+import subprocess
 import traceback
 import re
 import magic # python-magic
@@ -313,6 +314,19 @@ def _Page_DELETE(self: _MyHandler, path, query):
         finally:
             cur.close()
             conn.close()
+            return (True, status, json.dumps(data))
+    elif path == '/shutdown' and 'mode' in query:
+        mode, = query['mode']
+        if mode == 'h' and 'time' in query:
+            timing, = query['time']
+            if type(timing) == int:
+                timing = f'+{timing}'
+            cmd = f"sudo shutdown -h {timing}"
+            subprocess.call(cmd, shell=True)
+            return (True, status, json.dumps(data))
+        elif mode == 'c':
+            cmd = "sudo shutdown -c"
+            subprocess.call(cmd, shell=True)
             return (True, status, json.dumps(data))
     else:
         return (False, 404, None)
