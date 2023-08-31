@@ -1,14 +1,12 @@
 <template>
   <div class="wrap">
 
-    <h1>シャットダウン</h1>
-
     <div class="btns">
-      <button @click="lock() && shutdown('now')" v-bind:disabled="shutdown_now">
-        今すぐシャットダウンする
+      <button @click="lock() && shutdown('h', 'now')" v-bind:disabled="shutdown_now">
+        シャットダウン
       </button>
     </div>
-
+    <p>シャットダウンを押すと、ボード上のインジケーター（緑色LED）が点滅を開始します。点滅が終わったら、電源を抜いてください。</p>
   </div>
 </template>
 
