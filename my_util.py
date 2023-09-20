@@ -7,7 +7,7 @@ DB_NAME = 'user.db'
 BZ_INTERVAL = 0.075
 
 BZ        = 11
-RELAY     = 25
+RELAY     = 22
 LED_GREEN = 36
 LED_RED   = 37
 
