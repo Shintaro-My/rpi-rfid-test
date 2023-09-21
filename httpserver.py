@@ -11,11 +11,21 @@ import sqlite3
 from my_util import init_db, DB_NAME
 import mycmd
 import ipget
+import time
 
 
 
 #IP = socket.gethostbyname(socket.gethostname())
-IP, _ = ipget.ipget().ipaddr('wlan0').split('/')
+IP = None
+for i in range(10):
+    try:
+        IP, _ = ipget.ipget().ipaddr('wlan0').split('/')
+        if IP: break
+    except:
+        print('Searching IP...')
+        time.sleep(1)
+        continue
+if not IP: raise Exception('Not Connected')
 current_dir = ''
 
 # CHANGE_DISABLE = False
