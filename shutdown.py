@@ -25,5 +25,6 @@ def check():
             
 if __name__ == '__main__':
     setup()
+    print('enbale gpio-shutdown/reboot: (15, 16)')
     while check():
         time.sleep(.05)
