@@ -2,12 +2,15 @@
   <div class="wrap">
 
     <div class="btns">
+      <button @click="reboot()" v-bind:disabled="shutdown_now">
+        再起動
+      </button>
       <button @click="lock() && shutdown('h', 'now')" v-bind:disabled="shutdown_now">
         シャットダウン
       </button>
     </div>
     <p>シャットダウンを押すと、ボード上の緑色LEDが点滅を開始します。</p>
-    <p>点滅が終わるまで、電源を抜かないでください。</p>
+    <p>点滅が終わるまで、コンセントを抜かないでください。</p>
   </div>
 </template>
 
@@ -23,8 +26,14 @@ const shutdown_now: Ref<boolean> = ref(false);
 const lock = () => (shutdown_now.value = true);
 
 const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
-const shutdown =async (mode: string, time: number | string | null = null) => {
+const shutdown = async (mode: string, time: number | string | null = null) => {
   const req = await fetch(`/shutdown?mode=${mode}` + (time == null ? '' : `&time=${time}`), {
+    method: 'DELETE'
+  })
+  console.log(await req.json());
+}
+const reboot = async () => {
+  const req = await fetch('/reboot', {
     method: 'DELETE'
   })
   console.log(await req.json());

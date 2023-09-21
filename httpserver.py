@@ -338,6 +338,10 @@ def _Page_DELETE(self: _MyHandler, path, query):
             cmd = "sudo shutdown -c"
             subprocess.call(cmd, shell=True)
             return (True, status, json.dumps(data))
+    elif path == '/reboot':
+        cmd = "sudo reboot"
+        subprocess.call(cmd, shell=True)
+        return (True, status, json.dumps(data))
     else:
         return (False, 404, None)
     
