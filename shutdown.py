@@ -13,11 +13,10 @@ def check_shutdown():
         GPIO.cleanup()
         cmd = "sudo shutdown -h now"
         subprocess.call(cmd, shell=True)
-        while GPIO.input(SHUTDOWN) == 0:
-            time.sleep(.05)
+        return False
+    return True
             
 if __name__ == '__main__':
     check_shutdown_setup()
-    while True:
-        check_shutdown()
+    while check_shutdown():
         time.sleep(.05)
