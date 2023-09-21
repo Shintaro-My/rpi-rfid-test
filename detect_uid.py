@@ -9,7 +9,7 @@ from my_util import init_db, init_gpio, buzzer, led_green, led_red, led_all_off,
 from mfrc522_i2c import MFRC522
 import RPi.GPIO as GPIO
 
-DURATION = 3
+DURATION = 10
 
 def main():
     init_gpio()
