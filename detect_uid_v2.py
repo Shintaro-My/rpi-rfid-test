@@ -62,16 +62,17 @@ def main():
                     _uid = '-'.join(['{:02x}'.format(u) for u in uid])
                     print(f"ID: {_uid}")
                     auth(_uid)
-                    if not START_TIME:
-                        BEFORE_UID = None
-                        time.sleep(.1)
-                    elif (time.time() - START_TIME) < DURATION:
-                        relay(True)
-                        led_green()
-                    else:
-                        relay(False)
-                        led_all_off()
-                        START_TIME = None
+                    
+            if not START_TIME:
+                BEFORE_UID = None
+                time.sleep(.1)
+            elif (time.time() - START_TIME) < DURATION:
+                relay(True)
+                led_green()
+            else:
+                relay(False)
+                led_all_off()
+                START_TIME = None
                         
     except Exception as e:
         print(e)
