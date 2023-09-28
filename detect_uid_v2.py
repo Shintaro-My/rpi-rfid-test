@@ -53,7 +53,6 @@ def main():
         led_all_off()
 
         while run:
-            relay(False)
             (status, backData, tagType) = MFRC522Reader.scan()
             if status == MFRC522Reader.MIFARE_OK:
                 print('=' * 10)
