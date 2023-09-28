@@ -121,6 +121,8 @@ def auth(uid):
             conn.close()
         else:
             print('(repeat)')
+        time.sleep(.2)
+        led_all_off()
         
     BEFORE_UID = uid
 
