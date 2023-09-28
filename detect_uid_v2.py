@@ -8,11 +8,15 @@ from my_util import init_db, init_gpio, buzzer, led_green, led_red, led_all_off,
 #from pirc522 import RFID
 from mfrc522_i2c import MFRC522
 import RPi.GPIO as GPIO
-import asyncio
 
-DURATION = 3
+DURATION = 10
+
+START_TIME = None
+BEFORE_UID = None
 
 def main():
+    global BEFORE_UID, START_TIME
+    
     init_gpio()
     led_red()
     buzzer()
@@ -46,8 +50,10 @@ def main():
 
         signal.signal(signal.SIGINT, end_read)
 
+        led_all_off()
 
         while run:
+            relay(False)
             (status, backData, tagType) = MFRC522Reader.scan()
             if status == MFRC522Reader.MIFARE_OK:
                 print('=' * 10)
@@ -56,6 +62,17 @@ def main():
                     _uid = '-'.join(['{:02x}'.format(u) for u in uid])
                     print(f"ID: {_uid}")
                     auth(_uid)
+                    if not START_TIME:
+                        BEFORE_UID = None
+                        time.sleep(.1)
+                    elif (time.time() - START_TIME) < DURATION:
+                        relay(True)
+                        led_green()
+                    else:
+                        relay(False)
+                        led_all_off()
+                        START_TIME = None
+                        
     except Exception as e:
         print(e)
     finally:
@@ -64,44 +81,48 @@ def main():
         GPIO.cleanup()
         return True
     
-async def auth(uid):
+def auth(uid):
+    global BEFORE_UID, START_TIME
+    
     conn = sqlite3.connect(DB_NAME)
     cur = conn.cursor()
     users = [v for v in cur.execute(f'SELECT * FROM Users WHERE UserId = "{uid}"')]
     if len(users):
-        cur.execute(
-            f"""
-            UPDATE Users SET LastSeen=datetime('now', '+9 hours') WHERE UserId="{uid}"
-            """.strip()
-        )
-        conn.commit()
-        cur.close()
-        conn.close()
         _, name = users[0][:2]
-        print(f'Welcome, "{name}" <ID: {uid}>!')
-        relay(True)
-        led_green()
+        if BEFORE_UID != uid:
+            cur.execute(
+                f"""
+                UPDATE Users SET LastSeen=datetime('now', '+9 hours') WHERE UserId="{uid}"
+                """.strip()
+            )
+            conn.commit()
+            cur.close()
+            conn.close()
+            print(f'Welcome, "{name}" <ID: {uid}>!')
+        else:
+            print('(repeat)')
+        START_TIME = time.time()
         buzzer()
-        await asyncio.sleep(DURATION)
-        relay(False)
-        led_all_off()
     else:
         buzzer(2, led_red, led_all_off)
         led_red()
-        print('[!] Invalid User.')
-        cur.execute(
-            f"""
-            INSERT INTO Anonymous (UserId, LastUpdate)
-            VALUES (\"{uid}\", datetime('now', '+9 hours'))
-            ON CONFLICT(UserId)
-            DO UPDATE SET LastUpdate=datetime('now', '+9 hours')
-            """.strip()
-        )
-        conn.commit()
-        cur.close()
-        conn.close()
+        if BEFORE_UID != uid:
+            print('[!] Invalid User.')
+            cur.execute(
+                f"""
+                INSERT INTO Anonymous (UserId, LastUpdate)
+                VALUES (\"{uid}\", datetime('now', '+9 hours'))
+                ON CONFLICT(UserId)
+                DO UPDATE SET LastUpdate=datetime('now', '+9 hours')
+                """.strip()
+            )
+            conn.commit()
+            cur.close()
+            conn.close()
+        else:
+            print('(repeat)')
         
-    time.sleep(1)
+    BEFORE_UID = uid
 
 #util.debug = True
 if __name__ == '__main__':
