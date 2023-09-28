@@ -27,10 +27,6 @@
             {{ item.CreatedAt }}
           </div>
           <div>
-            <span class="bold">最終履歴</span>
-            {{ item.LastSeen }}
-          </div>
-          <div>
             <span class="bold">備考</span>
             {{ item.Note }}
           </div>
@@ -74,6 +70,7 @@ defineProps<{
 const headers: Header[] = [
   { text: 'UserName', value: 'UserName', sortable: true },
   { text: 'UserId', value: 'UserId', sortable: true },
+  { text: 'LastSeen', value: 'LastSeen', sortable: true },
   { text: '_', value: 'operation' }
 ]
 const itemsSelected: Ref<Item[]> = ref([]);
