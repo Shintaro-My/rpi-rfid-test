@@ -2,7 +2,7 @@
 # 故障した場合
 
 ### 本体などのハードが損傷した場合
-　Raspberry Pi本体が壊れた場合は、同じバージョンのRaspberry Pi Zero Wであれば、micro SDを付け直すだけで問題ない。もし廃版になるなどで新しいバージョン（例: `Raspberry Pi Zero 2 W`）を使う必要がある時は、後述の[導入手順（フルバージョン）](#導入手順フルバージョン)に従ってソフトも入れ直す必要がある。
+　Raspberry Pi本体が壊れた場合は、同じバージョン（`Raspberry Pi Zero W`あるいは`WH`）であれば、micro SDを付け直すだけで問題ない。もし廃版になるなどで新しいバージョン（例: [`Raspberry Pi Zero 2 W`](https://www.switch-science.com/products/7600)）を使う必要がある場合は、後述の[ソフト導入手順](#ソフト導入手順)に従ってソフトも入れ直す必要がある。
 
 　本体に接続している各種コンポーネントが壊れた場合は、以下の部品を必要数用意し、予備の基板に実装あるいは接続する。　
  部品名 | 個数 | メモ
@@ -20,7 +20,12 @@
 
 ※ 予備の基板が無い場合は、本プロジェクト内にある[`OfficeDoorManagement.zip`](/OfficeDoorManagement.zip?raw=1)をダウンロードし、基板メーカーに注文すること。
 
-# 導入手順（フルバージョン）
+### ソフト（micro SD）が損傷した場合
+　バックアップのmicro SDがある場合は差し直すだけでよい。バックアップが無い場合は、後述の[ソフト導入手順](#ソフト導入手順)に従って初期設定を行う。
+　定期的にバックアップは行うこと。
+
+
+# ソフト導入手順
 
 ### 0. Raspberry Pi Zero W
 　Raspberry Pi OS Liteを[Raspberry Pi Imager](https://www.raspberrypi.com/software/)などでmicro SDに書き込み、挿入する。
@@ -31,7 +36,7 @@ sudo raspi-config
 ```
 `3 Interface Options`の`I5 I2C`を`Enable`にする。
 
-### 2. 自動ドア認証と周辺プログラムをインストールする
+### 2. 各種プログラムのインストールとセットアップ
 ```sh
 sudo apt-get update
 sudo apt-get upgrade -y
@@ -50,7 +55,7 @@ chmod 755 task.sh && chmod 755 detect.sh && chmod 755 server.sh && chmod 755 shu
 cd ../
 ```
 
-### 3. 自動実行のセットアップを行う
+### 3. プログラムの自動実行セットアップ
 
 ```sh
 sudo nano /etc/rc.local
@@ -62,10 +67,25 @@ bash task.sh
 
 exit 0
 ```
+※ `Ctrl+S`で保存、`Ctrl+X`でエディターを閉じる。
+
+### 4. 設定ファイルの編集
+
+```sh
+sudo nano /boot/config.txt
+```
+末尾に以下の通りに書き込む。
+```
+dtoverlay=disable-bt
+dtparam=act_led_gpio=27,act_led_trigger=heartbeat
+```
+* 未使用のBluetoothアダプタを停止（省電力化）。
+* パイロットランプをGPIO27に割り振り、点灯条件を「起動中」に変更。
 
 ----
+----
 
-# RFID（RC522）についての備忘録
+## （メモ）RFID（RC522）についての備忘録
 
 * 記録領域は計1024バイトで、0 - 15番までの計16個のセクターで分割されている。
 * セクターはそれぞれ64バイトで、さらに0 - 3番までの計4個（各16バイト）のブロックで分割されている。
