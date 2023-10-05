@@ -1,4 +1,4 @@
-pwd
+echo $PWD
 
 bash ./server.sh&
 bash ./detect.sh&
