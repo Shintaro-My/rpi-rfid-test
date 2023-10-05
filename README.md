@@ -32,7 +32,7 @@ cd ../
 sudo nano /etc/rc.local
 ```
 `exit 0`の直前にプログラムを実行するコマンドを記述する。
-```sh
+```sh:/etc/rc.local
 cd /home/pi/rpi-rfid-test
 bash task.sh
 
