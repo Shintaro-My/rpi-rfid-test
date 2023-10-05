@@ -1,4 +1,31 @@
 
+# 導入手順
+
+```sh
+sudo raspi-config
+```
+`3 Interface Options`の`I5 I2C`を`Enable`にする。
+
+```sh
+sudo apt-get update
+sudo apt-get upgrade -y
+sudo apt-get install git pip libmagic1
+
+pip install mfrc522_i2c rpi.gpio ipget websocket-server websockets questionary
+
+git clone https://github.com/billw2/rpi-clone.git 
+cd rpi-clone
+sudo cp rpi-clone rpi-clone-setup /usr/local/sbin
+cd ../
+
+git clone https://github.com/Shintaro-My/rpi-rfid-test.git
+cd rpi-rfid-test
+chmod 755 task.sh && chmod 755 detect.sh && chmod 755 server.sh && chmod 755 shutdown.sh
+cd ../
+```
+
+----
+
 # RFID（RC522）についての備忘録
 
 * 記録領域は計1024バイトで、0 - 15番までの計16個のセクターで分割されている。
@@ -12,6 +39,6 @@
   * 0 - 63番のブロック。「セクター2の0番目のブロック」は8番ブロック（4 * 2 + 0）ということになる。
 * ここまでの説明はあくまで考察の域を出ないものであるので、使用する前に記録領域の全読み出しをするべき。
 
-# 自動起動
-*  `/home/pi/.config/lxsession/LXDE-pi/autostart`に、`lxterminal -e [app_dir]/autostart.sh`を追記する。
-  * 事前にシェルスクリプトは`chmod 755 [app_dir]/autostart.sh`で実行権限を渡しておく。
+# ~~自動起動~~
+*  ~~`/home/pi/.config/lxsession/LXDE-pi/autostart`に、`lxterminal -e [app_dir]/autostart.sh`を追記する。~~
+  * ~~事前にシェルスクリプトは`chmod 755 [app_dir]/autostart.sh`で実行権限を渡しておく。~~

@@ -6,7 +6,7 @@ import subprocess
 import traceback
 import re
 import magic # python-magic
-import socket
+# import socket
 import sqlite3
 from my_util import init_db, DB_NAME
 import mycmd
