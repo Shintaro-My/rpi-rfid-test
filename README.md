@@ -1,11 +1,13 @@
 
 # 導入手順
 
+### 1. I2Cを有効化する
 ```sh
 sudo raspi-config
 ```
 `3 Interface Options`の`I5 I2C`を`Enable`にする。
 
+### 2. 自動ドア認証と周辺プログラムをインストールする
 ```sh
 sudo apt-get update
 sudo apt-get upgrade -y
@@ -22,6 +24,19 @@ git clone https://github.com/Shintaro-My/rpi-rfid-test.git
 cd rpi-rfid-test
 chmod 755 task.sh && chmod 755 detect.sh && chmod 755 server.sh && chmod 755 shutdown.sh
 cd ../
+```
+
+### 3. 自動実行のセットアップを行う
+
+```sh
+sudo nano /etc/rc.local
+```
+`exit 0`の直前にプログラムを実行するコマンドを記述する。
+```sh
+cd /home/pi/rpi-rfid-test
+bash task.sh
+
+exit 0
 ```
 
 ----
