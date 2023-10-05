@@ -18,12 +18,12 @@
  ピンソケット (20x2) | 1 | 下向きに付けることに注意。はんだ付け後、飛び出したピンはなるべく短く切ること。線材のはんだ付けの位置を間違えないこと。
  [基板取付用LANコネクタ(モジュラージャック)(RJ-45)](https://akizukidenshi.com/catalog/g/gC-00159/) | 1 | 高さ調整のため、リーダー側には取り付けない。またピンの幅が若干狭いので、ピンの先をペンチなどで少し折り曲げてから取り付けること。 
 
-※ 予備の基板が無い場合は、本プロジェクト内にある`OfficeDoorManagement.zip`をダウンロードし、基板メーカーに注文すること。
+※ 予備の基板が無い場合は、本プロジェクト内にある[`OfficeDoorManagement.zip`](/OfficeDoorManagement.zip)をダウンロードし、基板メーカーに注文すること。
 
 # 導入手順（フルバージョン）
 
 ### 0. Raspberry Pi Zero W
-　Raspberry Pi OS Liteを`Raspberry Pi Imager`などでmicro SDに書き込み、挿入する。
+　Raspberry Pi OS Liteを[Raspberry Pi Imager](https://www.raspberrypi.com/software/)などでmicro SDに書き込み、挿入する。
 
 ### 1. I2Cを有効化する
 ```sh
