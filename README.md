@@ -4,11 +4,18 @@
 ### 本体などのハードが損傷した場合
 　Raspberry Pi本体が壊れた場合は、同じバージョンのRaspberry Pi Zero Wであれば、micro SDを付け直すだけで問題ない。もし廃版になるなどで新しいバージョン（例: `Raspberry Pi Zero 2 W`）を使う必要がある時は、後述の`導入手順（フルバージョン）`に従ってソフトも入れ直す必要がある。
 
-　本体に接続している各種コンポーネントが壊れた場合は、以下の部品を用意し、予備の基板に実装する。　
+　本体に接続している各種コンポーネントが壊れた場合は、以下の部品を必要数用意し、予備の基板に実装あるいは接続する。　
  部品名 | 個数 | メモ
-:---- |:------:| -----:
+:---- |:----:| :----
+ [M5Stack用WS1850S搭載 RFID 2ユニット](https://www.switch-science.com/products/8301) | 1 | - 
  カーボン抵抗6.8KΩ | 2 | - 
- [基板取付用LANコネクタ(モジュラージャック)(RJ-45)](https://akizukidenshi.com/catalog/g/gC-00159/) | 2 | - 
+ 1N4007 | 1 | - 
+ 2SC1815 | 1 | -
+ ピンヘッダ (20x2) | 1 | 20x1を2個でもよい
+ [電子ブザー 12mm UDP-05LFPN](https://akizukidenshi.com/catalog/g/gP-09704/) | 1 | -
+ [5V小型リレー 接点容量: 2A 946H-1C-5D](https://akizukidenshi.com/catalog/g/gP-07342/) | 1 | -
+ [2色LED 赤・黄緑5mm カソードコモン](https://akizukidenshi.com/catalog/g/gI-06314/) | 1 | -
+ [基板取付用LANコネクタ(モジュラージャック)(RJ-45)](https://akizukidenshi.com/catalog/g/gC-00159/) | 1 | 高さ調整のため、リーダー側には取り付けない。またピンの幅が若干狭いので、ピンの先をペンチなどで少し折り曲げてから取り付けること。 
 
 ※予備の基板が無い場合は、本プロジェクト内にある`OfficeDoorManagement.zip`をダウンロードし、基板メーカーに注文すること。
 
