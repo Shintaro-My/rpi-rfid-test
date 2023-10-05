@@ -12,9 +12,9 @@
  [HY2.0mm 4Pソケット サイド型](https://www.amazon.co.jp/dp/B09CP5K8XT) | 1 | -
  [5V小型リレー 接点容量: 2A 946H-1C-5D](https://akizukidenshi.com/catalog/g/gP-07342/) | 1 | -
  [2色LED 赤・黄緑5mm カソードコモン](https://akizukidenshi.com/catalog/g/gI-06314/) | 1 | -
- カーボン抵抗6.8KΩ | 2 | - 
- 1N4007 | 1 | - 
+ 1N4007 | 1 | リレーの逆起電力対策。向きに注意。 
  2SC1815 | 1 | -
+ カーボン抵抗6.8KΩ | 2 | - 
  ピンソケット (20x2) | 1 | 下向きに付けることに注意。はんだ付け後、飛び出したピンはなるべく短く切ること。線材のはんだ付けの位置を間違えないこと。
  [基板取付用LANコネクタ(モジュラージャック)(RJ-45)](https://akizukidenshi.com/catalog/g/gC-00159/) | 1 | 高さ調整のため、リーダー側には取り付けない。またピンの幅が若干狭いので、ピンの先をペンチなどで少し折り曲げてから取り付けること。 
 
@@ -28,13 +28,17 @@
 # ソフト導入手順
 
 ### 0. Raspberry Pi Zero W
-　Raspberry Pi OS Liteを[Raspberry Pi Imager](https://www.raspberrypi.com/software/)などでmicro SDに書き込み、挿入する。
+　`Raspberry Pi OS Lite`を[Raspberry Pi Imager](https://www.raspberrypi.com/software/)でmicro SDに書き込み、挿入する。ImagerのOS詳細設定でSSHを有効化しておく。WiFiの設定は、
 
-### 1. I2Cを有効化する
+　「USB Type-Aのメス-メス変換器」と「USB Type-B to Aケーブル」を使うことで、本体にUSB機器を繋ぐことができる。普段はバックアップ用のmicro SDを繋いでおくが、こちらにキーボード、そしてmini HDMI端子を変換器越しにモニターに繋ぐことで、簡単に以下のデバッグ作業が行える。
+
+### 1. SSHとI2Cを有効化
 ```sh
 sudo raspi-config
 ```
-`3 Interface Options`の`I5 I2C`を`Enable`にする。
+* `3 Interface Options`
+  * `I2 SSH`を`Enable`にする。
+  * `I5 I2C`を`Enable`にする。
 
 ### 2. 各種プログラムのインストールとセットアップ
 ```sh
@@ -81,6 +85,8 @@ dtparam=act_led_gpio=27,act_led_trigger=heartbeat
 ```
 * 未使用のBluetoothアダプタを停止（省電力化）。
 * パイロットランプをGPIO27に割り振り、点灯条件を「起動中」に変更。
+
+### 5. WiFiの設定
 
 ----
 ----
