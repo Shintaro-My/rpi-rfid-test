@@ -1,3 +1,16 @@
-cd ~/Desktop/rpi-rfid-test
+#!/bin/bash
 
-python detect_uid.py
+for i in {1..5}
+do
+    sudo -H -u pi python3 detect_uid_v2.py
+    if [ $? -eq 0 ]; then
+        echo "Success"
+        break
+    else
+        sleep 5
+    fi
+done
+
+if [ $i -eq 5 ]; then
+    echo "Retry failed"
+fi

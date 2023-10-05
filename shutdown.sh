@@ -2,7 +2,7 @@
 
 for i in {1..5}
 do
-    sudo -H -u pi python3 httpserver.py
+    sudo -H -u pi python3 shutdown.py
     if [ $? -eq 0 ]; then
         echo "Success"
         break
