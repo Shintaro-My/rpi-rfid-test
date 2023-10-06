@@ -35,8 +35,12 @@
       </template>
     </EasyDataTable>
 
-    <a @click="deleteMulti()" v-if="itemsSelected.length">{{ itemsSelected.length }} 件のアイテムを削除</a>
-    <a @click="download()">ログファイルのダウンロード</a>
+    <div>
+      <a @click="deleteMulti()" v-if="itemsSelected.length">{{ itemsSelected.length }} 件のアイテムを削除</a>
+    </div>
+    <div>
+      <a @click="download()">ログファイルのダウンロード</a>
+    </div>
     
     <div v-if="edit_visible" class="darkbox">
       <h3>Edit "<pre class="inline">{{ editingItem.UserId }}</pre>":</h3>
@@ -57,6 +61,14 @@
         <button @click="close_delete()">Cancel</button>
       </div>
     </div>
+
+    
+
+    <h1>ログファイルからの復元</h1>
+    <label class="file">
+      <input type="file" ref="file" @change="fileChange">
+    </label>
+    <a @click="restore" v-if="archive">ログから復元する</a>
 
   </div>
 </template>
@@ -112,6 +124,34 @@ const download = async () => {
   await update();
   const blob: Blob = new Blob([JSON.stringify(items.value)], {type: 'application/json'});
   saveAs(blob, 'log.json');
+}
+
+const file: Ref<HTMLInputElement | null> = ref(null);
+const archive: Ref<object[]> = ref([]);
+const fileChange = async() => {
+  const files = file.value?.files;
+  if (files) {
+    const result: object[] | null = await new Promise((resolve, reject) => {
+      const fr = new FileReader();
+      fr.readAsText(files[0]);
+      fr.onload = () => {
+        try {
+          const json: object[] = JSON.parse(fr.result as string);
+          resolve(json);
+        } catch(e) {
+          reject(null);
+        }
+      }
+    })
+    if (result) {
+      archive.value = result;
+    }
+  }
+}
+const restore = () => {
+  if (confirm('現在登録されているユーザーが上書きされます。よろしいですか？')) {
+    console.log(archive.value)
+  }
 }
 
 const close_edit = () => {
