@@ -148,9 +148,19 @@ const fileChange = async() => {
     }
   }
 }
-const restore = () => {
+const restore = async () => {
   if (confirm('現在登録されているユーザーが上書きされます。よろしいですか？')) {
-    console.log(archive.value)
+    const req = await fetch('/restore', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ Users: archive.value })
+    });
+    if (req.status != 200) {
+      alert('Communication failed.')
+      return false;
+    }
   }
 }
 

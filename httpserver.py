@@ -281,6 +281,25 @@ def _Page_POST(self: _MyHandler, path, query, body: dict={}):
             conn.close()
             return (True, status, json.dumps(data))
         
+    elif path == '/restore':
+        conn = sqlite3.connect(DB_NAME)
+        cur = conn.cursor()
+        try:
+            init_db(conn, cur)
+            
+            data = body.get('Users')
+            conn.commit()
+        except Exception as e:
+            data['status'] = 'err'
+            t = traceback.format_exc()
+            print(t)
+            data['body'] = t
+            status = 500
+        finally:
+            cur.close()
+            conn.close()
+            return (True, status, json.dumps(data))
+        
     else:
         return (False, 404, None)
     
