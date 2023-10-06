@@ -156,7 +156,7 @@ const deleteMulti = async () => {
   if (!confirm('本当に削除しますか？')) return;
   loading.value = true;
   const uids = itemsSelected.value.map(v => v.UserId);
-  const req = await fetch(`/users?id=${uids.join(',')}`, {
+  const req = await fetch(`/anonymous?id=${uids.join(',')}`, {
     method: 'DELETE'
   });
   if (req.status != 200) {
