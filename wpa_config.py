@@ -33,4 +33,14 @@ if __name__ == '__main__':
         raise Exception('引数の数が不正です。[ssid1, pass1, ssid2, pass2, ...]のように入力してください。')
     networks = [create_pass(*sp, priority=i) for i, sp in enumerate(splitter(sys.argv[1:]))]
     context = WPA_HEADER + '\n\n' + '\n'.join(networks) + '\n'
-    print(context)
+    
+    with open('_temp.txt', 'w') as f:
+        f.write(context)
+    
+    cp = subprocess.run(
+        'cat _temp.txt',
+        shell=True,
+        capture_output=True
+    )
+    
+    print(cp.stdout.decode())
