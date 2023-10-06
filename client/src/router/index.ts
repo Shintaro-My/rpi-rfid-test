@@ -2,6 +2,7 @@ import { createRouter, createWebHistory, createWebHashHistory } from 'vue-router
 import UserView from '../views/UserView.vue'
 import AnonymousView from '../views/AnonymousView.vue'
 import BackupView from '../views/BackupView.vue'
+import ConfigView from '../views/ConfigView.vue'
 import ShutdownView from '../views/ShutdownView.vue'
 
 const router = createRouter({
@@ -22,6 +23,11 @@ const router = createRouter({
       path: '/backup',
       name: 'backup',
       component: BackupView
+    },
+    {
+      path: '/config',
+      name: 'config',
+      component: ConfigView
     },
     {
       path: '/shutdown',
