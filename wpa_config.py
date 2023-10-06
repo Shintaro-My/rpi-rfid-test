@@ -8,8 +8,11 @@ update_config=1
 BLANK = '        '
 
 def create_pass(ssid, passphrase, priority=None):
+    n = len(passphrase)
+    if n < 8 or 63 < n:
+        raise Exception(f'パスワードは 8 - 64 文字です: ["{ssid}" / "{passphrase}]')
     cp = subprocess.run(
-        f'wpa_passphrase {ssid} {passphrase}',
+        f'ss="{ssid}" && ps="{passphrase}" && ' + 'wpa_passphrase "${ss}" "${ps}"',
         shell=True,
         capture_output=True
     )
@@ -29,5 +32,5 @@ if __name__ == '__main__':
     if n % 2 == 0 or n == 1:
         raise Exception('引数の数が不正です。[ssid1, pass1, ssid2, pass2, ...]のように入力してください。')
     networks = [create_pass(*sp, priority=i) for i, sp in enumerate(splitter(sys.argv[1:]))]
-    context = WPA_HEADER + '\n\n' + '\n'.join(networks)
+    context = WPA_HEADER + '\n\n' + '\n'.join(networks) + '\n'
     print(context)
