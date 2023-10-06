@@ -38,7 +38,7 @@
     <div v-if="edit_visible" class="darkbox">
       <h3>Edit "<pre class="inline">{{ editingItem.Attribute }}</pre>":</h3>
       <div>
-        <div>Status:<input type="number" v-model="editingItem.Status" /></div>
+        <div>Status:<input type="number" v-model="editingItem.Status" min="0" /></div>
         <div>Note:<input type="text" v-model="editingItem.Note" /></div>
       </div>
       <div class="btns">
@@ -127,15 +127,17 @@ const editItem = (item: Item) => {
   edit_visible.value = true;
 }
 const _edit = async () => {
-  const { Attribute, Status, Note } = editingItem;
+  const { Attribute, Status: _status, Note } = editingItem;
+  const Status = Number(_status);
   if (!Attribute) return alert('属性名は空欄にできません')
+  if (Status < 0 || isNaN(Status)) return alert('無効な値です')
   loading.value = true;
   const req = await fetch('/config', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json'
     },
-    body: JSON.stringify({ Attribute, Status: Number(Status), Note })
+    body: JSON.stringify({ Attribute, Status, Note })
   });
   if (req.status != 200) {
     alert('Communication failed.')
