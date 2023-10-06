@@ -11,6 +11,9 @@ RELAY     = 22
 LED_GREEN = 36
 LED_RED   = 37
 
+LEAD_SW   = 33
+
+
 def init_gpio():
     GPIO.setmode(GPIO.BOARD)
     GPIO.setwarnings(False)
@@ -18,6 +21,7 @@ def init_gpio():
     GPIO.setup(RELAY    , GPIO.OUT)
     GPIO.setup(LED_GREEN, GPIO.OUT)
     GPIO.setup(LED_RED  , GPIO.OUT)
+    GPIO.setup(LEAD_SW  , GPIO.IN, pull_up_down=GPIO.PUD_UP)
 
 def relay(bln):
     GPIO.output(RELAY    , bln)
@@ -42,6 +46,8 @@ def buzzer(n = 1, fn1=lambda:1, fn2=lambda:1):
         GPIO.output(BZ, False)
         fn2()
 
+def is_door_open():
+    return GPIO.input(LEAD_SW) == 1
 
 def init_db(conn, cur):
     cur.execute(

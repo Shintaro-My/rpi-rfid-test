@@ -4,7 +4,7 @@ import signal
 import time
 import sys
 import sqlite3
-from my_util import init_db, init_gpio, buzzer, led_green, led_red, led_all_off, DB_NAME, relay
+from my_util import init_db, init_gpio, buzzer, led_green, led_red, led_all_off, DB_NAME, relay, is_door_open
 #from pirc522 import RFID
 from mfrc522_i2c import MFRC522
 import RPi.GPIO as GPIO
@@ -69,9 +69,13 @@ def main():
                 relay(True)
                 led_green()
             else:
-                relay(False)
-                led_all_off()
-                START_TIME = None
+                if is_door_open():
+                    relay(True)
+                    led_green()
+                else:
+                    relay(False)
+                    led_all_off()
+                    START_TIME = None
                         
     except Exception as e:
         print(e)
