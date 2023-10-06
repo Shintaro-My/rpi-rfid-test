@@ -289,6 +289,12 @@ h3 {
   justify-content: space-evenly;
   padding: 1em 0 0;
 }
+.restore {
+  border: 1px dotted;
+  border-radius: 0.5em;
+  margin: 1.25em 0 0.5em;
+  padding: 0.75em;
+}
 @media (min-width: 1024px) {
   .greetings h1,
   .greetings h3 {
