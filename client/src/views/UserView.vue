@@ -36,6 +36,7 @@
     </EasyDataTable>
 
     <a @click="deleteMulti()" v-if="itemsSelected.length">{{ itemsSelected.length }} 件のアイテムを削除</a>
+    <a @click="download()">ログファイルのダウンロード</a>
     
     <div v-if="edit_visible" class="darkbox">
       <h3>Edit "<pre class="inline">{{ editingItem.UserId }}</pre>":</h3>
@@ -64,6 +65,7 @@
 import { defineComponent, ref, reactive } from "vue";
 import type { Ref } from "vue";
 import type { Header, Item } from "vue3-easy-data-table";
+import { saveAs } from 'file-saver';
 defineProps<{
   msg: string
 }>()
@@ -105,6 +107,11 @@ const update = async () => {
   items.value = user.map((v: list) => fmt(v, ...field));
   loading.value = false;
   return true;
+}
+const download = async () => {
+  await update();
+  const blob: Blob = new Blob([JSON.stringify(items.value)], {type: 'application/json'});
+  saveAs(blob, 'log.json');
 }
 
 const close_edit = () => {
