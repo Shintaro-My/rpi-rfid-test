@@ -286,6 +286,7 @@ def _Page_POST(self: _MyHandler, path, query, body: dict={}):
         cur = conn.cursor()
         try:
             cur.execute("DROP TABLE IF EXISTS Users")
+            cur.execute("DROP TABLE IF EXISTS Anonymous")
             init_db(conn, cur)
             users = body.get('Users')
             for user in users:
