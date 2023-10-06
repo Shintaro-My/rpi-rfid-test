@@ -239,6 +239,7 @@ const deleteMulti = async () => {
   }
   close_delete();
   await update();
+  itemsSelected.value = [];
 }
 
 update();
