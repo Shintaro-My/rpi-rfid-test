@@ -308,6 +308,11 @@ def _Page_POST(self: _MyHandler, path, query, body: dict={}):
         try:
             init_db(conn, cur)
             attr, stat, note = (body.get(k) for k in ('Attribute', 'Status', 'Note'))
+            
+            print(attr)
+            print(stat)
+            print(note)
+            
             set_config(conn, cur, [[attr, stat, note]], True)
         except Exception as e:
             data['status'] = 'err'
