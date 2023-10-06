@@ -63,12 +63,13 @@
     </div>
 
     
-
-    <h1>ログファイルからの復元</h1>
-    <label class="file">
-      <input type="file" ref="file" @change="fileChange">
-    </label>
-    <a @click="restore" v-if="archive && archive.length">ログから復元する</a>
+    <div class="restore">
+      <h2>ログファイルからの復元</h2>
+      <label class="file">
+        <input type="file" ref="file" @change="fileChange">
+      </label>
+      <a @click="restore" v-if="archive && archive.length">ログから復元する</a>
+    </div>
 
   </div>
 </template>
@@ -161,6 +162,7 @@ const restore = async () => {
       alert('Communication failed.')
       return false;
     }
+    await update();
   }
 }
 
