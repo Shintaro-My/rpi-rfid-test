@@ -64,7 +64,7 @@ def main():
                     
             if not START_TIME:
                 BEFORE_UID = None
-                time.sleep(.1)
+                time.sleep(.01)
             elif (time.time() - START_TIME) < DURATION or is_door_open():
                 relay(True)
                 led_green()
