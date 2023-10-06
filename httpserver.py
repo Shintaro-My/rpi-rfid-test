@@ -285,9 +285,17 @@ def _Page_POST(self: _MyHandler, path, query, body: dict={}):
         conn = sqlite3.connect(DB_NAME)
         cur = conn.cursor()
         try:
+            cur.execute("DROP TABLE IF EXISTS Users")
             init_db(conn, cur)
-            
-            data = body.get('Users')
+            users = body.get('Users')
+            for user in users:
+                uid, uname, note, createdat, lastseen = (user.get(k) for k in ('UserId', 'UserName', 'Note', 'CreatedAt', 'LastSeen'))
+                cur.execute(
+                    f"""
+                    INSERT INTO Users (UserId, UserName, Note, CreatedAt, LastSeen)
+                    VALUES (\"{uid}\", \"{uname}\", \"{note}\", \"{createdat}\", \"{lastseen}\")
+                    """.strip()
+                )
             conn.commit()
         except Exception as e:
             data['status'] = 'err'
