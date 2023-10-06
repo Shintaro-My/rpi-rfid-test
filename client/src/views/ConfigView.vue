@@ -17,7 +17,7 @@
       <template #item-operation="item">
         <div class="operation-wrapper">
           <div><a @click="editItem(item)">編集</a></div>
-          <div><a @click="deleteItem(item)">削除</a></div>
+          <div><a @click="deleteItem(item)">初期化</a></div>
         </div>
       </template>
       <template #expand="item">
