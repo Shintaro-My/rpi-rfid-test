@@ -1,6 +1,10 @@
 import re
 import subprocess
 
+WPA_HEADER = """
+ctrl_interface=DIR=/var/run/wpa_supplicant GROUP=netdev
+update_config=1
+""".strip()
 BLANK = '        '
 
 def create_pass(ssid, passphrase, priority=None):
@@ -12,8 +16,7 @@ def create_pass(ssid, passphrase, priority=None):
     attr = ['key_mgmt=WPA-PSK']
     if priority is not None:
         attr += [f'priority={priority}']
-    txt = cp.stdout.decode().strip()[:-1] + '\n'.join([f'{BLANK}{a}' for a in attr])
-    print(txt)
+    txt = cp.stdout.decode().strip()[:-1] + '\n'.join([f'{BLANK}{a}' for a in attr]) + '\n}'
     return txt
 
 def splitter(ary):
@@ -25,6 +28,6 @@ if __name__ == '__main__':
     n = len(sys.argv)
     if n % 2 == 0 or n == 1:
         raise Exception('引数の数が不正です。[ssid1, pass1, ssid2, pass2, ...]のように入力してください。')
-    [create_pass(*sp, priority=i) for i, sp in enumerate(splitter(sys.argv[1:]))]
-
-
+    networks = [create_pass(*sp, priority=i) for i, sp in enumerate(splitter(sys.argv[1:]))]
+    context = WPA_HEADER + '\n\n' + '\n'.join(networks)
+    print(context)
