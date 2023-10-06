@@ -18,7 +18,7 @@ LEAD_SW_ACTIVE = 1
 
 
 def main():
-    global BEFORE_UID, START_TIME, LEAD_SW_ACTIVE
+    global BEFORE_UID, START_TIME, LEAD_SW_ACTIVE, DURATION
     
     
     conn = sqlite3.connect(DB_NAME)
@@ -26,6 +26,7 @@ def main():
     try:
         init_db(conn, cur)
         LEAD_SW_ACTIVE = get_config(conn, cur, 'LEAD_SW_ACTIVE')
+        DURATION = get_config(conn, cur, 'DURATION')
     except Exception as e:
         print(e)
     finally:

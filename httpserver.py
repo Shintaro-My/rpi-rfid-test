@@ -8,7 +8,7 @@ import re
 import magic # python-magic
 # import socket
 import sqlite3
-from my_util import init_db, DB_NAME
+from my_util import init_db, DB_NAME, set_config
 import mycmd
 import ipget
 import time
@@ -205,6 +205,27 @@ def _Page_GET(self: _MyHandler, path, query):
             status = 500
         return (True, status, json.dumps(data))
     
+    elif path == '/config':
+        conn = sqlite3.connect(DB_NAME)
+        cur = conn.cursor()
+        try:
+            init_db(conn, cur)
+            sql = 'SELECT * FROM Config'
+            if 'attribute' in query:
+                attr, = query["attribute"]
+                sql += f' WHERE Attribute = "{attr}"'
+            data['body'] = [v for v in cur.execute(sql)]
+        except Exception as e:
+            data['status'] = 'err'
+            t = traceback.format_exc()
+            print(t)
+            data['body'] = t
+            status = 500
+        finally:
+            cur.close()
+            conn.close()
+            return (True, status, json.dumps(data))
+    
     elif path == '/users':
         conn = sqlite3.connect(DB_NAME)
         cur = conn.cursor()
@@ -281,6 +302,24 @@ def _Page_POST(self: _MyHandler, path, query, body: dict={}):
             conn.close()
             return (True, status, json.dumps(data))
         
+    elif path == '/config':
+        conn = sqlite3.connect(DB_NAME)
+        cur = conn.cursor()
+        try:
+            init_db(conn, cur)
+            attr, stat, note = (body.get(k) for k in ('Attribute', 'Status', 'Note'))
+            set_config(conn, cur, [[attr, stat, note]], True)
+        except Exception as e:
+            data['status'] = 'err'
+            t = traceback.format_exc()
+            print(t)
+            data['body'] = t
+            status = 500
+        finally:
+            cur.close()
+            conn.close()
+            return (True, status, json.dumps(data))
+        
     elif path == '/restore':
         conn = sqlite3.connect(DB_NAME)
         cur = conn.cursor()
@@ -324,6 +363,24 @@ def _Page_DELETE(self: _MyHandler, path, query):
             uids, = query["id"]
             uids = [f'UserId = "{uid}"' for uid in uids.split(',')]
             cur.execute(f'DELETE FROM Users WHERE {" OR ".join(uids)}')
+            conn.commit()
+        except Exception as e:
+            data['status'] = 'err'
+            t = traceback.format_exc()
+            print(t)
+            data['body'] = t
+            status = 500
+        finally:
+            cur.close()
+            conn.close()
+            return (True, status, json.dumps(data))
+    elif path == '/config' and 'attribute' in query:
+        conn = sqlite3.connect(DB_NAME)
+        cur = conn.cursor()
+        try:
+            attributes, = query["attribute"]
+            attributes = [f'Attribute = "{attr}"' for attr in attributes.split(',')]
+            cur.execute(f'DELETE FROM Config WHERE {" OR ".join(attributes)}')
             conn.commit()
         except Exception as e:
             data['status'] = 'err'

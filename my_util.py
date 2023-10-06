@@ -58,7 +58,8 @@ def init_db(conn, cur):
         """
         CREATE TABLE IF NOT EXISTS Config(
             Attribute TEXT PRIMARY KEY,
-            Status    INTEGER
+            Status    INTEGER,
+            Note      TEXT,
         )
         """.strip()
     )
@@ -82,18 +83,21 @@ def init_db(conn, cur):
         """.strip()
     )
     conn.commit()
-    set_config(conn, cur, [['LEAD_SW_ACTIVE', 0]], overwrite=False)
+    set_config(conn, cur, [
+        ['LEAD_SW_ACTIVE', 0, 'リードスイッチの有効化'],
+        ['DURATION', 10, 'カード認証時の最低猶予期間']
+    ], overwrite=False)
     
     
-def set_config(conn, cur, ary, overwrite=True): # ary: [[key, value], ...]
+def set_config(conn, cur, ary, overwrite=True): # ary: [[key, value, note], ...]
     on_conflict = 'NOTHING'
-    for key, val in ary:
+    for key, val, note in ary:
         if overwrite:
-            on_conflict = f'UPDATE SET Status="{val}"'
+            on_conflict = f'UPDATE SET Status="{val}", Note="{note}'
         cur.execute(
             f"""
-            INSERT INTO Config (Attribute, Status)
-            VALUES (\"{key}\", \"{val}\")
+            INSERT INTO Config (Attribute, Status, Note)
+            VALUES (\"{key}\", \"{val}\", \"{note}\")
             ON CONFLICT(Attribute)
             DO {on_conflict}
             """.strip()
