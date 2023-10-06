@@ -109,7 +109,7 @@ def get_config(conn, cur, key):
     ary = [v for v in cur.execute(sql)]
     print(ary)
     if len(ary):
-        _, val = ary[0]
+        _, val, _ = ary[0]
         return val
     return None
     
