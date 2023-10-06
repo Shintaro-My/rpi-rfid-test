@@ -69,7 +69,8 @@ defineProps<{
 }>()
 const headers: Header[] = [
   { text: 'Attribute', value: 'Attribute', sortable: true },
-  { text: 'Status', value: 'Status' }
+  { text: 'Status', value: 'Status' },
+  { text: '_', value: 'operation' }
 ]
 const itemsSelected: Ref<Item[]> = ref([]);
 const items: Ref<Item[]> = ref([]);
