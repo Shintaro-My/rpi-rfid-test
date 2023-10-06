@@ -59,7 +59,7 @@ def init_db(conn, cur):
         CREATE TABLE IF NOT EXISTS Config(
             Attribute TEXT PRIMARY KEY,
             Status    INTEGER,
-            Note      TEXT,
+            Note      TEXT
         )
         """.strip()
     )
