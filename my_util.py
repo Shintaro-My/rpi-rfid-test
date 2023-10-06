@@ -85,7 +85,7 @@ def init_db(conn, cur):
     conn.commit()
     set_config(conn, cur, [
         ['LEAD_SW_ACTIVE', 0, 'リードスイッチの有効化'],
-        ['DURATION', 10, 'カード認証時の最低猶予期間']
+        ['DURATION', 10, 'カード認証時の最低開放期間']
     ], overwrite=False)
     
     
