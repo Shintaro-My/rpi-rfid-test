@@ -93,11 +93,11 @@ def set_config(conn, cur, ary, overwrite=True): # ary: [[key, value, note], ...]
     on_conflict = 'NOTHING'
     for key, val, note in ary:
         if overwrite:
-            on_conflict = f'UPDATE SET Status="{val}", Note="{note}'
+            on_conflict = f'UPDATE SET Status={val}, Note="{note}'
         cur.execute(
             f"""
             INSERT INTO Config (Attribute, Status, Note)
-            VALUES (\"{key}\", \"{val}\", \"{note}\")
+            VALUES (\"{key}\", {val}, \"{note}\")
             ON CONFLICT(Attribute)
             DO {on_conflict}
             """.strip()
