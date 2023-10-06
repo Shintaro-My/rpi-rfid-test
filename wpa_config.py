@@ -12,7 +12,7 @@ def create_pass(ssid, passphrase):
 if __name__ == '__main__':
     import sys
     print(len(sys.argv))
-    ssid, passphrase, _ = sys.argv
+    _, ssid, passphrase = sys.argv
     create_pass(ssid, passphrase)
 
 
