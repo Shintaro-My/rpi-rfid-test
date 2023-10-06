@@ -22,15 +22,18 @@
 
 ### ソフト（micro SD）が損傷した場合
 　バックアップのmicro SDがある場合は差し直すだけでよい。バックアップが無い場合は、後述の[ソフト導入手順](#ソフト導入手順)に従って初期設定を行う。
+
 　定期的にバックアップは行うこと。
 
 
 # ソフト導入手順
 
 ### 0. Raspberry Pi Zero W
-　`Raspberry Pi OS Lite`を[Raspberry Pi Imager](https://www.raspberrypi.com/software/)でmicro SDに書き込み、挿入する。ImagerのOS詳細設定でSSHを有効化しておく。WiFiの設定も可能だが、IP固定はこの時点ではできないので、IP固定などを行わないと繋げられないWiFiの場合は繋げる必要はない。
+　`Raspberry Pi OS Lite`を[Raspberry Pi Imager](https://www.raspberrypi.com/software/)でmicro SDに書き込み、挿入する。ImagerのOS詳細設定でSSHを有効化しておく。WiFiの設定も可能だが、IP固定はこの時点ではできないので、IP固定などを行わないと繋げられないWiFiの場合は設定しない。
 
-　「USB Type-Aのメス-メス変換器」と「USB Type-B to Aケーブル」を使うことで、本体にUSB機器を繋ぐことができる。普段はバックアップ用のmicro SDを繋いでおくが、こちらにキーボード、そしてmini HDMI端子を変換器越しにモニターに繋ぐことで、簡単に以下のデバッグ作業が行える。
+　「USB Type-Aのメス-メス変換器」と「USB Type-B to Aケーブル」を使うことで、本体にUSB機器を繋ぐことができる。普段はバックアップ用のmicro SDを繋いでおくが、こちらにキーボード、そしてmini HDMI端子を変換器越しにモニターに繋ぐことで、簡単に以下のセットアップが行える。
+
+　事前にWiFiの設定が行えているのであれば、SSHでセットアップが行えるので、キーボードやモニターは不要となる。
 
 ### 1. SSHとI2Cを有効化
 ```sh
@@ -73,7 +76,7 @@ exit 0
 ```
 ※ `Ctrl+S`で保存、`Ctrl+X`でエディターを閉じる。
 
-### 4. 設定ファイルの編集
+### 4. 本体設定ファイルの編集
 
 ```sh
 sudo nano /boot/config.txt
@@ -86,7 +89,61 @@ dtparam=act_led_gpio=27,act_led_trigger=heartbeat
 * 未使用のBluetoothアダプタを停止（省電力化）。
 * パイロットランプをGPIO27に割り振り、点灯条件を「起動中」に変更。
 
+※ `Ctrl+S`で保存、`Ctrl+X`でエディターを閉じる。
+
 ### 5. WiFiの設定
+
+#### WiFi接続情報ファイルを作成
+
+```sh
+cd rpi-rfid-test
+python wpa_config.py <WIFI_SSID_1> <PASSWORD_1> <WIFI_SSID_2> <PASSWORD_2>
+```
+`python wpa_config.py`の後には`WiFiのSSID`・`WiFiのパスワード`を半角スペースで区切って入力する。複数のWiFiと繋げる場合は、更に半角スペースを空けて続ける（例: `python wpa_config.py Buffalo-A-XXXX ABCD1234 elecom-XXXXXX AIUEO123`）。
+
+#### WiFi接続情報ファイルを所定の位置に配置
+
+```sh
+cat _temp.txt | sudo tee /etc/wpa_supplicant/wpa_supplicant.conf
+rm _temp.txt
+```
+
+#### （任意）IP固定化
+
+```sh
+sudo nano /etc/dhcpcd.conf
+```
+末尾に以下の通りに書き込む。
+```
+interface wlan0
+```
+```
+その下に、以下の形式でIPを固定化したいWiFiの数だけ書き込む。
+
+```
+ssid <WiFi_SSID>
+static ip_address=192.168.XX.XXX/24
+static routers=<IPv4のゲートウェイ>
+static domain_name_servers=<DNSサーバー（優先）> <DNSサーバー（代替）>
+```
+
+例：
+```
+interface wlan0
+
+ssid Buffalo-A-XXXX
+static ip_address=192.168.10.111/24
+static routers=192.168.10.2
+static domain_name_servers=8.8.8.8 8.8.4.4
+
+ssid elecom-XXXXXX
+static ip_address=192.168.2.111/24
+static routers=192.168.2.252
+static domain_name_servers=200.230.230.5 220.110.130.250
+```
+
+※ `Ctrl+S`で保存、`Ctrl+X`でエディターを閉じる。
+
 
 ----
 ----

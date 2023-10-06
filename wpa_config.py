@@ -37,10 +37,4 @@ if __name__ == '__main__':
     with open('_temp.txt', 'w') as f:
         f.write(context)
     
-    cp = subprocess.run(
-        'cat _temp.txt',
-        shell=True,
-        capture_output=True
-    )
-    
-    print(cp.stdout.decode())
+    print(context)
