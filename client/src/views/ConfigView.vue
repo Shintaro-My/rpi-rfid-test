@@ -34,6 +34,8 @@
     <div>
       <a @click="deleteMulti()" v-if="itemsSelected.length">{{ itemsSelected.length }} 件のアイテムを削除</a>
     </div>
+
+    <p>※ 変更は再起動後に反映されます。</p>
     
     <div v-if="edit_visible" class="darkbox">
       <h3>Edit "<pre class="inline">{{ editingItem.Attribute }}</pre>":</h3>
