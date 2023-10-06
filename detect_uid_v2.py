@@ -16,19 +16,21 @@ BEFORE_UID = None
 
 LEAD_SW_ACTIVE = 1
 
-conn = sqlite3.connect(DB_NAME)
-cur = conn.cursor()
-try:
-    init_db(conn, cur)
-    LEAD_SW_ACTIVE = get_config(conn, cur, 'LEAD_SW_ACTIVE')
-except Exception as e:
-    print(e)
-finally:
-    cur.close()
-    conn.close()
 
 def main():
-    global BEFORE_UID, START_TIME
+    global BEFORE_UID, START_TIME, LEAD_SW_ACTIVE
+    
+    
+    conn = sqlite3.connect(DB_NAME)
+    cur = conn.cursor()
+    try:
+        init_db(conn, cur)
+        LEAD_SW_ACTIVE = get_config(conn, cur, 'LEAD_SW_ACTIVE')
+    except Exception as e:
+        print(e)
+    finally:
+        cur.close()
+        conn.close()
     
     init_gpio()
     led_red()
