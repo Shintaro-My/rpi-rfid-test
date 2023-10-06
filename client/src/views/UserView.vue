@@ -68,7 +68,7 @@
     <label class="file">
       <input type="file" ref="file" @change="fileChange">
     </label>
-    <a @click="restore" v-if="archive">ログから復元する</a>
+    <a @click="restore" v-if="archive && archive.length">ログから復元する</a>
 
   </div>
 </template>
@@ -143,7 +143,7 @@ const fileChange = async() => {
         }
       }
     })
-    if (result) {
+    if (result && result.length) {
       archive.value = result;
     }
   }
