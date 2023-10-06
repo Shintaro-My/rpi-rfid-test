@@ -7,12 +7,11 @@ def create_pass(ssid, passphrase):
         shell=True,
         capture_output=True
     )
-    txt = cp.stdout.decode()[:-1]
+    txt = cp.stdout.decode().strip()[:-1]
     print(txt)
 
 if __name__ == '__main__':
     import sys
-    print(len(sys.argv))
     _, ssid, passphrase = sys.argv
     create_pass(ssid, passphrase)
 
