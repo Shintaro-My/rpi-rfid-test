@@ -1,5 +1,6 @@
 import time
 import RPi.GPIO as GPIO
+import traceback
 import questionary as qy
 
 DB_NAME = 'user.db'
@@ -29,6 +30,9 @@ def relay(bln):
 def led_all_off():
     GPIO.output(LED_GREEN, False)
     GPIO.output(LED_RED  , False)
+def led_all_on():
+    GPIO.output(LED_GREEN, True )
+    GPIO.output(LED_RED  , True )
 def led_green():
     GPIO.output(LED_GREEN, True )
     GPIO.output(LED_RED  , False)
@@ -52,6 +56,14 @@ def is_door_open():
 def init_db(conn, cur):
     cur.execute(
         """
+        CREATE TABLE IF NOT EXISTS Config(
+            Attribute TEXT PRIMARY KEY,
+            Status    INTEGER
+        )
+        """.strip()
+    )
+    cur.execute(
+        """
         CREATE TABLE IF NOT EXISTS Users(
             UserId    TEXT PRIMARY KEY,
             UserName  TEXT NOT NULL,
@@ -70,7 +82,28 @@ def init_db(conn, cur):
         """.strip()
     )
     conn.commit()
+    set_config(conn, cur, [['LEAD_SW_ACTIVE', 0]], overwrite=False)
     
+    
+def set_config(conn, cur, ary, overwrite=True): # ary: [[key, value], ...]
+    on_conflict = 'NOTHING'
+    for key, val in ary:
+        if overwrite:
+            on_conflict = f'UPDATE SET Status="{val}"'
+        cur.execute(
+            f"""
+            INSERT INTO Config (Attribute, Status)
+            VALUES (\"{key}\", \"{val}\")
+            ON CONFLICT(Attribute)
+            DO {on_conflict}
+            """.strip()
+        )
+    conn.commit()
+
+def get_config(conn, cur, key):
+    sql = f'SELECT * FROM Config WHERE Attribute = "{key}"'
+    ary = [v for v in cur.execute(sql)]
+    return ary[0] if len(ary) else None
     
 
 def confirm(txt):

@@ -4,7 +4,7 @@ import signal
 import time
 import sys
 import sqlite3
-from my_util import init_db, init_gpio, buzzer, led_green, led_red, led_all_off, DB_NAME, relay, is_door_open
+from my_util import init_db, init_gpio, buzzer, led_green, led_red, led_all_off, led_all_on, DB_NAME, relay, is_door_open, get_config, set_config
 #from pirc522 import RFID
 from mfrc522_i2c import MFRC522
 import RPi.GPIO as GPIO
@@ -13,6 +13,19 @@ DURATION = 10
 
 START_TIME = None
 BEFORE_UID = None
+
+LEAD_SW_ACTIVE = 1
+
+conn = sqlite3.connect(DB_NAME)
+cur = conn.cursor()
+try:
+    init_db(conn, cur)
+    LEAD_SW_ACTIVE = get_config(conn, cur, 'LEAD_SW_ACTIVE')
+except Exception as e:
+    print(e)
+finally:
+    cur.close()
+    conn.close()
 
 def main():
     global BEFORE_UID, START_TIME
@@ -61,11 +74,13 @@ def main():
                     _uid = '-'.join(['{:02x}'.format(u) for u in uid])
                     print(f"ID: {_uid}")
                     auth(_uid)
-                    
-            if not START_TIME:
+            
+            if LEAD_SW_ACTIVE and is_door_open():
+                relay(True)
+                led_all_on()
+            elif not START_TIME:
                 BEFORE_UID = None
-                time.sleep(.01)
-            elif (time.time() - START_TIME) < DURATION or is_door_open():
+            elif (time.time() - START_TIME) < DURATION:
                 relay(True)
                 led_green()
             else:
