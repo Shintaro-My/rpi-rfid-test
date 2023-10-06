@@ -68,7 +68,10 @@
       <label class="file">
         <input type="file" ref="file" @change="fileChange">
       </label>
-      <a @click="restore" v-if="archive && archive.length">ログから復元する</a>
+      <span v-if="archive && archive.length">
+        <a @click="restore" v-if="isValidArchive()" >ログから復元する</a>
+        <span v-else>無効なファイル</span>
+      </span>
     </div>
 
   </div>
@@ -128,16 +131,23 @@ const download = async () => {
 }
 
 const file: Ref<HTMLInputElement | null> = ref(null);
-const archive: Ref<object[]> = ref([]);
+interface User {
+  UserId: string,
+  UserName: string,
+  Note: string,
+  CreatedAt: string,
+  LastSeen: string
+}
+const archive: Ref<User[]> = ref([]);
 const fileChange = async() => {
   const files = file.value?.files;
   if (files) {
-    const result: object[] | null = await new Promise((resolve, reject) => {
+    const result: User[] | null = await new Promise((resolve, reject) => {
       const fr = new FileReader();
       fr.readAsText(files[0]);
       fr.onload = () => {
         try {
-          const json: object[] = JSON.parse(fr.result as string);
+          const json: User[] = JSON.parse(fr.result as string);
           resolve(json);
         } catch(e) {
           reject(null);
@@ -148,6 +158,17 @@ const fileChange = async() => {
       archive.value = result;
     }
   }
+}
+const isValidArchive = () => {
+  const { value: ary } = archive;
+  if (!ary?.length) return false;
+  for (const v of ary) {
+    if (!v.UserId || !v.UserName) return false;
+    for(const key of ['Note', 'CreatedAt', 'LastSeen']) {
+      if (!(key in v)) return false;
+    }
+  }
+  return true
 }
 const restore = async () => {
   if (confirm('登録ユーザーのリストが上書きされ、未登録IDの履歴が破棄されます。よろしいですか？')) {
