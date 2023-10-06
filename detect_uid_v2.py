@@ -65,17 +65,13 @@ def main():
             if not START_TIME:
                 BEFORE_UID = None
                 time.sleep(.1)
-            elif (time.time() - START_TIME) < DURATION:
+            elif (time.time() - START_TIME) < DURATION or is_door_open():
                 relay(True)
                 led_green()
             else:
-                if is_door_open():
-                    relay(True)
-                    led_green()
-                else:
-                    relay(False)
-                    led_all_off()
-                    START_TIME = None
+                relay(False)
+                led_all_off()
+                START_TIME = None
                         
     except Exception as e:
         print(e)
