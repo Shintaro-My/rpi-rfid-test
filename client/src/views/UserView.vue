@@ -150,7 +150,7 @@ const fileChange = async() => {
   }
 }
 const restore = async () => {
-  if (confirm('現在登録されているユーザーが上書きされます。よろしいですか？')) {
+  if (confirm('登録ユーザーと未登録IDのリストが上書きされます。よろしいですか？')) {
     const req = await fetch('/restore', {
       method: 'POST',
       headers: {
