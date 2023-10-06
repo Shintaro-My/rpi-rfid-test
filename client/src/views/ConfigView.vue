@@ -153,7 +153,7 @@ const deletingItem = reactive({
   Attribute: ''
 });
 const deleteItem = (item: Item) => {
-  deletingItem.Attribute = item.UserId;
+  deletingItem.Attribute = item.Attribute;
   delete_visible.value = true;
 }
 const _delete = async () => {
