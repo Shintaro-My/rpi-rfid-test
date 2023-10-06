@@ -27,7 +27,6 @@ def main():
         init_db(conn, cur)
         LEAD_SW_ACTIVE = get_config(conn, cur, 'LEAD_SW_ACTIVE')
         DURATION = get_config(conn, cur, 'DURATION')
-        print(LEAD_SW_ACTIVE)
     except Exception as e:
         print(e)
     finally:
