@@ -47,7 +47,7 @@ sudo raspi-config
 ```sh
 sudo apt-get update
 sudo apt-get upgrade -y
-sudo apt-get install git pip libmagic1
+sudo apt-get install git python3-pip libmagic1
 
 pip install mfrc522_i2c rpi.gpio ipget websocket-server websockets questionary
 
@@ -116,7 +116,6 @@ sudo nano /etc/dhcpcd.conf
 末尾に以下の通りに書き込む。
 ```
 interface wlan0
-```
 ```
 その下に、以下の形式でIPを固定化したいWiFiの数だけ書き込む。
 
