@@ -29,18 +29,21 @@
 # ソフト導入手順
 
 ### 0. Raspberry Pi Zero W
-　`Raspberry Pi OS Lite`を[Raspberry Pi Imager](https://www.raspberrypi.com/software/)でmicro SDに書き込み、挿入する。ImagerのOS詳細設定でSSHを有効化しておく。可能であればここでWi-Fiの設定もしておくとよいが、IP固定はこの時点ではできないので、IP固定などを行わないと繋げられないWi-Fiの場合は設定しない。
+　`Raspberry Pi OS Lite`を[Raspberry Pi Imager](https://www.raspberrypi.com/software/)でmicro SDに書き込み、挿入する。ImagerのOS詳細設定でSSHを有効化しておく。可能であればここでWi-Fiの設定もしておくとよいが、IP固定はこの時点ではできないので、IP固定などを行わないと繋げられないWi-Fiの場合は設定しない。Wi-Fiがあった方が設定が簡便なので、本番環境ではないWi-Fiであっても繋げられるとよい。
 
 > [!NOTE]
+> - [x] ホスト名: rpizero.local
 > - [x] SSHを有効化する > パスワード認証を行う
 > - [x] ユーザー名: pi
 > - [x] パスワード: raspberry
 > - [ ] Wi-Fiを設定する
 > - [ ] Wi-Fiを使う国: JP
+> 
+> ※ ホスト名・ユーザー名・パスワードは仮のものだが、以降はこの通りに設定したものとする。
 
 　「USB Type-Aのメス-メス変換器」と「USB Type-B to Aケーブル」を使うことで、本体にUSB機器を繋ぐことができる。普段はバックアップ用のmicro SDを繋いでおくが、こちらにキーボード、そしてmini HDMI端子を変換器越しにモニターに繋ぐことで、簡単に以下のセットアップが行える。
 
-　事前にWi-Fiの設定が行えているのであれば、SSHでセットアップが行えるので、キーボードやモニターは不要となる。
+　事前にWi-Fiの設定が行えているのであれば、SSHでセットアップが行えるので、キーボードやモニターは不要となる。この場合はPCから`ssh pi@rpizero.local`で接続できる。
 
 > [!WARNING]
 > IP固定を要するなどの理由よりこの時点でWi-Fi設定ができなかった場合、以下の手順でWi-Fiの手動設定を行う必要がある。
@@ -82,7 +85,7 @@
 > }
 > ```
 > 
-> 複数個登録されている場合は`priority=N`も追記する（`N`は0以上の被らない数字: e.g. `priority=1`）。
+> 複数個登録されている場合は`priority=N`も追記する（`N`は0以上の被らない数字: e.g. `priority=1`。小さいほど優先順位が高くなる。）。
 > 
 > ※ `Ctrl+S`で保存、`Ctrl+X`でエディターを閉じる。
 > 
