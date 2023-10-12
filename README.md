@@ -45,12 +45,14 @@
 > [!WARNING]
 > IP固定を要するなどの理由よりこの時点でWi-Fi設定ができなかった場合、以下の手順でWi-Fiの手動設定を行う必要がある。
 > 
-<details>
-  <summary>Wi-Fiの手動設定（ここをクリック）</summary>
-```sh
-aaa
-```
-</details>
+> <details>
+>   <summary>Wi-Fiの手動設定（ここをクリック）</summary>
+> 
+> ```sh
+> aaa
+> ```
+> 
+> </details>
 
 
 ### 1. SSHとI2Cを有効化
