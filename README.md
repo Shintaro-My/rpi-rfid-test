@@ -48,9 +48,78 @@
 > <details>
 >   <summary>Wi-Fiの手動設定（ここをクリック）</summary>
 > 
+> #### Wi-Fi接続情報ファイルの編集
+> 
+> 以下のコマンドでWi-FiのSSIDとパスワードを設定する。複数個登録する場合は同じコマンドを繰り返し行う。
 > ```sh
-> aaa
+> wpa_passphrase "<Wi-Fi_SSID>" "<PASSWORD>" | sudo tee -a /etc/wpa_supplicant/wpa_supplicant.conf
 > ```
+> 
+> エディターを開く。
+> 
+> ```sh
+> sudo nano /etc/wpa_supplicant/wpa_supplicant.conf
+> ```
+> 
+> すると下記のような内容が記述されているので、
+> 
+> ```
+> network={
+>         ssid="Wi-Fi_SSID"
+>         #psk="PASSWORD"
+>         psk=XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+> }
+> ```
+> 
+> ここに`key_mgmt=WPA-PSK`を追記する。
+> 
+> ```
+> network={
+>         ssid="Wi-Fi_SSID"
+>         #psk="PASSWORD"
+>         psk=XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+>         key_mgmt=WPA-PSK
+> }
+> ```
+> 
+> 複数個登録されている場合は`priority=N`も追記する（`N`は0以上の被らない数字: e.g. `priority=1`）。
+> 
+> ※ `Ctrl+S`で保存、`Ctrl+X`でエディターを閉じる。
+> 
+> #### （任意）IP固定化
+> 
+> ```sh
+> sudo nano /etc/dhcpcd.conf
+> ```
+> 末尾に以下の通りに書き込む。
+> ```
+> interface wlan0
+> ```
+> その下に、以下の形式でIPを固定化したいWi-Fiの数だけ書き込む。
+> 
+> ```
+> ssid <Wi-Fi_SSID>
+> static ip_address=192.168.XX.XXX/24
+> static routers=<IPv4のゲートウェイ>
+> static domain_name_servers=<DNSサーバー（優先）> <DNSサーバー（代替）>
+> ```
+> 
+> 例：
+> ```
+> interface wlan0
+> 
+> ssid Buffalo-A-XXXX
+> static ip_address=192.168.10.111/24
+> static routers=192.168.10.2
+> static domain_name_servers=8.8.8.8 8.8.4.4
+> 
+> ssid elecom-XXXXXX
+> static ip_address=192.168.2.111/24
+> static routers=192.168.2.252
+> static domain_name_servers=200.230.230.5 220.110.130.250
+> ```
+> 
+> 
 > 
 > </details>
 
@@ -117,7 +186,7 @@ dtparam=act_led_gpio=27,act_led_trigger=heartbeat
 
 ```sh
 cd rpi-rfid-test
-python wpa_config.py <Wi-Fi_SSID_1> <PASSWORD_1> <Wi-Fi_SSID_2> <PASSWORD_2>
+python wpa_config.py "<Wi-Fi_SSID_1>" "<PASSWORD_1>" "<Wi-Fi_SSID_2>" "<PASSWORD_2>"
 ```
 `python wpa_config.py`の後には`Wi-FiのSSID`・`Wi-Fiのパスワード`を半角スペースで区切って入力する。複数のWi-Fiと繋げる場合は、更に半角スペースを空けて続ける（例: `python wpa_config.py Buffalo-A-XXXX ABCD1234 elecom-XXXXXX AIUEO123`）。
 
