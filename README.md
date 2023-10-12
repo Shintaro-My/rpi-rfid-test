@@ -48,6 +48,7 @@
 > <details>
 >   <summary>Wi-Fiの手動設定（ここをクリック）</summary>
 > </details>
+> ----
 
 ### 1. SSHとI2Cを有効化
 ```sh
