@@ -29,15 +29,14 @@
 # ソフト導入手順
 
 ### 0. Raspberry Pi Zero W
-　`Raspberry Pi OS Lite`を[Raspberry Pi Imager](https://www.raspberrypi.com/software/)でmicro SDに書き込み、挿入する。ImagerのOS詳細設定でSSHを有効化しておく。Wi-Fiの設定も可能だが、IP固定はこの時点ではできないので、IP固定などを行わないと繋げられないWi-Fiの場合は設定しない。
+　`Raspberry Pi OS Lite`を[Raspberry Pi Imager](https://www.raspberrypi.com/software/)でmicro SDに書き込み、挿入する。ImagerのOS詳細設定でSSHを有効化しておく。可能であればここでWi-Fiの設定もしておくとよいが、IP固定はこの時点ではできないので、IP固定などを行わないと繋げられないWi-Fiの場合は設定しない。
 
 > [!NOTE]
-> * SSHを有効化する > パスワード認証を行う
-> * ユーザー名: pi
-> * パスワード: raspberry
->  * （絶対に忘れないように）
-> * Wi-Fiを設定する
->  * Wi-Fiを使う国: JP
+> - [x] SSHを有効化する > パスワード認証を行う
+> - [x] ユーザー名: pi
+> - [x] パスワード: raspberry
+> - [ ] Wi-Fiを設定する
+> - [ ] Wi-Fiを使う国: JP
 
 　「USB Type-Aのメス-メス変換器」と「USB Type-B to Aケーブル」を使うことで、本体にUSB機器を繋ぐことができる。普段はバックアップ用のmicro SDを繋いでおくが、こちらにキーボード、そしてmini HDMI端子を変換器越しにモニターに繋ぐことで、簡単に以下のセットアップが行える。
 
