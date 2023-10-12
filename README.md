@@ -29,7 +29,7 @@
 # ソフト導入手順
 
 ### 0. Raspberry Pi Zero W
-　`Raspberry Pi OS Lite`を[Raspberry Pi Imager](https://www.raspberrypi.com/software/)でmicro SDに書き込み、挿入する。ImagerのOS詳細設定でSSHを有効化しておく。WiFiの設定も可能だが、IP固定はこの時点ではできないので、IP固定などを行わないと繋げられないWiFiの場合は設定しない。
+　`Raspberry Pi OS Lite`を[Raspberry Pi Imager](https://www.raspberrypi.com/software/)でmicro SDに書き込み、挿入する。ImagerのOS詳細設定でSSHを有効化しておく。Wi-Fiの設定も可能だが、IP固定はこの時点ではできないので、IP固定などを行わないと繋げられないWi-Fiの場合は設定しない。
 
 > [!NOTE]
 > * SSHを有効化する > パスワード認証を行う
@@ -41,7 +41,14 @@
 
 　「USB Type-Aのメス-メス変換器」と「USB Type-B to Aケーブル」を使うことで、本体にUSB機器を繋ぐことができる。普段はバックアップ用のmicro SDを繋いでおくが、こちらにキーボード、そしてmini HDMI端子を変換器越しにモニターに繋ぐことで、簡単に以下のセットアップが行える。
 
-　事前にWiFiの設定が行えているのであれば、SSHでセットアップが行えるので、キーボードやモニターは不要となる。
+　事前にWi-Fiの設定が行えているのであれば、SSHでセットアップが行えるので、キーボードやモニターは不要となる。
+
+> [!WARNING]
+> IP固定を要するなどの理由よりこの時点でWi-Fi設定ができなかった場合、以下の手順でWi-Fiの手動設定を行う必要がある。
+
+<details>
+  <summary>Wi-Fiの手動設定（ここをクリック）</summary>
+</details>
 
 ### 1. SSHとI2Cを有効化
 ```sh
@@ -99,17 +106,17 @@ dtparam=act_led_gpio=27,act_led_trigger=heartbeat
 
 ※ `Ctrl+S`で保存、`Ctrl+X`でエディターを閉じる。
 
-### 5. WiFiの設定
+### 5. Wi-Fiの設定
 
-#### WiFi接続情報ファイルを作成
+#### Wi-Fi接続情報ファイルを作成
 
 ```sh
 cd rpi-rfid-test
-python wpa_config.py <WIFI_SSID_1> <PASSWORD_1> <WIFI_SSID_2> <PASSWORD_2>
+python wpa_config.py <Wi-Fi_SSID_1> <PASSWORD_1> <Wi-Fi_SSID_2> <PASSWORD_2>
 ```
-`python wpa_config.py`の後には`WiFiのSSID`・`WiFiのパスワード`を半角スペースで区切って入力する。複数のWiFiと繋げる場合は、更に半角スペースを空けて続ける（例: `python wpa_config.py Buffalo-A-XXXX ABCD1234 elecom-XXXXXX AIUEO123`）。
+`python wpa_config.py`の後には`Wi-FiのSSID`・`Wi-Fiのパスワード`を半角スペースで区切って入力する。複数のWi-Fiと繋げる場合は、更に半角スペースを空けて続ける（例: `python wpa_config.py Buffalo-A-XXXX ABCD1234 elecom-XXXXXX AIUEO123`）。
 
-#### WiFi接続情報ファイルを所定の位置に配置
+#### Wi-Fi接続情報ファイルを所定の位置に配置
 
 ```sh
 cat _temp.txt | sudo tee /etc/wpa_supplicant/wpa_supplicant.conf
@@ -125,10 +132,10 @@ sudo nano /etc/dhcpcd.conf
 ```
 interface wlan0
 ```
-その下に、以下の形式でIPを固定化したいWiFiの数だけ書き込む。
+その下に、以下の形式でIPを固定化したいWi-Fiの数だけ書き込む。
 
 ```
-ssid <WiFi_SSID>
+ssid <Wi-Fi_SSID>
 static ip_address=192.168.XX.XXX/24
 static routers=<IPv4のゲートウェイ>
 static domain_name_servers=<DNSサーバー（優先）> <DNSサーバー（代替）>
