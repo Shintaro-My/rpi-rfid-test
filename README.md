@@ -29,7 +29,7 @@
 # ソフト導入手順
 
 ### 0. Raspberry Pi Zero W
-　`Raspberry Pi OS Lite`を[Raspberry Pi Imager](https://www.raspberrypi.com/software/)でmicro SDに書き込み、挿入する。ImagerのOS詳細設定でSSHを有効化しておく。可能であればここでWi-Fiの設定もしておくとよいが、IP固定はこの時点ではできないので、IP固定などを行わないと繋げられないWi-Fiの場合は設定しない。Wi-Fiがあった方が設定が簡便なので、本番環境ではないWi-Fiであっても繋げられるとよい。
+　`Raspberry Pi OS Lite`を[Raspberry Pi Imager](https://www.raspberrypi.com/software/)でmicro SDに書き込み、挿入する。ImagerのOS詳細設定でSSHを有効化しておく。可能であればここでWi-Fiの設定もしておくとよいが、IP固定はこの時点ではできないので、IP固定などを行わないと繋げられないWi-Fiの場合は設定しない。**Wi-Fiがあった方が設定が簡便なので、本番環境ではないWi-Fiであっても繋げられるとよい。**
 
 > [!NOTE]
 > - [x] ホスト名: rpizero.local
@@ -41,12 +41,12 @@
 > 
 > ※ ホスト名・ユーザー名・パスワードは仮のものだが、以降はこの通りに設定したものとする。
 
-　「USB Type-Aのメス-メス変換器」と「USB Type-B to Aケーブル」を使うことで、本体にUSB機器を繋ぐことができる。普段はバックアップ用のmicro SDを繋いでおくが、こちらにキーボード、そしてmini HDMI端子を変換器越しにモニターに繋ぐことで、簡単に以下のセットアップが行える。
+　「USB Type-Aのメス-メス変換器」と「USB Type-B to Aケーブル」を使うことで、本体にUSB機器を繋ぐことができる。普段はバックアップ用のmicro SDを繋いでおくが、こちらにキーボード、そしてmini HDMI端子を変換器越しにモニターに繋ぐことで、以下のセットアップが行える。
 
 　事前にWi-Fiの設定が行えているのであれば、SSHでセットアップが行えるので、キーボードやモニターは不要となる。この場合はPCから`ssh pi@rpizero.local`で接続できる。
 
 > [!WARNING]
-> IP固定を要するなどの理由よりこの時点でWi-Fi設定ができなかった場合、以下の手順でWi-Fiの手動設定を行う必要がある。
+> **IP固定を要するなどの理由よりこの時点でWi-Fi設定ができなかった場合、以下の手順でWi-Fiの手動設定を行う必要がある。**こちらで設定を行う場合、[5. Wi-Fiの設定](#5-wi-fiの設定)の操作は必要ない。
 > 
 > <details>
 >   <summary>Wi-Fiの手動設定（ここをクリック）</summary>
@@ -55,7 +55,7 @@
 > 
 > 以下のコマンドでWi-FiのSSIDとパスワードを設定する。複数個登録する場合は同じコマンドを繰り返し行う。
 > ```sh
-> wpa_passphrase "<Wi-Fi_SSID>" "<PASSWORD>" | sudo tee -a /etc/wpa_supplicant/wpa_supplicant.conf
+> wpa_passphrase "Wi-Fi_SSID" "PASSWORD" | sudo tee -a /etc/wpa_supplicant/wpa_supplicant.conf
 > ```
 > 
 > エディターを開く。
@@ -101,7 +101,7 @@
 > その下に、以下の形式でIPを固定化したいWi-Fiの数だけ書き込む。
 > 
 > ```
-> ssid <Wi-Fi_SSID>
+> ssid Wi-Fi_SSID
 > static ip_address=192.168.XX.XXX/24
 > static routers=<IPv4のゲートウェイ>
 > static domain_name_servers=<DNSサーバー（優先）> <DNSサーバー（代替）>
@@ -189,7 +189,7 @@ dtparam=act_led_gpio=27,act_led_trigger=heartbeat
 
 ```sh
 cd rpi-rfid-test
-python wpa_config.py "<Wi-Fi_SSID_1>" "<PASSWORD_1>" "<Wi-Fi_SSID_2>" "<PASSWORD_2>"
+python wpa_config.py "Wi-Fi_SSID_1" "PASSWORD_1" "Wi-Fi_SSID_2" "PASSWORD_2"
 ```
 `python wpa_config.py`の後には`Wi-FiのSSID`・`Wi-Fiのパスワード`を半角スペースで区切って入力する。複数のWi-Fiと繋げる場合は、更に半角スペースを空けて続ける（例: `python wpa_config.py Buffalo-A-XXXX ABCD1234 elecom-XXXXXX AIUEO123`）。
 
@@ -212,7 +212,7 @@ interface wlan0
 その下に、以下の形式でIPを固定化したいWi-Fiの数だけ書き込む。
 
 ```
-ssid <Wi-Fi_SSID>
+ssid Wi-Fi_SSID
 static ip_address=192.168.XX.XXX/24
 static routers=<IPv4のゲートウェイ>
 static domain_name_servers=<DNSサーバー（優先）> <DNSサーバー（代替）>
