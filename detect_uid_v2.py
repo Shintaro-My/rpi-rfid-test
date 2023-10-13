@@ -92,12 +92,11 @@ def main():
         tick_thread.start()
         
         while run:
-            # (status, backData, tagType) = MFRC522Reader.scan()
-            # if status == MFRC522Reader.MIFARE_OK:
-            if True:
+            (status, backData, tagType) = MFRC522Reader.scan()
+            if status == MFRC522Reader.MIFARE_OK:
+                print('=' * 10)
                 (status, uid, backBits) = MFRC522Reader.identify()
                 if status == MFRC522Reader.MIFARE_OK:
-                    print('=' * 10)
                     _uid = '-'.join(['{:02x}'.format(u) for u in uid])
                     print(f"ID: {_uid}")
                     auth(_uid)
