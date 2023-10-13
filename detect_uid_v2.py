@@ -82,6 +82,15 @@ def main():
                             relay(False)
                 time.sleep(0.05)
         
+            
+
+        signal.signal(signal.SIGINT, end_read)
+        tick_thread = threading.Thread(target=tick)
+
+        led_all_off()
+
+        tick_thread.start()
+        
         while run:
             (status, backData, tagType) = MFRC522Reader.scan()
             if status == MFRC522Reader.MIFARE_OK:
@@ -101,14 +110,6 @@ def main():
                 _relay_stat = False
                 led_all_off()
                 START_TIME = None
-            
-
-        signal.signal(signal.SIGINT, end_read)
-        tick_thread = threading.Thread(target=tick)
-
-        led_all_off()
-
-        tick_thread.start()
 
                         
     except Exception as e:
