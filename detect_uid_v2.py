@@ -69,8 +69,8 @@ def main():
         
         
         def tick():
-            global _relay_stat
-            while True:
+            global _relay_stat, run
+            while run:
                 if _relay_stat:
                     relay(True)
                 else:
@@ -79,35 +79,40 @@ def main():
                             relay(True)
                         else:
                             relay(False)
-                time.sleep(0.1)
-                        
+                time.sleep(0.05)
+        
+        def check_id():
+            global _relay_stat, run, BEFORE_UID, START_TIME
+            while run:
+                (status, backData, tagType) = MFRC522Reader.scan()
+                if status == MFRC522Reader.MIFARE_OK:
+                    print('=' * 10)
+                    (status, uid, backBits) = MFRC522Reader.identify()
+                    if status == MFRC522Reader.MIFARE_OK:
+                        _uid = '-'.join(['{:02x}'.format(u) for u in uid])
+                        print(f"ID: {_uid}")
+                        auth(_uid)
+                
+                elif not START_TIME:
+                    BEFORE_UID = None
+                elif (time.time() - START_TIME) < DURATION:
+                    _relay_stat = True
+                    led_green()
+                else:
+                    _relay_stat = False
+                    led_all_off()
+                    START_TIME = None
+            
 
         signal.signal(signal.SIGINT, end_read)
-        lead_sw_thread = threading.Thread(target=tick)
+        tick_thread = threading.Thread(target=tick)
+        check_id_thread = threading.Thread(target=check_id)
 
         led_all_off()
 
-        lead_sw_thread.start()
+        tick_thread.start()
+        check_id_thread.start()
 
-        while run:
-            (status, backData, tagType) = MFRC522Reader.scan()
-            if status == MFRC522Reader.MIFARE_OK:
-                print('=' * 10)
-                (status, uid, backBits) = MFRC522Reader.identify()
-                if status == MFRC522Reader.MIFARE_OK:
-                    _uid = '-'.join(['{:02x}'.format(u) for u in uid])
-                    print(f"ID: {_uid}")
-                    auth(_uid)
-            
-            elif not START_TIME:
-                BEFORE_UID = None
-            elif (time.time() - START_TIME) < DURATION:
-                _relay_stat = True
-                led_green()
-            else:
-                _relay_stat = False
-                led_all_off()
-                START_TIME = None
                         
     except Exception as e:
         print(e)
@@ -115,7 +120,8 @@ def main():
         cur.close()
         conn.close()
         GPIO.cleanup()
-        lead_sw_thread.join()
+        tick_thread.join()
+        check_id_thread.join()
         return True
     
 def auth(uid):
