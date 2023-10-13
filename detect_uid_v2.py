@@ -2,6 +2,7 @@
 
 import signal
 import time
+import threading
 import sys
 import sqlite3
 from my_util import init_db, init_gpio, buzzer, led_green, led_red, led_all_off, led_all_on, DB_NAME, relay, is_door_open, get_config, set_config
@@ -63,10 +64,19 @@ def main():
             run = False
             #rdr.cleanup()
             sys.exit()
+        
+        def check_lead_sw():
+            while True:
+                if LEAD_SW_ACTIVE and is_door_open():
+                    relay(True)
+                    led_all_on()
 
         signal.signal(signal.SIGINT, end_read)
+        lead_sw_thread = threading.Thread(target=check_lead_sw)
 
         led_all_off()
+
+        lead_sw_thread.start()
 
         while run:
             (status, backData, tagType) = MFRC522Reader.scan()
@@ -78,9 +88,6 @@ def main():
                     print(f"ID: {_uid}")
                     auth(_uid)
             
-            if LEAD_SW_ACTIVE and is_door_open():
-                relay(True)
-                led_all_on()
             elif not START_TIME:
                 BEFORE_UID = None
             elif (time.time() - START_TIME) < DURATION:
@@ -97,6 +104,7 @@ def main():
         cur.close()
         conn.close()
         GPIO.cleanup()
+        lead_sw_thread.join()
         return True
     
 def auth(uid):
