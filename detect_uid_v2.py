@@ -101,7 +101,7 @@ def main():
                     print(f"ID: {_uid}")
                     auth(_uid)
             
-            elif not START_TIME:
+            if not START_TIME:
                 BEFORE_UID = None
             elif (time.time() - START_TIME) < DURATION:
                 _relay_stat = True
@@ -161,7 +161,7 @@ def auth(uid):
             conn.close()
         else:
             print('(repeat)')
-        time.sleep(.2)
+        time.sleep(.1)
         led_all_off()
         
     BEFORE_UID = uid
