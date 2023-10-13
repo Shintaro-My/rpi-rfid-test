@@ -70,10 +70,8 @@ def main():
                 if LEAD_SW_ACTIVE:
                     if is_door_open():
                         relay(True)
-                        led_all_on()
                     else:
                         relay(False)
-                        led_all_off()
 
         signal.signal(signal.SIGINT, end_read)
         lead_sw_thread = threading.Thread(target=check_lead_sw)
