@@ -79,6 +79,7 @@ def main():
                             relay(True)
                         else:
                             relay(False)
+                time.sleep(0.1)
                         
 
         signal.signal(signal.SIGINT, end_read)
