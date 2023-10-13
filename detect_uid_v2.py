@@ -68,19 +68,6 @@ def main():
             sys.exit()
         
         
-        def tick():
-            global _relay_stat, run
-            while run:
-                if _relay_stat:
-                    relay(True)
-                    print('!!!')
-                else:
-                    if LEAD_SW_ACTIVE:
-                        if is_door_open():
-                            relay(True)
-                        else:
-                            relay(False)
-                time.sleep(0.05)
         
         while run:
             (status, backData, tagType) = MFRC522Reader.scan()
@@ -95,20 +82,26 @@ def main():
             elif not START_TIME:
                 BEFORE_UID = None
             elif (time.time() - START_TIME) < DURATION:
-                _relay_stat = True
+                relay(True)
                 led_green()
             else:
-                _relay_stat = False
-                led_all_off()
                 START_TIME = None
+                
+                if LEAD_SW_ACTIVE:
+                    if is_door_open():
+                        relay(True)
+                        led_all_on()
+                    else:
+                        relay(False)
+                        led_all_off()
+                else:
+                    relay(False)
+                    led_all_off()
             
 
         signal.signal(signal.SIGINT, end_read)
-        tick_thread = threading.Thread(target=tick)
 
         led_all_off()
-
-        tick_thread.start()
 
                         
     except Exception as e:
@@ -117,7 +110,6 @@ def main():
         cur.close()
         conn.close()
         GPIO.cleanup()
-        tick_thread.join()
         return True
     
 def auth(uid):
