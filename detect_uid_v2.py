@@ -73,10 +73,10 @@ def main():
             while run:
                 if _relay_stat:
                     relay(True)
-                    print('!!!')
                 else:
                     if LEAD_SW_ACTIVE:
                         if is_door_open():
+                            print('!!!')
                             relay(True)
                         else:
                             relay(False)
