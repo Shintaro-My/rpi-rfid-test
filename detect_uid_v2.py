@@ -18,10 +18,11 @@ BEFORE_UID = None
 LEAD_SW_ACTIVE = 1
 
 
+run = True
 _relay_stat = False
 
 def main():
-    global BEFORE_UID, START_TIME, LEAD_SW_ACTIVE, DURATION, _relay_stat
+    global BEFORE_UID, START_TIME, LEAD_SW_ACTIVE, DURATION, _relay_stat, run
     
     
     conn = sqlite3.connect(DB_NAME)
@@ -41,7 +42,6 @@ def main():
     buzzer()
 
 
-    run = True
     #rdr = RFID()
     #util = rdr.util()
     i2cBus = 1
