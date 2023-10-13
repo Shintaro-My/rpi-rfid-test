@@ -18,8 +18,10 @@ BEFORE_UID = None
 LEAD_SW_ACTIVE = 1
 
 
+_relay_stat = False
+
 def main():
-    global BEFORE_UID, START_TIME, LEAD_SW_ACTIVE, DURATION
+    global BEFORE_UID, START_TIME, LEAD_SW_ACTIVE, DURATION, _relay_stat
     
     
     conn = sqlite3.connect(DB_NAME)
@@ -65,16 +67,22 @@ def main():
             #rdr.cleanup()
             sys.exit()
         
-        def check_lead_sw():
+        
+        def tick():
+            global _relay_stat
             while True:
-                if LEAD_SW_ACTIVE:
-                    if is_door_open():
-                        relay(True)
-                    else:
-                        relay(False)
+                if _relay_stat:
+                    relay(True)
+                else:
+                    if LEAD_SW_ACTIVE:
+                        if is_door_open():
+                            relay(True)
+                        else:
+                            relay(False)
+                        
 
         signal.signal(signal.SIGINT, end_read)
-        lead_sw_thread = threading.Thread(target=check_lead_sw)
+        lead_sw_thread = threading.Thread(target=tick)
 
         led_all_off()
 
@@ -93,10 +101,10 @@ def main():
             elif not START_TIME:
                 BEFORE_UID = None
             elif (time.time() - START_TIME) < DURATION:
-                relay(True)
+                _relay_stat = True
                 led_green()
             else:
-                relay(False)
+                _relay_stat = False
                 led_all_off()
                 START_TIME = None
                         
