@@ -89,43 +89,6 @@ nav a:first-of-type {
   border: 0;
 }
 
-button.btn {
-  font-size: 1.6rem;
-  font-weight: 700;
-  line-height: 1.5;
-  position: relative;
-  display: inline-block;
-  padding: 1rem 4rem;
-  cursor: pointer;
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  user-select: none;
-  -webkit-transition: all 0.3s;
-  transition: all 0.3s;
-  text-align: center;
-  vertical-align: middle;
-  text-decoration: none;
-  letter-spacing: 0.1em;
-  color: #212529;
-  border-radius: 0.5rem;
-}
-.btn-radius-solid {
-  border: 1px solid #ccc;
-  background: #f1e767;
-  background: -webkit-gradient(linear, left top, left bottom, from(#fdfbfb), to(#ebedee));
-  background: -webkit-linear-gradient(top, #fdfbfb 0%, #ebedee 100%);
-  background: linear-gradient(to bottom, #fdfbfb 0%, #ebedee 100%);
-  -webkit-box-shadow: inset 1px 1px 1px #fff;
-  box-shadow: inset 1px 1px 1px #fff;
-}
-
-.btn-radius-solid:hover {
-  background: -webkit-gradient(linear, left bottom, left top, from(#fdfbfb), to(#ebedee));
-  background: -webkit-linear-gradient(bottom, #fdfbfb 0%, #ebedee 100%);
-  background: linear-gradient(to top, #fdfbfb 0%, #ebedee 100%);
-}
-
 @media (min-width: 1024px) {
   header {
     display: flex;

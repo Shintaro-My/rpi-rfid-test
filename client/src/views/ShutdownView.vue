@@ -2,10 +2,10 @@
   <div class="wrap">
 
     <div class="btns">
-      <button @click="reboot()" v-bind:disabled="shutdown_now">
+      <button class="btn btn-radius-solid" @click="reboot()" v-bind:disabled="shutdown_now">
         再起動
       </button>
-      <button @click="lock() && shutdown('h', 'now')" v-bind:disabled="shutdown_now">
+      <button class="btn btn-radius-solid" @click="lock() && shutdown('h', 'now')" v-bind:disabled="shutdown_now">
         シャットダウン
       </button>
     </div>
