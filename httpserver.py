@@ -205,6 +205,23 @@ def _Page_GET(self: _MyHandler, path, query):
             status = 500
         return (True, status, json.dumps(data))
     
+    elif path == '/forceopen':
+        conn = sqlite3.connect(DB_NAME)
+        cur = conn.cursor()
+        try:
+            init_db(conn, cur)
+            set_config(conn, cur, [['FORCE_OPEN', 1, '']])
+        except Exception as e:
+            data['status'] = 'err'
+            t = traceback.format_exc()
+            print(t)
+            data['body'] = t
+            status = 500
+        finally:
+            cur.close()
+            conn.close()
+            return (True, status, json.dumps(data))
+    
     elif path == '/config':
         conn = sqlite3.connect(DB_NAME)
         cur = conn.cursor()

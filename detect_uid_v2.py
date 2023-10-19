@@ -69,11 +69,28 @@ def main():
         
         
         def tick():
-            global _relay_stat, run
+            global _relay_stat, run, START_TIME
             while run:
                 if _relay_stat:
                     relay(True)
-                else:
+                else:         
+                    conn = sqlite3.connect(DB_NAME)
+                    cur = conn.cursor()
+                    try:
+                        init_db(conn, cur)
+                        _open = get_config(conn, cur, 'FORCE_OPEN')
+                        if _open:
+                            START_TIME = time.time()
+                            set_config(conn, cur, [
+                                ['FORCE_OPEN', 0, '']
+                            ])
+                            buzzer()
+                    except Exception as e:
+                        print(e)
+                    finally:
+                        cur.close()
+                        conn.close()
+                                    
                     if LEAD_SW_ACTIVE:
                         if is_door_open():
                             print('!!!')

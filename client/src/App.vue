@@ -1,5 +1,13 @@
 <script setup lang="ts">
 import { RouterLink, RouterView } from 'vue-router'
+
+const open = async () => {
+  const req = await fetch('/forceopen');
+  if (req.status != 200) {
+    alert('Communication failed.')
+    return false;
+  }
+}
 </script>
 
 <template>
