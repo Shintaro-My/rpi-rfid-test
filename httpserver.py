@@ -471,9 +471,9 @@ if __name__ == '__main__':
             server.httpd.serve_forever()
         except KeyboardInterrupt:
             print('\nAbort.')
-            server.httpd.shutdown()
+            server.httpd.server_close()
             break
         except Exception as e:
             print(e)
-            server.httpd.shutdown()
+            server.httpd.server_close()
             
