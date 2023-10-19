@@ -146,8 +146,8 @@ h3 {
 }
 .btns {
   display: flex;
-  height: 3em;
   justify-content: space-evenly;
+  margin: .5em 0;
   padding: 1em 0 0;
 }
 @media (min-width: 1024px) {
