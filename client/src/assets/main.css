@@ -1,5 +1,9 @@
 @import './base.css';
 
+h1 {
+  pointer-events: none;
+  user-select: none;
+}
 #app {
   max-width: 1280px;
   margin: 0 auto;
