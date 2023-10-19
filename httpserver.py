@@ -460,13 +460,20 @@ if __name__ == '__main__':
     import time
     import threading
     time.sleep(.5)
-    server = Server(12345)
+    server = None
     # mycmd.cmd_with_websocket(WS_SERVER, [])
    
     
     
-    try:
-        server.httpd.serve_forever()
+    while True:
+        try:
+            server = Server(12345)
+            server.httpd.serve_forever()
+        except KeyboardInterrupt:
+            print('\nAbort.')
+            server.httpd.shutdown()
+            break
+        except Exception as e:
+            print(e)
+            server.httpd.shutdown()
             
-    except KeyboardInterrupt:
-        print('\nAbort.')
