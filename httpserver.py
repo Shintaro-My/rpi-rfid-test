@@ -464,10 +464,9 @@ if __name__ == '__main__':
     # mycmd.cmd_with_websocket(WS_SERVER, [])
    
     
-    while True:
-        try:
-            server.listen()
-        except KeyboardInterrupt:
-            print('\nAbort.')
-            break
     
+    try:
+        server.httpd.serve_forever()
+            
+    except KeyboardInterrupt:
+        print('\nAbort.')
