@@ -151,10 +151,13 @@ class Server:
         self.httpd = HTTPServer((host, port), _MyHandler)
         print(f'serving at http://{host}:{port}')
     def listen(self):
+        """
         if SERVER_PAUSE:
             time.sleep(.1)
         else:
             self.httpd.handle_request()
+        """
+        self.httpd.handle_request()
         
 def _getMimeFromExt(path):
     if path.endswith('.css'):
