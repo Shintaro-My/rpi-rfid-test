@@ -19,6 +19,9 @@ const open = async () => {
     </div>
     
     <div class="wrapper">
+      <div class="util">
+        <button @click="open">ドアを開錠する</button>
+      </div>
       <nav>
         <RouterLink to="/users">登録ユーザー</RouterLink>
         <RouterLink to="/anonymous">未登録ID</RouterLink>
