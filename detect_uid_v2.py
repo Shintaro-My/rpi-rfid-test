@@ -17,30 +17,29 @@ BEFORE_UID = None
 
 LEAD_SW_ACTIVE = 1
 
-
 run = True
 _relay_stat = False
 
 def main():
     global BEFORE_UID, START_TIME, LEAD_SW_ACTIVE, DURATION, _relay_stat, run
-    
-    
-    conn = sqlite3.connect(DB_NAME)
-    cur = conn.cursor()
+
+    conn = None
+    cur = None
     try:
+        conn = sqlite3.connect(DB_NAME)
+        cur = conn.cursor()
         init_db(conn, cur)
         LEAD_SW_ACTIVE = get_config(conn, cur, 'LEAD_SW_ACTIVE')
         DURATION = get_config(conn, cur, 'DURATION')
     except Exception as e:
         print(e)
     finally:
-        cur.close()
-        conn.close()
-    
+        if cur: cur.close()
+        if conn: conn.close()
+
     init_gpio()
     led_red()
     buzzer()
-
 
     #rdr = RFID()
     #util = rdr.util()
@@ -52,54 +51,44 @@ def main():
     version = MFRC522Reader.getReaderVersion()
     print(f'MFRC522 Software Version: {version}')
 
-    conn = sqlite3.connect(DB_NAME)
-    cur = conn.cursor()
     try:
-        init_db(conn, cur)
-        cur.close()
-        conn.close()
-        #users = [v for v in cur.execute('SELECT * FROM Users')]
-        #print(users)
-        def end_read(signal,frame):
+        def end_read(signal, frame):
             global run
             print("\nCtrl+C captured, ending read.")
             run = False
             #rdr.cleanup()
             sys.exit()
         
-        
         def tick():
             global _relay_stat, run, START_TIME
             while run:
                 if _relay_stat:
                     relay(True)
-                else:         
-                    conn = sqlite3.connect(DB_NAME)
-                    cur = conn.cursor()
+                else:
+                    conn = None
+                    cur = None
                     try:
+                        conn = sqlite3.connect(DB_NAME)
+                        cur = conn.cursor()
                         init_db(conn, cur)
                         _open = get_config(conn, cur, 'FORCE_OPEN')
                         if _open:
                             START_TIME = time.time()
-                            set_config(conn, cur, [
-                                ['FORCE_OPEN', 0, '']
-                            ])
+                            set_config(conn, cur, [ ['FORCE_OPEN', 0, ''] ])
                             buzzer()
                     except Exception as e:
                         print(e)
                     finally:
-                        cur.close()
-                        conn.close()
-                                    
+                        if cur: cur.close()
+                        if conn: conn.close()
+
                     if LEAD_SW_ACTIVE:
                         if is_door_open():
                             print('!!!')
                             relay(True)
                         else:
                             relay(False)
-                time.sleep(0.05)
-        
-            
+                time.sleep(0.075)
 
         signal.signal(signal.SIGINT, end_read)
         tick_thread = threading.Thread(target=tick)
@@ -107,7 +96,7 @@ def main():
         led_all_off()
 
         tick_thread.start()
-        
+
         while run:
             (status, backData, tagType) = MFRC522Reader.scan()
             if status == MFRC522Reader.MIFARE_OK:
@@ -115,9 +104,8 @@ def main():
                 (status, uid, backBits) = MFRC522Reader.identify()
                 if status == MFRC522Reader.MIFARE_OK:
                     _uid = '-'.join(['{:02x}'.format(u) for u in uid])
-                    print(f"ID: {_uid}")
                     auth(_uid)
-            
+
             if not START_TIME:
                 BEFORE_UID = None
             elif (time.time() - START_TIME) < DURATION:
@@ -127,60 +115,68 @@ def main():
                 _relay_stat = False
                 led_all_off()
                 START_TIME = None
-
-                        
+               
     except Exception as e:
         print(e)
     finally:
-        cur.close()
-        conn.close()
         GPIO.cleanup()
         tick_thread.join()
         return True
     
 def auth(uid):
     global BEFORE_UID, START_TIME
+
+    print(f"ID: {uid}")
+
+    conn = None
+    cur = None
     
-    conn = sqlite3.connect(DB_NAME)
-    cur = conn.cursor()
-    users = [v for v in cur.execute(f'SELECT * FROM Users WHERE UserId = "{uid}"')]
-    if len(users):
-        _, name = users[0][:2]
-        if BEFORE_UID != uid:
-            cur.execute(
-                f"""
-                UPDATE Users SET LastSeen=datetime('now', '+9 hours') WHERE UserId="{uid}"
-                """.strip()
-            )
-            conn.commit()
-            cur.close()
-            conn.close()
-            print(f'Welcome, "{name}" <ID: {uid}>!')
+    try:
+        conn = sqlite3.connect(DB_NAME)
+        cur = conn.cursor()
+        users = [v for v in cur.execute(f'SELECT * FROM Users WHERE UserId = "{uid}"')]
+        if len(users):
+            _, name = users[0][:2]
+            if BEFORE_UID != uid:
+                cur.execute(
+                    f"""
+                    UPDATE Users SET LastSeen=datetime('now', '+9 hours') WHERE UserId="{uid}"
+                    """.strip()
+                )
+                conn.commit()
+                cur.close()
+                conn.close()
+                print(f'Welcome, "{name}" <ID: {uid}>!')
+            else:
+                print('(repeat)')
+            START_TIME = time.time()
+            buzzer()
         else:
-            print('(repeat)')
-        START_TIME = time.time()
-        buzzer()
-    else:
-        buzzer(2, led_red, led_all_off)
-        led_red()
-        if BEFORE_UID != uid:
-            print('[!] Invalid User.')
-            cur.execute(
-                f"""
-                INSERT INTO Anonymous (UserId, LastUpdate)
-                VALUES (\"{uid}\", datetime('now', '+9 hours'))
-                ON CONFLICT(UserId)
-                DO UPDATE SET LastUpdate=datetime('now', '+9 hours')
-                """.strip()
-            )
-            conn.commit()
-            cur.close()
-            conn.close()
-        else:
-            print('(repeat)')
-        time.sleep(.1)
-        led_all_off()
-        
+            buzzer(2, led_red, led_all_off)
+            led_red()
+            if BEFORE_UID != uid:
+                print('[!] Invalid User.')
+                cur.execute(
+                    f"""
+                    INSERT INTO Anonymous (UserId, LastUpdate)
+                    VALUES (\"{uid}\", datetime('now', '+9 hours'))
+                    ON CONFLICT(UserId)
+                    DO UPDATE SET LastUpdate=datetime('now', '+9 hours')
+                    """.strip()
+                )
+                conn.commit()
+                cur.close()
+                conn.close()
+            else:
+                print('(repeat)')
+            time.sleep(.1)
+            led_all_off()
+    except Exception as e:
+        print(e)
+    finally:
+        if cur: cur.close()
+        if conn: conn.close()
+
     BEFORE_UID = uid
 
 #util.debug = True
