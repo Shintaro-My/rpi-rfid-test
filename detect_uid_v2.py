@@ -84,6 +84,7 @@ def main():
                             set_config(conn, cur, [ ['FORCE_OPEN', 0, ''] ])
                             buzzer()
                     except Exception as e:
+                        print(1)
                         print(e)
                     finally:
                         if cur: cur.close()
