@@ -87,8 +87,8 @@ def main(conn: sqlite3.Connection, cur: sqlite3.Cursor):
                             relay(False)
                 time.sleep(0.075)
                 
-            if cur: cur.close()
-            if conn: conn.close()
+            if _cur: _cur.close()
+            if _conn: _conn.close()
 
         signal.signal(signal.SIGINT, end_read)
         tick_thread = threading.Thread(target=tick)
