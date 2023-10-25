@@ -92,6 +92,7 @@ def main():
                         if conn: conn.close()
 
                     if LEAD_SW_ACTIVE:
+                        init_gpio()
                         if is_door_open():
                             print('!!!')
                             relay(True)
