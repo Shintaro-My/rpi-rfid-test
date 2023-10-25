@@ -83,9 +83,10 @@ def main(conn: sqlite3.Connection, cur: sqlite3.Cursor):
                         if is_door_open():
                             n += 1
                             if 20 < n:
-                                print('!', end='')
-                            else:
                                 print('!')
+                                n = 0
+                            else:
+                                print('!', end='')
                             relay(True)
                         else:
                             relay(False)
