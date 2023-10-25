@@ -67,6 +67,7 @@ def main():
             try:
                 init_gpio()
             except Exception as e:
+                print(2)
                 print(e)
             while run:
                 if _relay_stat:
