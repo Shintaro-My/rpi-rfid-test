@@ -55,7 +55,6 @@ def main(conn: sqlite3.Connection, cur: sqlite3.Cursor):
         def tick():
             global _relay_stat, run, START_TIME
             
-            check = False
             try:
                 _conn = sqlite3.connect(DB_NAME)
                 _cur = _conn.cursor()
@@ -71,7 +70,7 @@ def main(conn: sqlite3.Connection, cur: sqlite3.Cursor):
                         init_db(_conn, _cur)
                         _open = get_config(_conn, _cur, 'FORCE_OPEN')
                         if _open:
-                            print('=' * 10)
+                            print('\n' + '=' * 10)
                             print('[!] force open')
                             START_TIME = time.time()
                             set_config(_conn, _cur, [ ['FORCE_OPEN', 0, ''] ])
@@ -84,11 +83,7 @@ def main(conn: sqlite3.Connection, cur: sqlite3.Cursor):
                         if is_door_open():
                             print('!', end='')
                             relay(True)
-                            check = True
                         else:
-                            if check:
-                                check = False
-                                print('')
                             relay(False)
                 time.sleep(0.075)
                 
@@ -105,7 +100,7 @@ def main(conn: sqlite3.Connection, cur: sqlite3.Cursor):
         while run:
             (status, backData, tagType) = MFRC522Reader.scan()
             if status == MFRC522Reader.MIFARE_OK:
-                print('=' * 10)
+                print('\n' + '=' * 10)
                 (status, uid, backBits) = MFRC522Reader.identify()
                 if status == MFRC522Reader.MIFARE_OK:
                     _uid = '-'.join(['{:02x}'.format(u) for u in uid])
