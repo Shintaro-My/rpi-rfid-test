@@ -22,6 +22,8 @@ _relay_stat = False
 
 def main():
     global BEFORE_UID, START_TIME, LEAD_SW_ACTIVE, DURATION, _relay_stat, run
+    
+    init_gpio()
 
     conn = None
     cur = None
@@ -37,7 +39,7 @@ def main():
         if cur: cur.close()
         if conn: conn.close()
 
-    init_gpio()
+
     led_red()
     buzzer()
 
