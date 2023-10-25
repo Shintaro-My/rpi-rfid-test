@@ -51,7 +51,12 @@ def buzzer(n = 1, fn1=lambda:1, fn2=lambda:1):
         fn2()
 
 def is_door_open():
-    return GPIO.input(LEAD_SW) == 1
+    try:
+        return GPIO.input(LEAD_SW) == 1
+    except Exception as e:
+        print('mu1')
+        print(e)
+        return False
 
 def init_db(conn, cur):
     cur.execute(
