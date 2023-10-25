@@ -108,7 +108,7 @@ def set_config(conn, cur, ary, overwrite=True): # ary: [[key, value, note], ...]
 def get_config(conn, cur, key):
     sql = f'SELECT * FROM Config WHERE Attribute = "{key}"'
     ary = [v for v in cur.execute(sql)]
-    print(ary)
+    #print(ary)
     if len(ary):
         _, val, _ = ary[0]
         return val

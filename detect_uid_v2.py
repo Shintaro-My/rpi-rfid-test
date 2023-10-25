@@ -64,6 +64,10 @@ def main():
         
         def tick():
             global _relay_stat, run, START_TIME
+            try:
+                init_gpio()
+            except Exception as e:
+                print(e)
             while run:
                 if _relay_stat:
                     relay(True)
