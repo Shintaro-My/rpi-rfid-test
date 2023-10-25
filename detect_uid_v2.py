@@ -24,7 +24,6 @@ def main(conn: sqlite3.Connection, cur: sqlite3.Cursor):
     global BEFORE_UID, START_TIME, LEAD_SW_ACTIVE, DURATION, _relay_stat, run
     
     init_gpio()
-    print('!!!')
     
     try:
         LEAD_SW_ACTIVE = get_config(conn, cur, 'LEAD_SW_ACTIVE')
@@ -55,7 +54,8 @@ def main(conn: sqlite3.Connection, cur: sqlite3.Cursor):
         
         def tick():
             global _relay_stat, run, START_TIME
-             
+            
+            check = False
             try:
                 _conn = sqlite3.connect(DB_NAME)
                 _cur = _conn.cursor()
@@ -71,6 +71,8 @@ def main(conn: sqlite3.Connection, cur: sqlite3.Cursor):
                         init_db(_conn, _cur)
                         _open = get_config(_conn, _cur, 'FORCE_OPEN')
                         if _open:
+                            print('=' * 10)
+                            print('[!] force open')
                             START_TIME = time.time()
                             set_config(_conn, _cur, [ ['FORCE_OPEN', 0, ''] ])
                             buzzer()
@@ -80,9 +82,13 @@ def main(conn: sqlite3.Connection, cur: sqlite3.Cursor):
 
                     if LEAD_SW_ACTIVE:
                         if is_door_open():
-                            print('!!!')
+                            print('!', end='')
                             relay(True)
+                            check = True
                         else:
+                            if check:
+                                check = False
+                                print('')
                             relay(False)
                 time.sleep(0.075)
                 
