@@ -82,7 +82,7 @@ def main(conn: sqlite3.Connection, cur: sqlite3.Cursor):
                     if LEAD_SW_ACTIVE:
                         if is_door_open():
                             n += 1
-                            if 20 < n:
+                            if 40 <= n:
                                 print('!')
                                 n = 0
                             else:
