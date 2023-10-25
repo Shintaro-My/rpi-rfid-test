@@ -55,7 +55,10 @@ def main(conn: sqlite3.Connection, cur: sqlite3.Cursor):
         
         def tick():
             global _relay_stat, run, START_TIME
+             
             try:
+                _conn = sqlite3.connect(DB_NAME)
+                _cur = _conn.cursor()
                 init_gpio()
             except Exception as e:
                 print(2)
@@ -65,11 +68,11 @@ def main(conn: sqlite3.Connection, cur: sqlite3.Cursor):
                     relay(True)
                 else:
                     try:
-                        init_db(conn, cur)
-                        _open = get_config(conn, cur, 'FORCE_OPEN')
+                        init_db(_conn, _cur)
+                        _open = get_config(_conn, _cur, 'FORCE_OPEN')
                         if _open:
                             START_TIME = time.time()
-                            set_config(conn, cur, [ ['FORCE_OPEN', 0, ''] ])
+                            set_config(_conn, _cur, [ ['FORCE_OPEN', 0, ''] ])
                             buzzer()
                     except Exception as e:
                         print(1)
@@ -82,6 +85,9 @@ def main(conn: sqlite3.Connection, cur: sqlite3.Cursor):
                         else:
                             relay(False)
                 time.sleep(0.075)
+                
+            if cur: cur.close()
+            if conn: conn.close()
 
         signal.signal(signal.SIGINT, end_read)
         tick_thread = threading.Thread(target=tick)
