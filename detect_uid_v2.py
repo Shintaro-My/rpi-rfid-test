@@ -20,26 +20,17 @@ LEAD_SW_ACTIVE = 1
 run = True
 _relay_stat = False
 
-def main():
+def main(conn: sqlite3.Connection, cur: sqlite3.Cursor):
     global BEFORE_UID, START_TIME, LEAD_SW_ACTIVE, DURATION, _relay_stat, run
     
     init_gpio()
     print('!!!')
-
-    conn = None
-    cur = None
+    
     try:
-        conn = sqlite3.connect(DB_NAME)
-        cur = conn.cursor()
-        init_db(conn, cur)
         LEAD_SW_ACTIVE = get_config(conn, cur, 'LEAD_SW_ACTIVE')
         DURATION = get_config(conn, cur, 'DURATION')
     except Exception as e:
         print(e)
-    finally:
-        if cur: cur.close()
-        if conn: conn.close()
-
 
     led_red()
     buzzer()
@@ -73,11 +64,7 @@ def main():
                 if _relay_stat:
                     relay(True)
                 else:
-                    conn = None
-                    cur = None
                     try:
-                        conn = sqlite3.connect(DB_NAME)
-                        cur = conn.cursor()
                         init_db(conn, cur)
                         _open = get_config(conn, cur, 'FORCE_OPEN')
                         if _open:
@@ -87,12 +74,8 @@ def main():
                     except Exception as e:
                         print(1)
                         print(e)
-                    finally:
-                        if cur: cur.close()
-                        if conn: conn.close()
 
                     if LEAD_SW_ACTIVE:
-                        init_gpio()
                         if is_door_open():
                             print('!!!')
                             relay(True)
@@ -114,7 +97,7 @@ def main():
                 (status, uid, backBits) = MFRC522Reader.identify()
                 if status == MFRC522Reader.MIFARE_OK:
                     _uid = '-'.join(['{:02x}'.format(u) for u in uid])
-                    auth(_uid)
+                    auth(conn, cur, _uid)
 
             if not START_TIME:
                 BEFORE_UID = None
@@ -133,17 +116,13 @@ def main():
         tick_thread.join()
         return True
     
-def auth(uid):
+def auth(conn: sqlite3.Connection, cur: sqlite3.Cursor, uid):
     global BEFORE_UID, START_TIME
 
     print(f"ID: {uid}")
 
-    conn = None
-    cur = None
     
     try:
-        conn = sqlite3.connect(DB_NAME)
-        cur = conn.cursor()
         users = [v for v in cur.execute(f'SELECT * FROM Users WHERE UserId = "{uid}"')]
         if len(users):
             _, name = users[0][:2]
@@ -154,8 +133,6 @@ def auth(uid):
                     """.strip()
                 )
                 conn.commit()
-                cur.close()
-                conn.close()
                 print(f'Welcome, "{name}" <ID: {uid}>!')
             else:
                 print('(repeat)')
@@ -175,20 +152,24 @@ def auth(uid):
                     """.strip()
                 )
                 conn.commit()
-                cur.close()
-                conn.close()
             else:
                 print('(repeat)')
             time.sleep(.1)
             led_all_off()
     except Exception as e:
         print(e)
-    finally:
-        if cur: cur.close()
-        if conn: conn.close()
 
     BEFORE_UID = uid
 
 #util.debug = True
 if __name__ == '__main__':
-    main()
+    try:
+        conn = sqlite3.connect(DB_NAME)
+        cur = conn.cursor()
+        init_db(conn, cur)
+        main(conn, cur)
+    except Exception as e:
+        print(e)
+    finally:
+        if cur: cur.close()
+        if conn: conn.close()
