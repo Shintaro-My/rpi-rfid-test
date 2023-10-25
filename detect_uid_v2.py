@@ -54,7 +54,7 @@ def main(conn: sqlite3.Connection, cur: sqlite3.Cursor):
         
         def tick():
             global _relay_stat, run, START_TIME
-            
+            n = 0
             try:
                 _conn = sqlite3.connect(DB_NAME)
                 _cur = _conn.cursor()
@@ -81,7 +81,11 @@ def main(conn: sqlite3.Connection, cur: sqlite3.Cursor):
 
                     if LEAD_SW_ACTIVE:
                         if is_door_open():
-                            print('!', end='')
+                            n += 1
+                            if 20 < n:
+                                print('!', end='')
+                            else:
+                                print('!')
                             relay(True)
                         else:
                             relay(False)
