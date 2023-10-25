@@ -24,6 +24,7 @@ def main():
     global BEFORE_UID, START_TIME, LEAD_SW_ACTIVE, DURATION, _relay_stat, run
     
     init_gpio()
+    print('!!!')
 
     conn = None
     cur = None
