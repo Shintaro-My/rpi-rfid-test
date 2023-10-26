@@ -50,6 +50,7 @@ def main(conn: sqlite3.Connection, cur: sqlite3.Cursor):
             print("\nCtrl+C captured, ending read.")
             run = False
             #rdr.cleanup()
+            GPIO.cleanup()
             sys.exit()
         
         def tick():
@@ -122,6 +123,7 @@ def main(conn: sqlite3.Connection, cur: sqlite3.Cursor):
                 START_TIME = None
                
     except Exception as e:
+        print(3)
         print(e)
     finally:
         tick_thread.join()
@@ -169,6 +171,7 @@ def auth(conn: sqlite3.Connection, cur: sqlite3.Cursor, uid):
             time.sleep(.1)
             led_all_off()
     except Exception as e:
+        print(4)
         print(e)
 
     BEFORE_UID = uid
@@ -181,6 +184,7 @@ if __name__ == '__main__':
         init_db(conn, cur)
         main(conn, cur)
     except Exception as e:
+        print(5)
         print(e)
     finally:
         if cur: cur.close()
