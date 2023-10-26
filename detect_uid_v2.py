@@ -111,6 +111,9 @@ def main(conn: sqlite3.Connection, cur: sqlite3.Cursor):
                 if status == MFRC522Reader.MIFARE_OK:
                     print('\n' + '=' * 10)
                     (status, uid, backBits) = MFRC522Reader.identify()
+                    print(backData)
+                    print(tagType)
+                    print(backBits)
                     if status == MFRC522Reader.MIFARE_OK:
                         _uid = '-'.join(['{:02x}'.format(u) for u in uid])
                         auth(conn, cur, _uid)
