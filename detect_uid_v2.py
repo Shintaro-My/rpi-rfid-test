@@ -24,6 +24,7 @@ def main(conn: sqlite3.Connection, cur: sqlite3.Cursor):
     global BEFORE_UID, START_TIME, LEAD_SW_ACTIVE, DURATION, _relay_stat, run
     
     init_gpio()
+    time.sleep(.1)
     
     try:
         LEAD_SW_ACTIVE = get_config(conn, cur, 'LEAD_SW_ACTIVE')
@@ -175,7 +176,6 @@ def auth(conn: sqlite3.Connection, cur: sqlite3.Cursor, uid):
 
 #util.debug = True
 if __name__ == '__main__':
-    import time
     while True:
         try:
             conn = sqlite3.connect(DB_NAME)
