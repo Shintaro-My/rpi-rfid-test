@@ -104,24 +104,29 @@ def main(conn: sqlite3.Connection, cur: sqlite3.Cursor):
 
         tick_thread.start()
 
+        
         while run:
-            (status, backData, tagType) = MFRC522Reader.scan()
-            if status == MFRC522Reader.MIFARE_OK:
-                print('\n' + '=' * 10)
-                (status, uid, backBits) = MFRC522Reader.identify()
+            try:
+                (status, backData, tagType) = MFRC522Reader.scan()
                 if status == MFRC522Reader.MIFARE_OK:
-                    _uid = '-'.join(['{:02x}'.format(u) for u in uid])
-                    auth(conn, cur, _uid)
+                    print('\n' + '=' * 10)
+                    (status, uid, backBits) = MFRC522Reader.identify()
+                    if status == MFRC522Reader.MIFARE_OK:
+                        _uid = '-'.join(['{:02x}'.format(u) for u in uid])
+                        auth(conn, cur, _uid)
 
-            if not START_TIME:
-                BEFORE_UID = None
-            elif (time.time() - START_TIME) < DURATION:
-                _relay_stat = True
-                led_green()
-            else:
-                _relay_stat = False
-                led_all_off()
-                START_TIME = None
+                if not START_TIME:
+                    BEFORE_UID = None
+                elif (time.time() - START_TIME) < DURATION:
+                    _relay_stat = True
+                    led_green()
+                else:
+                    _relay_stat = False
+                    led_all_off()
+                    START_TIME = None
+            except IOError as e:
+                print('io')
+                print(e)
                
     except Exception as e:
         print(3)
