@@ -124,8 +124,8 @@ def main(conn: sqlite3.Connection, cur: sqlite3.Cursor):
     except Exception as e:
         print(e)
     finally:
-        GPIO.cleanup()
         tick_thread.join()
+        GPIO.cleanup()
         return True
     
 def auth(conn: sqlite3.Connection, cur: sqlite3.Cursor, uid):
@@ -175,13 +175,17 @@ def auth(conn: sqlite3.Connection, cur: sqlite3.Cursor, uid):
 
 #util.debug = True
 if __name__ == '__main__':
-    try:
-        conn = sqlite3.connect(DB_NAME)
-        cur = conn.cursor()
-        init_db(conn, cur)
-        main(conn, cur)
-    except Exception as e:
-        print(e)
-    finally:
-        if cur: cur.close()
-        if conn: conn.close()
+    import time
+    while True:
+        try:
+            conn = sqlite3.connect(DB_NAME)
+            cur = conn.cursor()
+            init_db(conn, cur)
+            main(conn, cur)
+        except Exception as e:
+            print(e)
+        finally:
+            if cur: cur.close()
+            if conn: conn.close()
+            
+        time.sleep(5)
