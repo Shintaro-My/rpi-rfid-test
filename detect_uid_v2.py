@@ -56,9 +56,9 @@ def main(conn: sqlite3.Connection, cur: sqlite3.Cursor):
         def tick():
             global _relay_stat, run, START_TIME
             n = 0
+            _conn = sqlite3.connect(DB_NAME)
+            _cur = _conn.cursor()
             try:
-                _conn = sqlite3.connect(DB_NAME)
-                _cur = _conn.cursor()
                 init_gpio()
             except Exception as e:
                 print(2)
@@ -126,7 +126,6 @@ def main(conn: sqlite3.Connection, cur: sqlite3.Cursor):
         print(e)
     finally:
         tick_thread.join()
-        GPIO.cleanup()
         return True
     
 def auth(conn: sqlite3.Connection, cur: sqlite3.Cursor, uid):
@@ -188,5 +187,6 @@ if __name__ == '__main__':
             if cur: cur.close()
             if conn: conn.close()
             
+        GPIO.cleanup()
         time.sleep(5)
         print('restart...')
