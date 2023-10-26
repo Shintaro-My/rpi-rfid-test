@@ -29,6 +29,7 @@ def main(conn: sqlite3.Connection, cur: sqlite3.Cursor):
         LEAD_SW_ACTIVE = get_config(conn, cur, 'LEAD_SW_ACTIVE')
         DURATION = get_config(conn, cur, 'DURATION')
     except Exception as e:
+        print(0)
         print(e)
 
     led_red()
