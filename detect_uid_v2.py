@@ -15,18 +15,18 @@ DURATION = 10
 START_TIME = None
 BEFORE_UID = None
 
-LEAD_SW_ACTIVE = 1
+REED_SW_ACTIVE = 1
 
 run = True
 _relay_stat = False
 
 def main(conn: sqlite3.Connection, cur: sqlite3.Cursor):
-    global BEFORE_UID, START_TIME, LEAD_SW_ACTIVE, DURATION, _relay_stat, run
+    global BEFORE_UID, START_TIME, REED_SW_ACTIVE, DURATION, _relay_stat, run
     
     init_gpio()
     
     try:
-        LEAD_SW_ACTIVE = get_config(conn, cur, 'LEAD_SW_ACTIVE')
+        REED_SW_ACTIVE = get_config(conn, cur, 'REED_SW_ACTIVE')
         DURATION = get_config(conn, cur, 'DURATION')
     except Exception as e:
         print(0)
@@ -81,7 +81,7 @@ def main(conn: sqlite3.Connection, cur: sqlite3.Cursor):
                         print(1)
                         print(e)
 
-                    if LEAD_SW_ACTIVE:
+                    if REED_SW_ACTIVE:
                         if is_door_open():
                             n += 1
                             if 40 <= n:
