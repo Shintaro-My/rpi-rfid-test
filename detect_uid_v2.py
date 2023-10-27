@@ -92,6 +92,9 @@ def main(conn: sqlite3.Connection, cur: sqlite3.Cursor):
                             relay(True)
                         else:
                             relay(False)
+                    else:
+                        relay(False)
+                        
                 time.sleep(0.075)
                 
             if _cur: _cur.close()
