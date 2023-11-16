@@ -4,7 +4,8 @@
 ### 本体などのハードが損傷した場合
 　Raspberry Pi本体が壊れた場合は、同じバージョン（`Raspberry Pi Zero W`あるいは`WH`）であれば、micro SDを付け直すだけで問題ない。もし廃版になるなどで新しいバージョン（例: [`Raspberry Pi Zero 2 W`](https://www.switch-science.com/products/7600)）を使う必要がある場合は、後述の[ソフト導入手順](#ソフト導入手順)に従ってソフトも入れ直す必要がある。
 
-　本体に接続している各種コンポーネントが壊れた場合は、以下の部品を必要数用意し、予備の基板に実装あるいは接続する。　
+　本体に接続している各種コンポーネントが壊れた場合は、以下の部品を必要数用意し、予備の基板に実装あるいは接続する。直接端子にはんだ付けしている箇所もあるので、それらについてはオリジナルの基板をよく確認すること。
+
  部品名 | 個数 | メモ
 :---- |:----:| :----
  [M5Stack用WS1850S搭載 RFID 2ユニット](https://www.switch-science.com/products/8301) | 1 | - 
@@ -15,7 +16,7 @@
  1N4007 | 1 | リレーの逆起電力対策。向きに注意。 
  2SC1815 | 1 | リレー駆動用のトランジスタ。
  カーボン抵抗6.8KΩ | 2 | - 
- ピンソケット (20x2) | 1 | 下向きに付けることに注意。はんだ付け後、飛び出したピンはなるべく短く切ること。線材のはんだ付けの位置を間違えないこと。
+ ピンソケット (2.54mm:20x2) | 1 | 下向きに付けることに注意。はんだ付け後、飛び出したピンはなるべく短く切ること。線材のはんだ付けの位置を間違えないこと。
  [基板取付用LANコネクタ(モジュラージャック)(RJ-45)](https://akizukidenshi.com/catalog/g/gC-00159/) | 1 | 高さ調整のため、リーダー側には取り付けない。またピンの幅が若干狭いので、ピンの先をペンチなどで少し折り曲げてから取り付けること。 
 
 ※ 予備の基板が無い場合は、本プロジェクト内にある[`OfficeDoorManagement.zip`](/OfficeDoorManagement.zip?raw=1)をダウンロードし、基板メーカーに注文すること。
@@ -235,6 +236,35 @@ static domain_name_servers=200.230.230.5 220.110.130.250
 
 ※ `Ctrl+S`で保存、`Ctrl+X`でエディターを閉じる。
 
+
+### 6. WiFiパワーマネジメントの無効化
+
+```sh
+git clone https://github.com/takarocks/rpiwlan0poweroff.git
+cd rpiwlan0poweroff
+chmod 755 wlan0poweroff.sh
+sudo nano wlan0poweroff.service
+```
+ファイルに以下のように書き込む。
+```sh
+[Unit]
+Description=wlan0 power management disable service
+After=network.target
+
+[Service]
+ExecStart=/home/pi/rpiwlan0poweroff/wlan0poweroff.sh
+
+[Install]
+WantedBy=multi-user.target
+```
+
+※ `Ctrl+S`で保存、`Ctrl+X`でエディターを閉じる。
+
+```sh
+sudo cp wlan0poweroff.service /etc/systemd/system/
+sudo systemctl enable wlan0poweroff.service
+```
+ファイルをコピーし、イベントとして登録。
 
 ----
 ----
