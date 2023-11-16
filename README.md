@@ -266,6 +266,7 @@ sudo systemctl enable wlan0poweroff.service
 ```
 ファイルをコピーし、イベントとして登録。
 
+
 ----
 ----
 
