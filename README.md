@@ -4,7 +4,7 @@
 ### 本体などのハードが損傷した場合
 　Raspberry Pi本体が壊れた場合は、同じバージョン（`Raspberry Pi Zero W`あるいは`WH`）であれば、micro SDを付け直すだけで問題ない。もし廃版になるなどで新しいバージョン（例: [`Raspberry Pi Zero 2 W`](https://www.switch-science.com/products/7600)）を使う必要がある場合は、後述の[ソフト導入手順](#ソフト導入手順)に従ってソフトも入れ直す必要がある。
 
-　本体に接続している各種コンポーネントが壊れた場合は、以下の部品を必要数用意し、予備の基板に実装あるいは接続する。直接端子にはんだ付けしている箇所もあるので、それらについてはオリジナルの基板をよく確認すること。
+　本体に接続している各種コンポーネントが壊れた場合は、以下の部品を必要数用意し、予備の基板に実装あるいは接続する。直接端子にはんだ付けしている箇所もあるので、それらについてはオリジナルの基板をよく確認すること。部品は基本的にすべてディスクリートである。
 
  部品名 | 個数 | メモ
 :---- |:----:| :----
@@ -31,6 +31,8 @@
 
 ### 0. Raspberry Pi Zero W
 　`Raspberry Pi OS Lite`を[Raspberry Pi Imager](https://www.raspberrypi.com/software/)でmicro SDに書き込み、挿入する。ImagerのOS詳細設定でSSHを有効化しておく。可能であればここでWi-Fiの設定もしておくとよいが、IP固定はこの時点ではできないので、IP固定などを行わないと繋げられないWi-Fiの場合は設定しない。**Wi-Fiがあった方が設定が簡便なので、本番環境ではないWi-Fiであっても繋げられるとよい。**
+
+　またRaspberry Pi Zero Wは2.4GHzにのみ対応しているので、**5GHzのアクセスポイントには繋げられないことに注意。**
 
 > [!NOTE]
 > - [x] ホスト名: rpizero.local
@@ -112,7 +114,7 @@
 > ```
 > interface wlan0
 > 
-> ssid Buffalo-A-XXXX
+> ssid Buffalo-G-XXXX
 > static ip_address=192.168.10.111/24
 > static routers=192.168.10.2
 > static domain_name_servers=8.8.8.8 8.8.4.4
@@ -192,7 +194,7 @@ dtparam=act_led_gpio=27,act_led_trigger=heartbeat
 cd rpi-rfid-test
 python wpa_config.py "Wi-Fi_SSID_1" "PASSWORD_1" "Wi-Fi_SSID_2" "PASSWORD_2"
 ```
-`python wpa_config.py`の後には`Wi-FiのSSID`・`Wi-Fiのパスワード`を半角スペースで区切って入力する。複数のWi-Fiと繋げる場合は、更に半角スペースを空けて続ける（例: `python wpa_config.py Buffalo-A-XXXX ABCD1234 elecom-XXXXXX AIUEO123`）。
+`python wpa_config.py`の後には`Wi-FiのSSID`・`Wi-Fiのパスワード`を半角スペースで区切って入力する。複数のWi-Fiと繋げる場合は、更に半角スペースを空けて続ける（例: `python wpa_config.py Buffalo-G-XXXX ABCD1234 elecom-XXXXXX AIUEO123`）。
 
 #### Wi-Fi接続情報ファイルを所定の位置に配置
 
@@ -223,7 +225,7 @@ static domain_name_servers=<DNSサーバー（優先）> <DNSサーバー（代�
 ```
 interface wlan0
 
-ssid Buffalo-A-XXXX
+ssid Buffalo-G-XXXX
 static ip_address=192.168.10.111/24
 static routers=192.168.10.2
 static domain_name_servers=8.8.8.8 8.8.4.4
